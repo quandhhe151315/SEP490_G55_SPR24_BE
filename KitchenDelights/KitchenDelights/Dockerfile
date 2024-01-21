@@ -10,8 +10,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["KitchenDelights/KitchenDelights.csproj", "KitchenDelights/"]
-COPY ["./Business/Business.csproj", "Business/"]
-COPY ["./Data/Data.csproj", "Data/"]
+COPY ["/Business/Business.csproj", "Business/"]
+COPY ["/Data/Data.csproj", "Data/"]
 RUN dotnet restore "./KitchenDelights/./KitchenDelights.csproj"
 COPY . .
 WORKDIR "/src/KitchenDelights"
