@@ -1,7 +1,7 @@
 ﻿﻿services:
   back:
     image: kitchen_delights
-    build: KitchenDelights/
+    build: .
     container_name: kitchen_delights
     ports:
       - "5050:80"
