@@ -1,5 +1,6 @@
 ﻿using Data.Entity;
 using Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
@@ -21,6 +22,11 @@ namespace Data.Repositories
             {
                 Console.WriteLine(ex.StackTrace);
             }
+        }
+
+        public async Task<Account?> GetAccount(string email)
+        {
+            return await _context.Accounts.Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public void Save()

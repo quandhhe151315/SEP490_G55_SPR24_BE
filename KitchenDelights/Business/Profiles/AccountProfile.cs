@@ -13,6 +13,8 @@ namespace Business.Profiles
     {
         public AccountProfile() {
             CreateMap<RegisterRequestDTO, Account>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
+            CreateMap<Account, AccountDTO>().ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+                                            .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.StatusName));
         }
     }
 }

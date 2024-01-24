@@ -10,5 +10,7 @@ namespace Business.Interfaces
     public interface IAccountManager
     {
         void CreateAccount(RegisterRequestDTO account);
+
+        Task<AccountDTO?> GetAccount(string email);
     }
 }

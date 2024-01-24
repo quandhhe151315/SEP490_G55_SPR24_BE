@@ -27,5 +27,15 @@ namespace Business.Managers
             _accountRepository.CreateAccount(_mapper.Map<RegisterRequestDTO, Account>(account));
             _accountRepository.Save();
         }
+
+        public async Task<AccountDTO?> GetAccount(string email)
+        {
+            Account? account = await _accountRepository.GetAccount(email);
+            if (account == null)
+            {
+                return null;
+            }
+            return _mapper.Map<Account, AccountDTO>(account);
+        }
     }
 }
