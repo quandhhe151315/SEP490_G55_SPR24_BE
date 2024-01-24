@@ -9,7 +9,7 @@ namespace KitchenDelights.Helper
 
         public EmailHelper(IConfiguration configuration) => _configuration = configuration;
 
-        public bool SendEmail(EmailEncapsulation sendTo, EmailDetails details)
+        public async Task<bool> SendEmail(EmailEncapsulation sendTo, EmailDetails details)
         {
             try
             {
