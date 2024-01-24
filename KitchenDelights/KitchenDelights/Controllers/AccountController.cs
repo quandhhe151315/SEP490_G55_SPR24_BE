@@ -43,7 +43,8 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Register(RegisterRequestDTO account)
         {
             account.Password = PasswordHelper.Hash(account.Password);
-            account.RoleId = 5;
+            account.RoleId = 5; //Default "User" Role
+            account.StatusId = 1; // Default "Active" status
             try
             {
                 _accountManager.CreateAccount(account);
