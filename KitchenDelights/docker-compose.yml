@@ -4,7 +4,7 @@
     build: .
     container_name: kitchen_delights
     ports:
-      - "5050:80"
+      - "5050:5050"
   sql:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     container_name: sql_server2022

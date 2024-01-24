@@ -25,7 +25,7 @@ namespace Data.Repositories
 
         public void Save()
         {
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
     }
 }
