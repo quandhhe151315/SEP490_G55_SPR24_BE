@@ -24,7 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 	
 </Project>
