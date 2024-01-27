@@ -15,6 +15,9 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        string _folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/");
+        Directory.CreateDirectory(_folderPath);
+
         var builder = WebApplication.CreateBuilder(args);
 
         var myCORSPolicy = "_myCORSPolicy";
@@ -107,6 +110,7 @@ internal class Program
             app.UseSwaggerUI();
 
         }
+
 
         app.UseStaticFiles();
 

@@ -9,11 +9,6 @@ namespace KitchenDelights.Controllers
     public class ImageController : ControllerBase
     {
         private readonly string _folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/");
-
-        public ImageController()
-        {
-            Directory.CreateDirectory(_folderPath);
-        }
         
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
