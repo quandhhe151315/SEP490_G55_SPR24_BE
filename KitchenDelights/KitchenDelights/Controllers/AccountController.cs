@@ -91,14 +91,14 @@ namespace KitchenDelights.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(type: "id", account.AccountId.ToString()),
-                new Claim(ClaimTypes.Role, account.RoleName),
-                new Claim(type: "name", account.Name),
-                new Claim(type: "phone", account.Phone),
-                new Claim(ClaimTypes.Email, account.Email),
-                new Claim(type: "avatar", account.Avatar),
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Aud, _configuration["Jwt:Audience"]),
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Iss, _configuration["Jwt:Issuer"])
+                new(type: "id", account.AccountId.ToString()),
+                new(ClaimTypes.Role, account.RoleName),
+                new(type: "name", account.Name),
+                new(type: "phone", account.Phone),
+                new(ClaimTypes.Email, account.Email),
+                new(type: "avatar", account.Avatar),
+                new(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Aud, _configuration["Jwt:Audience"]),
+                new(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Iss, _configuration["Jwt:Issuer"])
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
