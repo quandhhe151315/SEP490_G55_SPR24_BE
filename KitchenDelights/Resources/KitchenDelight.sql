@@ -39,7 +39,10 @@ GO
 CREATE TABLE [account]
 (
 [account_id] [int] IDENTITY(1,1) PRIMARY KEY,
-[name] [nvarchar](50),
+[username] [nvarchar](50),
+[first_name] [nvarchar](50),
+[middle_name] [nvarchar](50),
+[last_name] [nvarchar](50),
 [email] [nvarchar](50),
 [phone] [nvarchar](12),
 [avatar] [varchar](MAX),
@@ -85,6 +88,7 @@ CREATE TABLE [category]
 [category_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [parent_id] [int] NULL FOREIGN KEY REFERENCES [category]([category_id]),
 [category_name] [nvarchar](MAX),
+[category_type] [bit] NOT NULL
 );
 GO
 
@@ -118,6 +122,7 @@ CREATE TABLE [blog]
 (
 [blog_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[category_id] [int] NOT NULL FOREIGN KEY REFERENCES [category]([category_id]),
 [blog_title] [nvarchar](MAX),
 [blog_content] [nvarchar](MAX),
 [blog_image] [nvarchar](MAX),
