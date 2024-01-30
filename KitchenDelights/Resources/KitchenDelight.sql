@@ -154,8 +154,17 @@ CREATE TABLE [menu]
 (
 [menu_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [menu_name] [nvarchar](MAX),
+[menu_description] [nvarchar](MAX),
+[menu_access] [bit] NOT NULL,
 [account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+);
+GO
+
+CREATE TABLE [menu_recipe]
+(
+[menu_id] [int] NOT NULL FOREIGN KEY REFERENCES [menu]([menu_id]),
 [recipe_id] [int] NOT NULL FOREIGN KEY REFERENCES [recipe]([recipe_id]),
+PRIMARY KEY ([menu_id], [recipe_id])
 );
 GO
 
