@@ -36,9 +36,9 @@ CREATE TABLE [status]
 );
 GO
 
-CREATE TABLE [account]
+CREATE TABLE [users]
 (
-[account_id] [int] IDENTITY(1,1) PRIMARY KEY,
+[user_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [username] [nvarchar](50),
 [first_name] [nvarchar](50),
 [middle_name] [nvarchar](50),
@@ -50,14 +50,15 @@ CREATE TABLE [account]
 [reset_token] [varchar](10),
 [reset_expire] [datetime],
 [status_id] [int] NOT NULL FOREIGN KEY REFERENCES [status]([status_id]),
-[role_id] [int] NOT NULL FOREIGN KEY REFERENCES [role]([role_id])
+[role_id] [int] NOT NULL FOREIGN KEY REFERENCES [role]([role_id]),
+[interaction] [int] NOT NULL,
 );
 GO
 
 CREATE TABLE [address]
 (
 [address_id] [int] IDENTITY(1,1) PRIMARY KEY,
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [address_details] [nvarchar](MAX)
 );
 GO
@@ -65,7 +66,7 @@ GO
 CREATE TABLE [restaurant_recommendation]
 (
 [restaurant_id] [int] IDENTITY(1,1) PRIMARY KEY,
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [restaurant_name] [nvarchar](MAX),
 [restaurant_details] [nvarchar](MAX),
 [restaurant_location] [nvarchar](MAX)
@@ -75,7 +76,7 @@ GO
 CREATE TABLE [news]
 (
 [news_id] [int] IDENTITY(1,1) PRIMARY KEY,
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [news_title] [nvarchar](MAX),
 [news_content] [nvarchar](MAX),
 [news_status] [bit] NOT NULL,
@@ -92,11 +93,17 @@ CREATE TABLE [category]
 );
 GO
 
+CREATE TABLE [countries]
+(
+[country_id] [int] IDENTITY(1,1) PRIMARY KEY,
+[country_name] [nvarchar](MAX)
+);
+GO
+
 CREATE TABLE [recipe]
 (
 [recipe_id] [int] IDENTITY(1,1) PRIMARY KEY,
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
-[category_id] [int] NOT NULL FOREIGN KEY REFERENCES [category]([category_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [recipe_title] [nvarchar](MAX),
 [recipe_content] [nvarchar](MAX),
 [recipe_rating] [int] NOT NULL,
@@ -107,11 +114,44 @@ CREATE TABLE [recipe]
 );
 GO
 
+CREATE TABLE [recipe_category]
+(
+[recipe_id] [int] NOT NULL FOREIGN KEY REFERENCES [recipe]([recipe_id]),
+[category_id] [int] NOT NULL FOREIGN KEY REFERENCES [category]([category_id]),
+PRIMARY KEY ([recipe_id], [category_id])
+);
+GO
+
+CREATE TABLE [recipe_country]
+(
+[recipe_id] [int] NOT NULL FOREIGN KEY REFERENCES [recipe]([recipe_id]),
+[country_id] [int] NOT NULL FOREIGN KEY REFERENCES [countries]([country_id]),
+PRIMARY KEY ([recipe_id], [country_id])
+);
+GO
+
+CREATE TABLE [ingredient]
+(
+[ingredient_id] [int] IDENTITY(1,1) PRIMARY KEY,
+[ingredient_name] [nvarchar](MAX),
+[ingredient_unit] [nvarchar](50)
+);
+GO
+
+CREATE TABLE [recipe_ingredient]
+(
+[recipe_id] [int] NOT NULL FOREIGN KEY REFERENCES [recipe]([recipe_id]),
+[ingredient_id] [int] NOT NULL FOREIGN KEY REFERENCES [ingredient]([ingredient_id]),
+[unit_value] [decimal](9,2),
+PRIMARY KEY ([recipe_id], [ingredient_id])
+);
+GO
+
 CREATE TABLE [recipe_rating]
 (
 [rating_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [recipe_id] [int] NOT NULL FOREIGN KEY REFERENCES [recipe]([recipe_id]),
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [rating_value] [int] NOT NULL,
 [rating_content] [nvarchar](MAX),
 [create_date] [datetime] NOT NULL
@@ -121,7 +161,7 @@ GO
 CREATE TABLE [blog]
 (
 [blog_id] [int] IDENTITY(1,1) PRIMARY KEY,
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [category_id] [int] NOT NULL FOREIGN KEY REFERENCES [category]([category_id]),
 [blog_title] [nvarchar](MAX),
 [blog_content] [nvarchar](MAX),
@@ -136,7 +176,7 @@ CREATE TABLE [blog_comment]
 [comment_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [blog_id] [int] NOT NULL FOREIGN KEY REFERENCES [blog](blog_id),
 [parent_id] [int] NULL FOREIGN KEY REFERENCES [blog_comment](comment_id),
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [comment_content] [nvarchar](MAX),
 [create_date] [datetime] NOT NULL
 );
@@ -144,9 +184,9 @@ GO
 
 CREATE TABLE [bookmark]
 (
-[account_id] [int] FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] FOREIGN KEY REFERENCES [users]([user_id]),
 [recipe_id] [int] FOREIGN KEY REFERENCES [recipe]([recipe_id]),
-PRIMARY KEY ([account_id], [recipe_id])
+PRIMARY KEY ([user_id], [recipe_id])
 );
 GO
 
@@ -156,7 +196,7 @@ CREATE TABLE [menu]
 [menu_name] [nvarchar](MAX),
 [menu_description] [nvarchar](MAX),
 [menu_access] [bit] NOT NULL,
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 );
 GO
 
@@ -171,30 +211,30 @@ GO
 CREATE TABLE [voucher]
 (
 [voucher_code] [varchar](10) PRIMARY KEY,
-[account_id] [int] NOT NULL FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [discount_percentage] [tinyint] NOT NULL
 );
 GO
 
 CREATE TABLE [cart_item]
 (
-[account_id] [int] FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] FOREIGN KEY REFERENCES [users]([user_id]),
 [recipe_id] [int] FOREIGN KEY REFERENCES [recipe]([recipe_id]),
 [voucher_code] [varchar](10) NULL FOREIGN KEY REFERENCES [voucher]([voucher_code]),
-PRIMARY KEY ([account_id], [recipe_id])
+PRIMARY KEY ([user_id], [recipe_id])
 );
 GO
 
 CREATE TABLE [payment_history]
 (
-[account_id] [int] FOREIGN KEY REFERENCES [account]([account_id]),
+[user_id] [int] FOREIGN KEY REFERENCES [users]([user_id]),
 [recipe_id] [int] FOREIGN KEY REFERENCES [recipe]([recipe_id]),
 [actual_price] [money] NOT NULL,
 [purchase_date] [datetime] NOT NULL,
-PRIMARY KEY ([account_id], [recipe_id])
+PRIMARY KEY ([user_id], [recipe_id])
 );
 GO
 
-INSERT INTO [role]([role_name]) VALUES ('Administrator'), ('Moderator'), ('Writer'), ('Chef'), ('User');
+INSERT INTO [role]([role_name]) VALUES ('Administrator'), ('Moderator'), ('Writer'), ('Chef'), ('users');
 INSERT INTO [status]([status_name]) VALUES ('Active'), ('Banned'), ('Deleted');
 GO
