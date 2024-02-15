@@ -235,6 +235,15 @@ PRIMARY KEY ([user_id], [recipe_id])
 );
 GO
 
+CREATE TABLE [verification]
+(
+[verification_id] [int] IDENTITY(1,1) PRIMARY KEY,
+[user_id] [int] FOREIGN KEY REFERENCES [users]([user_id]),
+[verification_path] [nvarchar](MAX),
+[verification_status] [int] NOT NULL,
+[verification_date] [datetime] NOT NULL
+);
+
 INSERT INTO [role]([role_name]) VALUES ('Administrator'), ('Moderator'), ('Writer'), ('Chef'), ('users');
 INSERT INTO [status]([status_name]) VALUES ('Active'), ('Banned'), ('Deleted');
 GO
