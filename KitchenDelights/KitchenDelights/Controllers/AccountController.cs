@@ -22,7 +22,7 @@ namespace KitchenDelights.Controllers
             _configuration = configuration;
             _accountManager = accountManager;
         }
-
+        //hêppe
         [HttpPost]
         public async Task<IActionResult> EmailVerify(EmailEncapsulation emailAddress)
         {
