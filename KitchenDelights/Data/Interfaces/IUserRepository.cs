@@ -11,7 +11,11 @@ namespace Data.Interfaces
     {
         void CreateUser(User user);
 
+        void UpdateUser(User user);
+
         Task<User?> GetUser(string email);
+
+        Task<User?> GetUser(int id);
 
         void Save();
     }

@@ -2,9 +2,11 @@
 using Business.Interfaces;
 using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 
@@ -15,12 +17,12 @@ namespace KitchenDelights.Controllers
     public class UserController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly IUserManager _accountManager;
+        private readonly IUserManager _userManager;
 
         public UserController(IConfiguration configuration, IUserManager accountManager)
         {
             _configuration = configuration;
-            _accountManager = accountManager;
+            _userManager = accountManager;
         }
         
         [HttpPost]
@@ -43,7 +45,6 @@ namespace KitchenDelights.Controllers
             }
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Register(RegisterRequestDTO user)
         {
@@ -57,7 +58,7 @@ namespace KitchenDelights.Controllers
             user.StatusId = 1; // Default "Active" status
             try
             {
-                _accountManager.CreateUser(user);
+                _userManager.CreateUser(user);
                 return Ok();
             } catch (Exception ex)
             {
@@ -68,23 +69,80 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestDTO loginRequest)
         {
-            UserDTO? account = await _accountManager.GetUser(loginRequest.Email);
-            if(account == null)
-            {
-                return NotFound("Account does not exist!");
-            }
+            UserDTO? account = await _userManager.GetUser(loginRequest.Email);
+            if(account == null) return NotFound("Account does not exist!");
             bool isCorrectPassword = PasswordHelper.Verify(loginRequest.Password, account.PasswordHash);
             if(isCorrectPassword)
             {
-                if (account.StatusName.Equals("Banned")) 
-                {
-                    return Unauthorized("User is being banned!"); 
-                }
+                if (account.StatusName.Equals("Banned")) return Unauthorized("User is being banned!"); 
                 return Ok(GenerateJwtToken(account));
             } else
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable, "Wrong password!");
             }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> ResetToken(EmailEncapsulation mail)
+        {
+            string token = StringHelper.GenerateRandomString(10);
+
+            ForgotPasswordDTO forgotPasswordDTO = new()
+            {
+                Email = mail.Email,
+                ResetToken = token,
+            };
+
+            bool isSuccess = await _userManager.CreateResetToken(forgotPasswordDTO);
+
+            if(!isSuccess) return NotFound("User with this email doesn't exist!");
+
+            EmailHelper email = new(_configuration);
+            EmailDetails details = new()
+            {
+                Subject = "Forget Password",
+                Body = $"Your code to reset password is: {token}\n\nThis code will expire in 1 hour.\n\nPlease do not share this code with anyone else!\n\nIf you did not send this request, please ignore this email!"
+            };
+
+            bool mailStatus = await email.SendEmail(mail, details);
+
+            if (mailStatus)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Forget password code has not been sent.");
+            }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> ForgetPassword(ForgotPasswordDTO forgotPasswordDTO)
+        {
+            forgotPasswordDTO.Password = PasswordHelper.Hash(forgotPasswordDTO.Password);
+            int status = await _userManager.ForgetPassword(forgotPasswordDTO);
+            return status switch
+            {
+                0 => NotFound("User with this email doesn't exist!"),
+                1 => StatusCode(StatusCodes.Status406NotAcceptable, "Wrong forget password code!"),
+                2 => StatusCode(StatusCodes.Status406NotAcceptable, "Forget password code expired!"),
+                3 => Ok(),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, "Something wrong happened, please contact administrator!"),
+            };
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
+        {
+            UserDTO? account = await _userManager.GetUser(changePasswordDTO.UserId);
+            if (account == null) return NotFound("Account does not exist!");
+            bool isCorrectPassword = PasswordHelper.Verify(changePasswordDTO.OldPassword, account.PasswordHash);
+            if (!isCorrectPassword) return StatusCode(StatusCodes.Status406NotAcceptable, "Wrong password!");
+
+            changePasswordDTO.Password = PasswordHelper.Hash(changePasswordDTO.Password);
+            bool isSuccess = await _userManager.ChangePassword(changePasswordDTO);
+            if (!isSuccess) return NotFound("Account does not exist!");
+            return Ok();
         }
 
         private string GenerateJwtToken(UserDTO account)
@@ -101,6 +159,11 @@ namespace KitchenDelights.Controllers
             if(name.Trim().IsNullOrEmpty())
             {
                 name = "Người dùng";
+            }
+
+            if(account.Avatar.IsNullOrEmpty())
+            {
+                account.Avatar = "http://localhost:4200/images/avatar/default-avatar.png";
             }
 
             var claims = new List<Claim>
