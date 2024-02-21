@@ -2,6 +2,7 @@
 using Business.Interfaces;
 using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -118,7 +119,7 @@ namespace KitchenDelights.Controllers
         [HttpPatch]
         public async Task<IActionResult> ForgetPassword(ForgotPasswordDTO forgotPasswordDTO)
         {
-            forgotPasswordDTO.Password = PasswordHelper.Hash(forgotPasswordDTO.Password); //Hash password before adding to database
+            forgotPasswordDTO.Password = PasswordHelper.Hash(forgotPasswordDTO.Password);
             int status = await _userManager.ForgetPassword(forgotPasswordDTO);
             return status switch
             {
@@ -128,6 +129,20 @@ namespace KitchenDelights.Controllers
                 3 => Ok(),
                 _ => StatusCode(StatusCodes.Status500InternalServerError, "Something wrong happened, please contact administrator!"),
             };
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
+        {
+            UserDTO? account = await _userManager.GetUser(changePasswordDTO.UserId);
+            if (account == null) return NotFound("Account does not exist!");
+            bool isCorrectPassword = PasswordHelper.Verify(changePasswordDTO.OldPassword, account.PasswordHash);
+            if (!isCorrectPassword) return StatusCode(StatusCodes.Status406NotAcceptable, "Wrong password!");
+
+            changePasswordDTO.Password = PasswordHelper.Hash(changePasswordDTO.Password);
+            bool isSuccess = await _userManager.ChangePassword(changePasswordDTO);
+            if (!isSuccess) return NotFound("Account does not exist!");
+            return Ok();
         }
 
         private string GenerateJwtToken(UserDTO account)

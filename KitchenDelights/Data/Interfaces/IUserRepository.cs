@@ -15,6 +15,8 @@ namespace Data.Interfaces
 
         Task<User?> GetUser(string email);
 
+        Task<User?> GetUser(int id);
+
         void Save();
     }
 }
