@@ -6,27 +6,41 @@ namespace KitchenDelights.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ImageController : ControllerBase
+    public class UploadController : ControllerBase
     {
         private readonly string _folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/");
         
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Image(IFormFile image, string type)
         {
-            if (!IsImage(file))
+            if (!IsImage(image))
             {
                 return BadRequest("Please upload an image!");
             }
 
-            string filename = file.FileName;
+            ImageTypes _type;
+
+            if(!Enum.TryParse(type.ToLower(), out _type))
+            {
+                return BadRequest("Wrong image type!");
+            }
+
+            string subFolder = Path.Combine(_folderPath, _type.ToString());
+
+            if (!Directory.Exists(subFolder))
+            {
+                Directory.CreateDirectory(subFolder);
+            }
+
+            string filename = image.FileName;
 
             string uniqueName = WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray()) + filename;
 
-            var imagePath = Path.Combine(_folderPath, uniqueName);
+            var imagePath = Path.Combine(subFolder, uniqueName);
 
-            await file.CopyToAsync(new FileStream(imagePath, FileMode.Create));
+            await image.CopyToAsync(new FileStream(imagePath, FileMode.Create));
 
-            return Ok($"{Request.Scheme}://{Request.Host.Value}/images/{uniqueName}");
+            return Ok($"{Request.Scheme}://{Request.Host.Value}/images/{_type}/{uniqueName}");
         }
 
         public static bool IsImage(IFormFile file)
@@ -48,6 +62,15 @@ namespace KitchenDelights.Controllers
             }
 
             return true;
+        }
+
+        public enum ImageTypes
+        {
+            avatar,
+            recipe,
+            news,
+            blog,
+            advertisement
         }
     }
 }
