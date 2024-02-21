@@ -7,7 +7,9 @@ public partial class Blog
 {
     public int BlogId { get; set; }
 
-    public int AccountId { get; set; }
+    public int UserId { get; set; }
+
+    public int CategoryId { get; set; }
 
     public string? BlogTitle { get; set; }
 
@@ -19,7 +21,9 @@ public partial class Blog
 
     public DateTime CreateDate { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
-
     public virtual ICollection<BlogComment> BlogComments { get; set; } = new List<BlogComment>();
+
+    public virtual Category Category { get; set; } = null!;
+
+    public virtual User User { get; set; } = null!;
 }

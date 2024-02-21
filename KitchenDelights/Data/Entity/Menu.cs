@@ -9,11 +9,11 @@ public partial class Menu
 
     public string? MenuName { get; set; }
 
-    public int AccountId { get; set; }
+    public string? MenuDescription { get; set; }
 
-    public int RecipeId { get; set; }
+    public int UserId { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 
-    public virtual Recipe Recipe { get; set; } = null!;
+    public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 }

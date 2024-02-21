@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Data.Interfaces
 {
-    public interface IAccountRepository
+    public interface IUserRepository
     {
-        void CreateAccount(Account account);
+        void CreateUser(User user);
 
-        Task<Account?> GetAccount(string email);
+        Task<User?> GetUser(string email);
 
         void Save();
     }

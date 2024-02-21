@@ -4,29 +4,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
-    public class AccountRepository : IAccountRepository
+    public class UserRepository : IUserRepository
     {
         private readonly KitchenDelightsContext _context;
 
-        public AccountRepository(KitchenDelightsContext context)
+        public UserRepository(KitchenDelightsContext context)
         {
             _context = context;
         }
 
-        public void CreateAccount(Account account)
+        public void CreateUser(User user)
         {
             try
             {
-                _context.Accounts.Add(account);
+                _context.Users.Add(user);
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }
         }
 
-        public async Task<Account?> GetAccount(string email)
+        public async Task<User?> GetUser(string email)
         {
-            return await _context.Accounts.Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.Users.Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public void Save()

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Business.Profiles
 {
-    public class AccountProfile : Profile
+    public class UserProfile : Profile
     {
-        public AccountProfile() {
-            CreateMap<RegisterRequestDTO, Account>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
-            CreateMap<Account, AccountDTO>().ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+        public UserProfile() {
+            CreateMap<RegisterRequestDTO, User>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
+            CreateMap<User, UserDTO>().ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
                                             .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.StatusName));
         }
     }

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Business.Interfaces
 {
-    public interface IAccountManager
+    public interface IUserManager
     {
-        void CreateAccount(RegisterRequestDTO account);
+        void CreateUser(RegisterRequestDTO user);
 
-        Task<AccountDTO?> GetAccount(string email);
+        Task<UserDTO?> GetUser(string email);
     }
 }

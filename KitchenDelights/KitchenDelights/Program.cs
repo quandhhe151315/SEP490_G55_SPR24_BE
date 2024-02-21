@@ -72,8 +72,8 @@ internal class Program
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-        builder.Services.AddScoped<IAccountManager, AccountManager>();
-        builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+        builder.Services.AddScoped<IUserManager, UserManager>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(

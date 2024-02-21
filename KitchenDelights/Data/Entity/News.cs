@@ -7,7 +7,7 @@ public partial class News
 {
     public int NewsId { get; set; }
 
-    public int AccountId { get; set; }
+    public int UserId { get; set; }
 
     public string? NewsTitle { get; set; }
 
@@ -17,5 +17,5 @@ public partial class News
 
     public DateTime? CreateDate { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

@@ -11,6 +11,10 @@ public partial class Category
 
     public string? CategoryName { get; set; }
 
+    public bool CategoryType { get; set; }
+
+    public virtual ICollection<Blog> Blogs { get; set; } = new List<Blog>();
+
     public virtual ICollection<Category> InverseParent { get; set; } = new List<Category>();
 
     public virtual Category? Parent { get; set; }

@@ -7,7 +7,7 @@ public partial class RestaurantRecommendation
 {
     public int RestaurantId { get; set; }
 
-    public int AccountId { get; set; }
+    public int UserId { get; set; }
 
     public string? RestaurantName { get; set; }
 
@@ -15,5 +15,5 @@ public partial class RestaurantRecommendation
 
     public string? RestaurantLocation { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }
