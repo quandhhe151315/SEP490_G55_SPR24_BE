@@ -3,11 +3,17 @@ using System.Collections.Generic;
 
 namespace Data.Entity;
 
-public partial class Account
+public partial class User
 {
-    public int AccountId { get; set; }
+    public int UserId { get; set; }
 
-    public string? Name { get; set; }
+    public string? Username { get; set; }
+
+    public string? FirstName { get; set; }
+
+    public string? MiddleName { get; set; }
+
+    public string? LastName { get; set; }
 
     public string? Email { get; set; }
 
@@ -24,6 +30,8 @@ public partial class Account
     public int StatusId { get; set; }
 
     public int RoleId { get; set; }
+
+    public int Interaction { get; set; }
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
@@ -48,6 +56,8 @@ public partial class Account
     public virtual Role Role { get; set; } = null!;
 
     public virtual Status Status { get; set; } = null!;
+
+    public virtual ICollection<Verification> Verifications { get; set; } = new List<Verification>();
 
     public virtual ICollection<Voucher> Vouchers { get; set; } = new List<Voucher>();
 

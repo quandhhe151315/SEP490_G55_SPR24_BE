@@ -5,7 +5,7 @@ namespace Data.Entity;
 
 public partial class PaymentHistory
 {
-    public int AccountId { get; set; }
+    public int UserId { get; set; }
 
     public int RecipeId { get; set; }
 
@@ -13,7 +13,7 @@ public partial class PaymentHistory
 
     public DateTime PurchaseDate { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
-
     public virtual Recipe Recipe { get; set; } = null!;
+
+    public virtual User User { get; set; } = null!;
 }

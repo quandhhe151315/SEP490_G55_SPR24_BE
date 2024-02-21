@@ -9,7 +9,7 @@ public partial class RecipeRating
 
     public int RecipeId { get; set; }
 
-    public int AccountId { get; set; }
+    public int UserId { get; set; }
 
     public int RatingValue { get; set; }
 
@@ -17,7 +17,7 @@ public partial class RecipeRating
 
     public DateTime CreateDate { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
-
     public virtual Recipe Recipe { get; set; } = null!;
+
+    public virtual User User { get; set; } = null!;
 }

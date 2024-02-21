@@ -10,11 +10,17 @@ using System.Threading.Tasks;
 
 namespace Business.DTO
 {
-    public class AccountDTO
+    public class UserDTO
     {
-        public int AccountId { get; set; }
+        public int UserId { get; set; }
 
-        public string? Name { get; set; }
+        public string? Username { get; set; }
+
+        public string? FirstName { get; set; }
+
+        public string? MiddleName { get; set; }
+
+        public string? LastName { get; set; }
 
         public string? Email { get; set; }
 
@@ -23,7 +29,9 @@ namespace Business.DTO
         public string? Avatar { get; set; }
 
         public string? PasswordHash { get; set; }
+
         public string StatusName { get; set; }
+
         public string RoleName { get; set; }
     }
 }

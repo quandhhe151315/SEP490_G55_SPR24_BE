@@ -12,12 +12,12 @@ namespace KitchenDelights.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly IAccountManager _accountManager;
+        private readonly IUserManager _accountManager;
 
-        public AccountController(IConfiguration configuration, IAccountManager accountManager)
+        public UserController(IConfiguration configuration, IUserManager accountManager)
         {
             _configuration = configuration;
             _accountManager = accountManager;
@@ -45,19 +45,19 @@ namespace KitchenDelights.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterRequestDTO account)
+        public async Task<IActionResult> Register(RegisterRequestDTO user)
         {
-            if(account.Password.ToCharArray().Length < 6)
+            if(user.Password.ToCharArray().Length < 6)
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable,"Password should not be shorter than 6 characters!");
             }
 
-            account.Password = PasswordHelper.Hash(account.Password);
-            account.RoleId = 5; //Default "User" Role
-            account.StatusId = 1; // Default "Active" status
+            user.Password = PasswordHelper.Hash(user.Password);
+            user.RoleId = 5; //Default "User" Role
+            user.StatusId = 1; // Default "Active" status
             try
             {
-                _accountManager.CreateAccount(account);
+                _accountManager.CreateUser(user);
                 return Ok();
             } catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestDTO loginRequest)
         {
-            AccountDTO? account = await _accountManager.GetAccount(loginRequest.Email);
+            UserDTO? account = await _accountManager.GetUser(loginRequest.Email);
             if(account == null)
             {
                 return NotFound("Account does not exist!");
@@ -87,14 +87,27 @@ namespace KitchenDelights.Controllers
             }
         }
 
-        private string GenerateJwtToken(AccountDTO account)
+        private string GenerateJwtToken(UserDTO account)
         {
+            string name;
+            if (account.MiddleName.IsNullOrEmpty())
+            {
+                name = account.LastName + ' ' + account.FirstName;
+            } else
+            {
+                name = account.LastName + ' ' + account.MiddleName + ' ' + account.FirstName;
+            }
+
+            if(name.Trim().IsNullOrEmpty())
+            {
+                name = "Người dùng";
+            }
+
             var claims = new List<Claim>
             {
-                new(type: "id", account.AccountId.ToString()),
+                new(type: "id", account.UserId.ToString()),
                 new(ClaimTypes.Role, account.RoleName),
-                new(type: "name", account.Name),
-                new(type: "phone", account.Phone),
+                new(type: "name", name.Trim()),
                 new(ClaimTypes.Email, account.Email),
                 new(type: "avatar", account.Avatar),
                 new(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Aud, _configuration["Jwt:Audience"]),
