@@ -105,6 +105,7 @@ CREATE TABLE [recipe]
 [recipe_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [recipe_title] [nvarchar](MAX),
+[recipe_serve] [int],
 [recipe_content] [nvarchar](MAX),
 [recipe_rating] [int] NOT NULL,
 [recipe_status] [bit] NOT NULL,
@@ -134,7 +135,24 @@ CREATE TABLE [ingredient]
 (
 [ingredient_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [ingredient_name] [nvarchar](MAX),
-[ingredient_unit] [nvarchar](50)
+[ingredient_unit] [nvarchar](50), 
+);
+GO
+
+CREATE TABLE [marketplace]
+(
+[marketplace_id] [int] IDENTITY(1,1) PRIMARY KEY,
+[marketplace_name] [nvarchar](MAX),
+[marketplace_logo] [nvarchar](MAX)
+);
+GO
+
+CREATE TABLE [ingredient_marketplace]
+(
+[ingredient_id] [int] FOREIGN KEY REFERENCES [ingredient]([ingredient_id]),
+[marketplace_id] [int] FOREIGN KEY REFERENCES [marketplace]([marketplace_id]),
+[marketplace_link] [nvarchar](MAX),
+PRIMARY KEY ([ingredient_id], [marketplace_id])
 );
 GO
 
@@ -195,7 +213,6 @@ CREATE TABLE [menu]
 [menu_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [menu_name] [nvarchar](MAX),
 [menu_description] [nvarchar](MAX),
-[menu_access] [bit] NOT NULL,
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 );
 GO
