@@ -75,6 +75,9 @@ internal class Program
         builder.Services.AddScoped<IUserManager, UserManager>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+        builder.Services.AddScoped<ICategoryManager, CategoryManager>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")
