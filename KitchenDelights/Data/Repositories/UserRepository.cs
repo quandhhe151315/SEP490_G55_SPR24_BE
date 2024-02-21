@@ -24,10 +24,23 @@ namespace Data.Repositories
             }
         }
 
+        public void UpdateUser(User user)
+        {
+            try
+            {
+                _context.Users.Update(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
         public async Task<User?> GetUser(string email)
         {
             return await _context.Users.Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email);
         }
+
 
         public void Save()
         {
