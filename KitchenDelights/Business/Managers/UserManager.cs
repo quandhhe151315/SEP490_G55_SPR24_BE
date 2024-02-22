@@ -75,7 +75,20 @@ namespace Business.Managers
         {
             User? user = await _userRepository.GetUser(userDTO.UserId);
             if (user == null) return false;
-            user = _mapper.Map<UserDTO, User>(userDTO);
+
+            //Update only Profile-related fields
+            user.FirstName = userDTO.FirstName;
+            user.MiddleName = userDTO.MiddleName;
+            user.LastName = userDTO.LastName;
+            user.Email = userDTO.Email;
+            user.Phone = userDTO.Phone;
+            user.Addresses.Clear();
+            foreach(AddressDTO address in userDTO.Addresses)
+            {
+                user.Addresses.Add(_mapper.Map<AddressDTO, Address>(address));
+            }
+            user.Avatar = userDTO.Avatar;
+
             _userRepository.UpdateUser(user);
             _userRepository.Save();
             return true;
