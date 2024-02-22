@@ -7,6 +7,7 @@ using System.Net;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using Data.Entity;
 
 namespace Business.DTO
 {
@@ -30,8 +31,10 @@ namespace Business.DTO
 
         public string? PasswordHash { get; set; }
 
-        public string StatusName { get; set; }
+        public StatusDTO Status { get; set; }
 
-        public string RoleName { get; set; }
+        public RoleDTO Role { get; set; }
+
+        public List<AddressDTO> Addresses { get; set; } = [];
     }
 }

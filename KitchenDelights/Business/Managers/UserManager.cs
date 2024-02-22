@@ -71,16 +71,27 @@ namespace Business.Managers
             return true;
         }
 
+        public async Task<bool> UpdateProfile(UserDTO userDTO)
+        {
+            User? user = await _userRepository.GetUser(userDTO.UserId);
+            if (user == null) return false;
+            user = _mapper.Map<UserDTO, User>(userDTO);
+            _userRepository.UpdateUser(user);
+            _userRepository.Save();
+            return true;
+        }
 
         public async Task<UserDTO?> GetUser(string email)
         {
             User? user = await _userRepository.GetUser(email);
+
             return user == null ? null : _mapper.Map<User, UserDTO>(user);
         }
 
         public async Task<UserDTO?> GetUser(int id)
         {
             User? user = await _userRepository.GetUser(id);
+
             return user == null ? null : _mapper.Map<User, UserDTO>(user);
         }
     }

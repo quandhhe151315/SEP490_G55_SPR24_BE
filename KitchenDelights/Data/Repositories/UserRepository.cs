@@ -38,12 +38,12 @@ namespace Data.Repositories
 
         public async Task<User?> GetUser(string email)
         {
-            return await _context.Users.Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<User?> GetUser(int id)
         {
-            return await _context.Users.Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.UserId == id);
+            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).Include(x => x.Addresses).FirstOrDefaultAsync(x => x.UserId == id);
         }
 
         public void Save()

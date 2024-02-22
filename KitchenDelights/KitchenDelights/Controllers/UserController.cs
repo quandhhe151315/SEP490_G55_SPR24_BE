@@ -74,7 +74,7 @@ namespace KitchenDelights.Controllers
             bool isCorrectPassword = PasswordHelper.Verify(loginRequest.Password, account.PasswordHash);
             if(isCorrectPassword)
             {
-                if (account.StatusName.Equals("Banned")) return Unauthorized("User is being banned!"); 
+                if (account.Status.StatusName.Equals("Banned")) return Unauthorized("User is being banned!"); 
                 return Ok(GenerateJwtToken(account));
             } else
             {
@@ -145,6 +145,20 @@ namespace KitchenDelights.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Profile(int id)
+        {
+            UserDTO? profile = await _userManager.GetUser(id);
+            return profile == null ? NotFound("User profile doesn't exist!") : Ok(profile);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProfile(UserDTO userDTO)
+        {
+            bool isUpdated = await _userManager.UpdateProfile(userDTO);
+            return isUpdated ? Ok() : StatusCode(StatusCodes.Status500InternalServerError, "Update profile failed!");
+        }
+
         private string GenerateJwtToken(UserDTO account)
         {
             string name;
@@ -169,7 +183,7 @@ namespace KitchenDelights.Controllers
             var claims = new List<Claim>
             {
                 new(type: "id", account.UserId.ToString()),
-                new(ClaimTypes.Role, account.RoleName),
+                new(ClaimTypes.Role, account.Role.RoleName),
                 new(type: "name", name.Trim()),
                 new(ClaimTypes.Email, account.Email),
                 new(type: "avatar", account.Avatar),

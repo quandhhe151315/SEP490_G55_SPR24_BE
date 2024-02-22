@@ -17,6 +17,8 @@ namespace Business.Interfaces
 
         Task<bool> ChangePassword(ChangePasswordDTO changeDetail);
 
+        Task<bool> UpdateProfile(UserDTO user);
+
         Task<UserDTO?> GetUser(string email);
 
         Task<UserDTO?> GetUser(int id);
