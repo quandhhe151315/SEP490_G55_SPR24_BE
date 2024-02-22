@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KitchenDelights.Controllers
@@ -46,8 +47,17 @@ namespace KitchenDelights.Controllers
             if (newsDTO == null) return NotFound("News doesn't exist!");
 
             bool isUpdated = await _newsManager.UpdateNews(news);
-            if (!isUpdated) return StatusCode(StatusCodes.Status500InternalServerError, "Update failed!");
-            return Ok();
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            NewsDTO? newsDTO = await _newsManager.GetNews(id);
+            if (newsDTO == null) return NotFound("News doesn't exist!");
+
+            bool isDeleted = await _newsManager.DeleteNews(id);
+            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
         }
 
     }

@@ -13,6 +13,8 @@ namespace Business.Interfaces
 
         Task<bool> UpdateNews(NewsDTO news);
 
+        Task<bool> DeleteNews(int id);
+
         Task<NewsDTO?> GetNews(int id);
     }
 }

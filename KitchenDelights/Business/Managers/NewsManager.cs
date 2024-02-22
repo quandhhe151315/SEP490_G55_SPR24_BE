@@ -39,6 +39,16 @@ namespace Business.Managers
             return true;
         }
 
+        public async Task<bool> DeleteNews(int id)
+        {
+            News? news = await _newsRepository.GetNews(id);
+            if (news == null) return false;
+
+            _newsRepository.DeleteNews(news);
+            _newsRepository.Save();
+            return true;
+        }
+
         public async Task<NewsDTO?> GetNews(int id)
         {
             News? news = await _newsRepository.GetNews(id);
