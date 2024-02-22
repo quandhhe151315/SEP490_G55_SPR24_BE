@@ -75,15 +75,13 @@ namespace Business.Managers
         public async Task<UserDTO?> GetUser(string email)
         {
             User? user = await _userRepository.GetUser(email);
-            if (user == null) return null;
-            return _mapper.Map<User, UserDTO>(user);
+            return user == null ? null : _mapper.Map<User, UserDTO>(user);
         }
 
         public async Task<UserDTO?> GetUser(int id)
         {
             User? user = await _userRepository.GetUser(id);
-            if (user == null) return null;
-            return _mapper.Map<User, UserDTO>(user);
+            return user == null ? null : _mapper.Map<User, UserDTO>(user);
         }
     }
 }
