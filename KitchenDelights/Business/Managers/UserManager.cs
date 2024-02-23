@@ -13,8 +13,8 @@ namespace Business.Managers
 {
     public class UserManager : IUserManager
     {
-        private IUserRepository _userRepository;
-        private IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
         public UserManager(IUserRepository accountRepository, IMapper mapper)
         {

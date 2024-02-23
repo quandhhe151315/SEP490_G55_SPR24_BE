@@ -14,7 +14,7 @@ namespace KitchenDelights.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : Controller
     {
         private readonly IConfiguration _configuration;
         private readonly IUserManager _userManager;

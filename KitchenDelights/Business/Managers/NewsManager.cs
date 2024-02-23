@@ -13,8 +13,8 @@ namespace Business.Managers
 {
     public class NewsManager : INewsManager
     {
-        public INewsRepository _newsRepository;
-        public IMapper _mapper;
+        private readonly INewsRepository _newsRepository;
+        private readonly IMapper _mapper;
 
         public NewsManager(INewsRepository newsRepository, IMapper mapper)
         {
