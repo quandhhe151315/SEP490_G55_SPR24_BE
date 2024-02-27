@@ -25,7 +25,7 @@ namespace KitchenDelights.Controllers
         {
             if (category.CategoryType == null)
             {
-                return BadRequest("Please enter all require input");
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
             }
             else
             {
@@ -35,7 +35,7 @@ namespace KitchenDelights.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(ex);
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
             }
             return Ok(category);
@@ -46,7 +46,7 @@ namespace KitchenDelights.Controllers
         {
             if (category.CategoryType == null)
             {
-                return BadRequest("Please enter all require input");
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
             }
             else
             {
@@ -60,7 +60,7 @@ namespace KitchenDelights.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(ex);
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
             }
             return Ok("Update sucessfully");
@@ -79,7 +79,7 @@ namespace KitchenDelights.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok("Delete sucessfully");
         }
