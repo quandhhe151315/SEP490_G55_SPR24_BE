@@ -31,9 +31,9 @@ namespace Business.DTO
 
         public string? PasswordHash { get; set; }
 
-        public StatusDTO Status { get; set; }
+        public StatusDTO? Status { get; set; }
 
-        public RoleDTO Role { get; set; }
+        public RoleDTO? Role { get; set; }
 
         public List<AddressDTO> Addresses { get; set; } = [];
     }
