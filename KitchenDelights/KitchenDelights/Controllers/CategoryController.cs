@@ -4,6 +4,7 @@ using Data.Entity;
 using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace KitchenDelights.Controllers
 {
@@ -87,10 +88,18 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategoy()
         {
-            List<CategoryDTO> categories = categoryManager.GetAllCategories();
-            if (categories.Count <= 0)
+            List<CategoryDTO> categories = [];
+            try
             {
-                return NotFound("There are not exist any category in database");
+                categories = categoryManager.GetAllCategories();
+                if (categories.Count <= 0)
+                {
+                    return NotFound("There are not exist any category in database");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(categories);
         }
@@ -98,10 +107,18 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCategoryById(int categoryId)
         {
-            CategoryDTO category = categoryManager.GetCategoryById(categoryId);
-            if (category.CategoryId == 0)
+            CategoryDTO category;
+            try
             {
-                return NotFound("Category not exist");
+                category = categoryManager.GetCategoryById(categoryId);
+                if (category.CategoryId == 0)
+                {
+                    return NotFound("Category not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(category);
         }

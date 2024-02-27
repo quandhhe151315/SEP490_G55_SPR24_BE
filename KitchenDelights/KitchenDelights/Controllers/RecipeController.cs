@@ -86,10 +86,18 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRecipe()
         {
-            List<RecipeDTO> recipes = await _recipeManager.GetRecipes();
-            if (recipes.Count <= 0)
+            List<RecipeDTO> recipes = [];
+            try
             {
-                return NotFound("There are not exist any recipe in database");
+                recipes = await _recipeManager.GetRecipes();
+                if (recipes.Count <= 0)
+                {
+                    return NotFound("There are not exist any recipe in database");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(recipes);
         }
@@ -98,17 +106,24 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> GetAllRecipeByTitle(string? title)
         {
             List<RecipeDTO> recipes = [];
-            if (string.IsNullOrEmpty(title))
+            try
             {
-                recipes = await _recipeManager.GetRecipes();
+                if (string.IsNullOrEmpty(title))
+                {
+                    recipes = await _recipeManager.GetRecipes();
+                }
+                else
+                {
+                    recipes = await _recipeManager.GetRecipeByTitle(title);
+                }
+                if (recipes.Count <= 0)
+                {
+                    return NotFound("Recipe not exist");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                recipes = await _recipeManager.GetRecipeByTitle(title);
-            }
-            if (recipes.Count <= 0)
-            {
-                return NotFound("There are not exist any recipe in database");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(recipes);
         }
@@ -116,10 +131,18 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRecipeByCategory(int category)
         {
-            List<RecipeDTO> recipes = await _recipeManager.GetRecipeByCategory(category);
-            if (recipes.Count <= 0)
+            List<RecipeDTO> recipes = [];
+            try
             {
-                return NotFound("There are not exist any recipe in database");
+                recipes = await _recipeManager.GetRecipeByCategory(category);
+                if (recipes.Count <= 0)
+                {
+                    return NotFound("Recipe not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(recipes);
         }
@@ -127,10 +150,18 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRecipeById(int recipeId)
         {
-            RecipeDTO recipe = await _recipeManager.GetRecipe(recipeId);
-            if (recipe.RecipeId == 0 || recipe == null)
+            RecipeDTO recipe;
+            try
             {
-                return NotFound("Recipe not exist");
+                recipe = await _recipeManager.GetRecipe(recipeId);
+                if (recipe.RecipeId == 0 || recipe == null)
+                {
+                    return NotFound("Recipe not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(recipe);
         }
