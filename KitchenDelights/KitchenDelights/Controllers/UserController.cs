@@ -177,7 +177,7 @@ namespace KitchenDelights.Controllers
 
             if(account.Avatar.IsNullOrEmpty())
             {
-                account.Avatar = "http://localhost:4200/images/avatar/default-avatar.png";
+                account.Avatar = "http://localhost:5050/images/avatar/default-avatar.png";
             }
 
             var claims = new List<Claim>
