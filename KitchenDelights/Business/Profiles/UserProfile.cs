@@ -15,6 +15,8 @@ namespace Business.Profiles
             CreateMap<RegisterRequestDTO, User>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
             CreateMap<User, UserDTO>();
             CreateMap<UserDTO, User>().ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.Role.RoleId));
+            CreateMap<BookmarkDTO, User>();
+            CreateMap<User, BookmarkDTO>();
         }
     }
 }
