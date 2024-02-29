@@ -145,6 +145,7 @@ public partial class KitchenDelightsContext : DbContext
 
             entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
                 .HasForeignKey(d => d.ParentId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__blog_comm__paren__6D0D32F4");
 
             entity.HasOne(d => d.User).WithMany(p => p.BlogComments)
