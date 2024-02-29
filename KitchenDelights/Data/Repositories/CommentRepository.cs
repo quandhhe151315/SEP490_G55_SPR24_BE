@@ -17,36 +17,59 @@ namespace Data.Repositories
             _context = context;
         }
 
-        public void AddComment(Comment comment) 
+        public Task<BlogComment?> GetComment(int id)
+        {
+            return _context.BlogComments.AsNoTracking()
+                .Include(x => x.User)
+                .Include(x => x.InverseParent)
+                .FirstOrDefaultAsync(x => x.CommentId == id);
+        }
+
+        public Task<List<BlogComment>> GetComments(int id)
+        {
+            return _context.BlogComments.AsNoTracking()
+                .Include(x => x.User)
+                .Include(x => x.InverseParent)
+                .Where(x => x.BlogId == id)
+                .ToListAsync();
+        }
+
+        public void CreateComment(BlogComment comment) 
         {
             try
             {
-                _context.Comments.Add(comment);
+                _context.BlogComments.Add(comment);
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }
         }
 
-        public void UpdateComment(Comment comment)
+        public void UpdateComment(BlogComment comment)
         {
             try
             {
-                _context.Comments.Update(comment);
+                _context.BlogComments.Update(comment);
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }
         }
 
-        public void DeleteComment(Comment comment)
+        public void DeleteComment(BlogComment comment)
         {
             try
             {
-                _context.Comments.Remove(comment);
-            } catch (Exception ex) {
+                _context.BlogComments.Remove(comment);
+            } catch (Exception ex) 
+            {
                 Console.WriteLine(ex.StackTrace);
             }
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

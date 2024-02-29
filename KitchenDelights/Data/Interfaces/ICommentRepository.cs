@@ -8,9 +8,11 @@ namespace Data.Interfaces
 {
     public interface ICommentRepository
     {
-        void AddComment(Comment comment);
-        void UpdateComment(Comment comment);
-        void DeleteComment(Comment comment);
+        void CreateComment(BlogComment comment);
+        void UpdateComment(BlogComment comment);
+        void DeleteComment(BlogComment comment);
+        Task<BlogComment?> GetComment(int id);
+        Task<List<BlogComment>> GetComments(int id);
         void Save();
     }
 }
