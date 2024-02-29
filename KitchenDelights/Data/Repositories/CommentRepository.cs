@@ -22,6 +22,7 @@ namespace Data.Repositories
             return _context.BlogComments.AsNoTracking()
                 .Include(x => x.User)
                 .Include(x => x.InverseParent)
+                .ThenInclude(x => x.InverseParent)
                 .FirstOrDefaultAsync(x => x.CommentId == id);
         }
 
@@ -30,7 +31,8 @@ namespace Data.Repositories
             return _context.BlogComments.AsNoTracking()
                 .Include(x => x.User)
                 .Include(x => x.InverseParent)
-                .Where(x => x.BlogId == id)
+                .ThenInclude(x => x.InverseParent)
+                .Where(x => x.BlogId == id && x.ParentId == null)
                 .ToListAsync();
         }
 

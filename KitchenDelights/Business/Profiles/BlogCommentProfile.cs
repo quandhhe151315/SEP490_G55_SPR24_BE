@@ -15,6 +15,8 @@ namespace Business.Profiles
         {
             CreateMap<BlogComment, BlogCommentDTO>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => $"{src.User.LastName} {src.User.MiddleName} {src.User.FirstName}".Replace("  ", " ").Trim()))
                                                     .ForMember(dest => dest.SubComments, opt => opt.MapFrom(src => src.InverseParent));
+
+            CreateMap<BlogCommentDTO, BlogComment>();
         }
     }
 }

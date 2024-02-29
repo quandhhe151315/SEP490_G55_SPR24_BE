@@ -90,6 +90,9 @@ internal class Program
         builder.Services.AddScoped<IBookmarkManager, BookmarkManager>();
         builder.Services.AddScoped<IBookmarkRepository, BookmarkRepository>();
 
+        builder.Services.AddScoped<ICommentManager, CommentManager>();
+        builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")
