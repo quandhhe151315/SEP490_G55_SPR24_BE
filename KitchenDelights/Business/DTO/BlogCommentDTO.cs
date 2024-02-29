@@ -7,26 +7,22 @@ using System.Threading.Tasks;
 
 namespace Business.DTO
 {
-    public class BlogDTO
+    public class BlogCommentDTO
     {
+        public int? CommentId { get; set; }
+
         public int BlogId { get; set; }
+
+        public int? ParentId { get; set; }
 
         public int UserId { get; set; }
 
         public string? UserName { get; set; }
 
-        public int CategoryId { get; set; }
-
-        public string? CategoryName { get; set; }
-
-        public string? BlogTitle { get; set; }
-
-        public string? BlogContent { get; set; }
-
-        public string? BlogImage { get; set; }
-
-        public bool? BlogStatus { get; set; }
+        public string? CommentContent { get; set; }
 
         public DateTime CreateDate { get; set; }
+
+        public List<BlogCommentDTO> SubComments { get; set; } = [];
     }
 }

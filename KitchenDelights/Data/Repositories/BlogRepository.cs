@@ -55,7 +55,6 @@ namespace Data.Repositories
         {
             return await _context.Blogs.AsNoTracking()
                 .Include(x => x.User).Include(x => x.Category)
-                .Include(x => x.BlogComments)
                 .FirstOrDefaultAsync(x => x.BlogId == id);
         }
 
@@ -63,7 +62,6 @@ namespace Data.Repositories
         {
             return await _context.Blogs.AsNoTracking()
                 .Include(x => x.User).Include(x => x.Category)
-                .Include(x => x.BlogComments)
                 .ToListAsync();
         }
 
