@@ -9,6 +9,8 @@ public partial class Recipe
 
     public int UserId { get; set; }
 
+    public string? FeaturedImage { get; set; }
+
     public string? RecipeTitle { get; set; }
 
     public int? RecipeServe { get; set; }

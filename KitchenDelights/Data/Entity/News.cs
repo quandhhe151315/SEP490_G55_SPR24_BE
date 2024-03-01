@@ -9,6 +9,8 @@ public partial class News
 
     public int UserId { get; set; }
 
+    public string? FeaturedImage { get; set; }
+
     public string? NewsTitle { get; set; }
 
     public string? NewsContent { get; set; }
