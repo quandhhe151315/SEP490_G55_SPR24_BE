@@ -15,5 +15,7 @@ public partial class RestaurantRecommendation
 
     public string? RestaurantLocation { get; set; }
 
+    public string? FeaturedImage { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

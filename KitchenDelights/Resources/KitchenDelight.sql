@@ -69,7 +69,8 @@ CREATE TABLE [restaurant_recommendation]
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [restaurant_name] [nvarchar](MAX),
 [restaurant_details] [nvarchar](MAX),
-[restaurant_location] [nvarchar](MAX)
+[restaurant_location] [nvarchar](MAX),
+[featured_image] [nvarchar](MAX)
 );
 GO
 
@@ -77,6 +78,7 @@ CREATE TABLE [news]
 (
 [news_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
+[featured_image] [nvarchar](MAX),
 [news_title] [nvarchar](MAX),
 [news_content] [nvarchar](MAX),
 [news_status] [bit] NOT NULL,
@@ -104,6 +106,7 @@ CREATE TABLE [recipe]
 (
 [recipe_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
+[featured_image] [nvarchar](MAX),
 [recipe_title] [nvarchar](MAX),
 [recipe_serve] [int],
 [recipe_content] [nvarchar](MAX),
@@ -181,6 +184,7 @@ CREATE TABLE [blog]
 [blog_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [category_id] [int] NOT NULL FOREIGN KEY REFERENCES [category]([category_id]),
+[featured_image] [nvarchar](MAX),
 [blog_title] [nvarchar](MAX),
 [blog_content] [nvarchar](MAX),
 [blog_image] [nvarchar](MAX),
@@ -211,6 +215,7 @@ GO
 CREATE TABLE [menu]
 (
 [menu_id] [int] IDENTITY(1,1) PRIMARY KEY,
+[featured_image] [nvarchar](MAX),
 [menu_name] [nvarchar](MAX),
 [menu_description] [nvarchar](MAX),
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
