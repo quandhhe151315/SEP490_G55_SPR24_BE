@@ -59,6 +59,11 @@ namespace Data.Repositories
             return await _context.News.AsNoTracking().Include(news => news.User).FirstOrDefaultAsync(x => x.NewsId == id);
         }
 
+        public async Task<List<News>> GetNews()
+        {
+            return await _context.News.AsNoTracking().Include(news => news.User).ToListAsync();
+        }
+
         public void Save()
         {
             _context.SaveChanges();

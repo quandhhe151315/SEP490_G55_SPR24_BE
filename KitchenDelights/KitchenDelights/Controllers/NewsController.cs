@@ -19,9 +19,15 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int? id)
         {
-            NewsDTO? news = await _newsManager.GetNews(id);
+            if(id == null)
+            {
+                List<NewsDTO> newsDTO = await _newsManager.GetNews();
+                if(newsDTO.Count == 0) return NotFound("There's no news here!");
+                return Ok(newsDTO);
+            }
+            NewsDTO? news = await _newsManager.GetNews(id.Value);
             return news == null ? NotFound("News doesn't exist!") : Ok(news);
         }
 

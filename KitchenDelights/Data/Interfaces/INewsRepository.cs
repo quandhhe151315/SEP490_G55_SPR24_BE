@@ -17,6 +17,8 @@ namespace Data.Interfaces
 
         Task<News?> GetNews(int id);
 
+        Task<List<News>> GetNews();
+
         void Save();
     }
 }

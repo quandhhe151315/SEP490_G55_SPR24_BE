@@ -54,5 +54,16 @@ namespace Business.Managers
             News? news = await _newsRepository.GetNews(id);
             return news is null ? null : _mapper.Map<News, NewsDTO>(news);
         }
+
+        public async Task<List<NewsDTO>> GetNews()
+        {
+            List<NewsDTO> newsDTO = [];
+            List<News> news = await _newsRepository.GetNews();
+            foreach(News newsEntity in news)
+            {
+                newsDTO.Add(_mapper.Map<News, NewsDTO>(newsEntity));
+            }
+            return newsDTO;
+        }
     }
 }
