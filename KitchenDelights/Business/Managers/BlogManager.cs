@@ -35,7 +35,6 @@ namespace Business.Managers
 
             //Update partially
             blog.CategoryId = blogDTO.CategoryId;
-            blog.FeaturedImage = blogDTO.FeaturedImage;
             blog.BlogTitle = blogDTO.BlogTitle;
             blog.BlogContent = blogDTO.BlogContent;
             blog.BlogImage = blogDTO.BlogImage;

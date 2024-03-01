@@ -23,7 +23,7 @@ namespace Business.DTO
 
         public string? RecipeContent { get; set; }
 
-        public int RecipeRating { get; set; }
+        public decimal RecipeRating { get; set; }
 
         public bool RecipeStatus { get; set; }
 
