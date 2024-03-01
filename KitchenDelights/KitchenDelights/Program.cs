@@ -96,6 +96,9 @@ internal class Program
         builder.Services.AddScoped<IRatingManager, RatingManager>();
         builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 
+        builder.Services.AddScoped<ICartManager, CartManager>();
+        builder.Services.AddScoped<ICartRepository,  CartRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")
