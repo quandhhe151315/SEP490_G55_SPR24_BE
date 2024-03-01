@@ -354,7 +354,9 @@ public partial class KitchenDelightsContext : DbContext
             entity.Property(e => e.RecipePrice)
                 .HasColumnType("money")
                 .HasColumnName("recipe_price");
-            entity.Property(e => e.RecipeRating).HasColumnName("recipe_rating");
+            entity.Property(e => e.RecipeRating)
+                .HasColumnType("decimal(2, 1)")
+                .HasColumnName("recipe_rating");
             entity.Property(e => e.RecipeServe).HasColumnName("recipe_serve");
             entity.Property(e => e.RecipeStatus).HasColumnName("recipe_status");
             entity.Property(e => e.RecipeTitle).HasColumnName("recipe_title");

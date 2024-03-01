@@ -110,7 +110,7 @@ CREATE TABLE [recipe]
 [recipe_title] [nvarchar](MAX),
 [recipe_serve] [int],
 [recipe_content] [nvarchar](MAX),
-[recipe_rating] [int] NOT NULL,
+[recipe_rating] [decimal](2,1) NOT NULL,
 [recipe_status] [bit] NOT NULL,
 [is_free] [bit] NOT NULL,
 [recipe_price] [money],

@@ -17,8 +17,11 @@ namespace Business.Profiles
                 .ForMember(dest => dest.IngredientName, opt => opt.MapFrom(src => src.Ingredient.IngredientName))
                 .ForMember(dest => dest.IngredientUnit, opt => opt.MapFrom(src => src.Ingredient.IngredientUnit));
             CreateMap<RecipeIngredientDTO, RecipeIngredient>();
-            CreateMap<RecipeRating, RecipeRatingDTO>();
+
+            CreateMap<RecipeRating, RecipeRatingDTO>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => $"{src.User.LastName} {src.User.MiddleName} {src.User.FirstName}".Replace("  ", " ").Trim()));
             CreateMap<RecipeRatingDTO, RecipeRating>();
+
             CreateMap<CategoryDTO, Category>();
             CreateMap<Category, CategoryDTO>();
             CreateMap<CountryDTO, Country>();

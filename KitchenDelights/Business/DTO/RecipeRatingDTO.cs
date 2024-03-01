@@ -8,6 +8,14 @@ namespace Business.DTO
 {
     public class RecipeRatingDTO
     {
+        public int? RatingId { get; set; }
+
+        public int RecipeId { get; set; }
+
+        public int UserId { get; set; }
+
+        public string? Username { get; set; }
+
         public int RatingValue { get; set; }
 
         public string? RatingContent { get; set; }
