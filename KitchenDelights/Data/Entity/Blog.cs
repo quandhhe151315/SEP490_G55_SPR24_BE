@@ -11,8 +11,6 @@ public partial class Blog
 
     public int CategoryId { get; set; }
 
-    public string? FeaturedImage { get; set; }
-
     public string? BlogTitle { get; set; }
 
     public string? BlogContent { get; set; }

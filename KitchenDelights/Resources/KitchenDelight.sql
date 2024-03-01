@@ -184,7 +184,6 @@ CREATE TABLE [blog]
 [blog_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [category_id] [int] NOT NULL FOREIGN KEY REFERENCES [category]([category_id]),
-[featured_image] [nvarchar](MAX),
 [blog_title] [nvarchar](MAX),
 [blog_content] [nvarchar](MAX),
 [blog_image] [nvarchar](MAX),

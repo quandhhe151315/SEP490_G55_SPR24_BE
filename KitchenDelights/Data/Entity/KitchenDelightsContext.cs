@@ -110,7 +110,6 @@ public partial class KitchenDelightsContext : DbContext
             entity.Property(e => e.CreateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
-            entity.Property(e => e.FeaturedImage).HasColumnName("featured_image");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Blogs)
