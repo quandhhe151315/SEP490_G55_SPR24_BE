@@ -22,11 +22,11 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        //public async Task AddRecipeToBookmark(int userId, int recipeId)
-        //{
-        //        _bookmarkRepository.AddRecipeToBookmark(userId, recipeId);
-        //        _bookmarkRepository.Save();
-        //}
+        public async Task AddRecipeToBookmark(int userId, int recipeId)
+        {
+            _bookmarkRepository.AddRecipeToBookmark(userId, recipeId);
+            _bookmarkRepository.Save();
+        }
 
         public async Task<BookmarkDTO?> GetBookmarkOfUser(int id)
         {

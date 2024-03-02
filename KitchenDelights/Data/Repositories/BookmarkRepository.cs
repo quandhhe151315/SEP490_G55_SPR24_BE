@@ -27,20 +27,28 @@ namespace Data.Repositories
                                                     .FirstOrDefaultAsync(x => x.UserId == id);
         }
 
-        //public async void AddRecipeToBookmark(int userId, int recipeId)
-        //{
-        //    try
-        //    {
-        //        User user = await _context.Users.AsNoTracking().Include(x => x.Recipes).FirstOrDefaultAsync(x => x.UserId == userId);
-        //        Recipe recipe = await _context.Recipes.AsNoTracking().FirstOrDefaultAsync(x => x.RecipeId == recipeId);
-        //        user.Recipes.Add(recipe);
-        //        _context.Users.Update(user);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.StackTrace);
-        //    }
-        //}
+        public async void AddRecipeToBookmark(int userId, int recipeId)
+        {
+            try
+            {
+                User? user = await _context.Users.AsNoTracking()
+                    .Include(x => x.Role).Include(x => x.Status)
+                    .Include(x => x.Recipes)
+                    .FirstOrDefaultAsync(x => x.UserId == userId);
+                Recipe? recipe = await _context.Recipes.AsNoTracking()
+                .Include(x => x.CartItems).Include(x => x.PaymentHistories)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.Categories).Include(x => x.Countries)
+                .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.RecipeId == recipeId);
+                user.Recipes.Add(recipe);
+                _context.Users.Update(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
 
         public void Save()
         {

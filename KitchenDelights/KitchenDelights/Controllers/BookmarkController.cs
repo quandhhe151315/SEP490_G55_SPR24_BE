@@ -24,5 +24,19 @@ namespace KitchenDelights.Controllers
             BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(id);
             return bookmark == null ? NotFound("There not have any recipe in bookmark!") : Ok(bookmark);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> AddRecipeToBookMark(int userId, int recipeId)
+        {
+            try
+            {
+                await _bookmarkManager.AddRecipeToBookmark(userId, recipeId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok("Add recipe to bookmark sucessful");
+        }
     }
 }

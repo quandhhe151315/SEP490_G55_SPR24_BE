@@ -11,7 +11,7 @@ namespace Data.Interfaces
     {
         Task<User?> GetBookmarkOfUser(int id);
 
-        //void AddRecipeToBookmark(int userId, int recipeId);
+        void AddRecipeToBookmark(int userId, int recipeId);
 
         void Save();
     }
