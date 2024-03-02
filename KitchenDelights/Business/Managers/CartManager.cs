@@ -12,9 +12,10 @@ namespace Business.Managers
         private readonly IRecipeRepository _recipeRepository;
         private readonly IMapper _mapper;
 
-        public CartManager(ICartRepository cartRepository, IMapper mapper)
+        public CartManager(ICartRepository cartRepository, IRecipeRepository recipeRepository, IMapper mapper)
         {
             _cartRepository = cartRepository;
+            _recipeRepository = recipeRepository;
             _mapper = mapper;
         }
 
