@@ -99,6 +99,11 @@ internal class Program
         builder.Services.AddScoped<ICartManager, CartManager>();
         builder.Services.AddScoped<ICartRepository,  CartRepository>();
 
+        builder.Services.AddScoped<IHistoryManager, HistoryManager>();
+        builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+
+        builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")

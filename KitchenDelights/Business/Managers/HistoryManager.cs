@@ -41,15 +41,14 @@ namespace Business.Managers
         {
             List<PaymentHistoryDTO> historyDTO = [];
             string? usedVoucher = cart[0].VoucherCode;
-
+            
             //Remove all checkout cart item from cart
             //Then add to temp list of payment history
-            foreach (CartItemDTO cartItem in cart)
+            foreach(CartItemDTO cartItem in cart)
             {
                 _cartRepository.DeleteCartItem(_mapper.Map<CartItemDTO, CartItem>(cartItem));
                 historyDTO.Add(_mapper.Map<CartItemDTO, PaymentHistoryDTO>(cartItem));
             }
-            _cartRepository.Save();
 
             //In case user used voucher
             if (usedVoucher != null)
@@ -60,16 +59,19 @@ namespace Business.Managers
                 //Apply voucher to purchased price
                 foreach (PaymentHistoryDTO payment in historyDTO)
                 {
-                    payment.ActualPrice -= payment.ActualPrice * (used.DiscountPercentage / 100);
+                    payment.ActualPrice *= 1.0m - (used.DiscountPercentage / 100.0m);
                 }
 
                 //Remove used voucher
                 _voucherRepository.RemoveVoucher(used);
-                _voucherRepository.Save();
             }
 
             List<PaymentHistory> history = [];
-            history.AddRange(from PaymentHistoryDTO payment in historyDTO select _mapper.Map<PaymentHistoryDTO, PaymentHistory>(payment));
+            foreach (PaymentHistoryDTO payment in historyDTO)
+            {
+                payment.PurchaseDate = DateTime.Now;
+                history.Add(_mapper.Map<PaymentHistoryDTO, PaymentHistory>(payment));
+            }
             _historyRepository.CreatePaymentHistory(history);
             _historyRepository.Save();
             return true;
