@@ -39,7 +39,7 @@ namespace Data.Repositories
             }
         }
 
-        public void Remove(Voucher voucher)
+        public void RemoveVoucher(Voucher voucher)
         {
             try
             {
