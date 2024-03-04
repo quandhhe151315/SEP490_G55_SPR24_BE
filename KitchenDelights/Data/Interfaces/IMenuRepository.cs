@@ -14,6 +14,9 @@ namespace Data.Interfaces
         void DeleteMenu(Menu menu);
         List<Menu> GetAllMenus();
         Menu GetMenuById(int menuId);
+        List<Menu> GetMenuByUserId(int userId);
+        void AddRecipeToMenu(int menuId, int recipeId);
+        void RemoveRecipeFromMenu(int menuId, int recipeId);
         void Save();
     }
 }

@@ -21,70 +21,6 @@ namespace KitchenDelights.Controllers
             categoryManager = categoryManagers;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateCategory(CategoryDTO category)
-        {
-            if (category.CategoryType == null)
-            {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
-            }
-            else
-            {
-                try
-                {
-                    categoryManager.CreateCategory(category);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
-            }
-            return Ok(category);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCategory(CategoryDTO category)
-        {
-            if (category.CategoryType == null)
-            {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
-            }
-            else
-            {
-                try
-                {
-                    if (categoryManager.GetCategoryById(category.CategoryId) == null)
-                    {
-                        return NotFound("Category not exist");
-                    }
-                    categoryManager.UpdateCategory(category);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
-            }
-            return Ok("Update sucessfully");
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCategory(int categoryId)
-        {
-            try
-            {
-                if (categoryManager.GetCategoryById(categoryId) == null)
-                {
-                    return NotFound("Category not exist");
-                }
-                categoryManager.DeleteCategory(categoryId);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Delete sucessfully");
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAllCategoy()
         {
@@ -121,6 +57,89 @@ namespace KitchenDelights.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(category);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategoryByParentId(int? parentId)
+        {
+            List<CategoryDTO> categoryDTOs;
+            try
+            {
+                categoryDTOs = categoryManager.GetCategoryByParentId(parentId);
+                if (categoryDTOs.Count <= 0)
+                {
+                    return NotFound("Category not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(categoryDTOs);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(CategoryDTO category)
+        {
+            if (category.CategoryType == null)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
+            }
+            else
+            {
+                try
+                {
+                    categoryManager.CreateCategory(category);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            return Ok(category);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(CategoryDTO category)
+        {
+            if (category.CategoryType == null)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
+            }
+            else
+            {
+                try
+                {
+                    if (categoryManager.GetCategoryById(category.CategoryId) == null || categoryManager.GetCategoryById(category.CategoryId).CategoryId == 0)
+                    {
+                        return NotFound("Category not exist");
+                    }
+                    categoryManager.UpdateCategory(category);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            return Ok("Update sucessfully");
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCategory(int categoryId)
+        {
+            try
+            {
+                if (categoryManager.GetCategoryById(categoryId) == null)
+                {
+                    return NotFound("Category not exist");
+                }
+                categoryManager.DeleteCategory(categoryId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok("Delete sucessfully");
         }
     }
 }

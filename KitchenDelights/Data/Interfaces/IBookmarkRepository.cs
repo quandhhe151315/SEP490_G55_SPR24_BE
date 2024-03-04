@@ -13,6 +13,8 @@ namespace Data.Interfaces
 
         void AddRecipeToBookmark(int userId, int recipeId);
 
+        void RemoveRecipeFromBookmark(int userId, int recipeId);
+
         void Save();
     }
 }

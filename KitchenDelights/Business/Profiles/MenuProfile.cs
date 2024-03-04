@@ -15,6 +15,8 @@ namespace Business.Profiles
         {
             CreateMap<Menu, MenuDTO>();
             CreateMap<MenuDTO, Menu>();
+            CreateMap<Menu, MenuRequestDTO>();
+            CreateMap<MenuRequestDTO, Menu>();
         }
     }
 }

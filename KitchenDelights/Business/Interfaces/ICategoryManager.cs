@@ -14,5 +14,6 @@ namespace Business.Interfaces
         void DeleteCategory(int categoryId);
         List<CategoryDTO> GetAllCategories();
         CategoryDTO GetCategoryById(int categoryId);
+        List<CategoryDTO> GetCategoryByParentId(int? parentId);
     }
 }

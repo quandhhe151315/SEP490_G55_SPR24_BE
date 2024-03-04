@@ -19,70 +19,6 @@ namespace KitchenDelights.Controllers
             _recipeManager = recipeManager;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateRecipe(RecipeDTO recipe)
-        {
-            if (recipe.RecipeRating == null)
-            {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
-            }
-            else
-            {
-                try
-                {
-                    _recipeManager.CreateRecipe(recipe);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
-            }
-            return Ok(recipe);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateRecipe(RecipeDTO recipe)
-        {
-            if (recipe.RecipeRating == null)
-            {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
-            }
-            else
-            {
-                try
-                {
-                    if (_recipeManager.GetRecipe(recipe.RecipeId) == null)
-                    {
-                        return NotFound("Recipe not exist");
-                    }
-                    _recipeManager.UpdateRecipe(recipe);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
-            }
-            return Ok("Update sucessfully");
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteRecipe(int recipeId)
-        {
-            try
-            {
-                if (_recipeManager.GetRecipe(recipeId) == null)
-                {
-                    return NotFound("Recipe not exist");
-                }
-                _recipeManager.DeleteRecipe(recipeId);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Delete sucessfully");
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAllRecipe()
         {
@@ -164,6 +100,70 @@ namespace KitchenDelights.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(recipe);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRecipe(RecipeDTO recipe)
+        {
+            if (recipe.RecipeRating == null)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
+            }
+            else
+            {
+                try
+                {
+                    _recipeManager.CreateRecipe(recipe);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            return Ok(recipe);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateRecipe(RecipeDTO recipe)
+        {
+            if (recipe.RecipeRating == null)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
+            }
+            else
+            {
+                try
+                {
+                    if (_recipeManager.GetRecipe(recipe.RecipeId) == null)
+                    {
+                        return NotFound("Recipe not exist");
+                    }
+                    _recipeManager.UpdateRecipe(recipe);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            return Ok("Update sucessfully");
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRecipe(int recipeId)
+        {
+            try
+            {
+                if (_recipeManager.GetRecipe(recipeId) == null)
+                {
+                    return NotFound("Recipe not exist");
+                }
+                _recipeManager.DeleteRecipe(recipeId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok("Delete sucessfully");
         }
     }
 }

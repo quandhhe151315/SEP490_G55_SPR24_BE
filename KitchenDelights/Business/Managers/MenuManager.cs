@@ -23,9 +23,15 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public void CreateMenu(MenuDTO menuDTO)
+        public void AddRecipeToMenu(int menuId, int recipeId)
         {
-            _menuRepository.CreateMenu(_mapper.Map<MenuDTO, Menu>(menuDTO));
+            _menuRepository.AddRecipeToMenu(menuId, recipeId);
+            _menuRepository.Save();
+        }
+
+        public void CreateMenu(MenuRequestDTO menuRequestDTO)
+        {
+            _menuRepository.CreateMenu(_mapper.Map<MenuRequestDTO, Menu>(menuRequestDTO));
             _menuRepository.Save();
         }
 
@@ -54,6 +60,23 @@ namespace Business.Managers
         {
             Menu? menu = _menuRepository.GetMenuById(menuId);
             return menu is null ? null : _mapper.Map<Menu, MenuDTO>(menu);
+        }
+
+        public List<MenuDTO> GetMenuByUserId(int userId)
+        {
+            List<Menu> menus = _menuRepository.GetMenuByUserId(userId);
+            List<MenuDTO> menuDTOs = [];
+            foreach (Menu menu in menus)
+            {
+                menuDTOs.Add(_mapper.Map<Menu, MenuDTO>(menu));
+            }
+            return menuDTOs;
+        }
+
+        public void RemoveRecipeFromMenu(int menuId, int recipeId)
+        {
+            _menuRepository.RemoveRecipeFromMenu(menuId, recipeId);
+            _menuRepository.Save();
         }
 
         public void UpdateMenu(MenuRequestDTO menuRequestDTO)

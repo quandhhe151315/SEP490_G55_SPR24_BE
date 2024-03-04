@@ -33,5 +33,11 @@ namespace Business.Managers
             User? user = await _bookmarkRepository.GetBookmarkOfUser(id);
             return user == null ? null : _mapper.Map<User, BookmarkDTO>(user);
         }
+
+        public async Task RemoveRecipeFromBookmark(int userId, int recipeId)
+        {
+            _bookmarkRepository.RemoveRecipeFromBookmark(userId, recipeId);
+            _bookmarkRepository.Save();
+        }
     }
 }

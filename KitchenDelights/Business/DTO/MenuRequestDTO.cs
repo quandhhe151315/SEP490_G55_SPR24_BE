@@ -15,5 +15,7 @@ namespace Business.DTO
         public string? MenuName { get; set; }
 
         public string? MenuDescription { get; set; }
+
+        public int UserId { get; set; }
     }
 }

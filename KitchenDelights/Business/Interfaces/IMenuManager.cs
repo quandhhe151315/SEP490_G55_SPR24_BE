@@ -9,10 +9,13 @@ namespace Business.Interfaces
 {
     public interface IMenuManager
     {
-        void CreateMenu(MenuDTO menuDTO);
+        void CreateMenu(MenuRequestDTO menuRequestDTO);
         void UpdateMenu(MenuRequestDTO menuRequestDTO);
         void DeleteMenu(int menuId);
         List<MenuDTO> GetAllMenues();
         MenuDTO GetMenuById(int menuId);
+        List<MenuDTO> GetMenuByUserId(int userId);
+        void AddRecipeToMenu(int menuId, int recipeId);
+        void RemoveRecipeFromMenu(int menuId, int recipeId);
     }
 }
