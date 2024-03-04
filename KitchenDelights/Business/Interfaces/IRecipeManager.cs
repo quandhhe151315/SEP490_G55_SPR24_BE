@@ -9,7 +9,7 @@ namespace Business.Interfaces
 {
     public interface IRecipeManager
     {
-        void CreateRecipe(RecipeDTO recipe);
+        Task CreateRecipe(RecipeDTO recipe);
 
         Task<bool> UpdateRecipe(RecipeDTO recipe);
 

@@ -24,7 +24,7 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public void CreateRecipe(RecipeDTO recipe)
+        public Task CreateRecipe(RecipeDTO recipe)
         {
             _recipeRepository.CreateRecipe(_mapper.Map<RecipeDTO, Recipe>(recipe));
             _recipeRepository.Save();
