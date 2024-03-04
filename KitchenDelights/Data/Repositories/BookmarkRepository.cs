@@ -27,24 +27,53 @@ namespace Data.Repositories
                                                     .FirstOrDefaultAsync(x => x.UserId == id);
         }
 
-        //public async void AddRecipeToBookmark(int userId, int recipeId)
-        //{
-        //    try
-        //    {
-        //        User user = await _context.Users.AsNoTracking().Include(x => x.Recipes).FirstOrDefaultAsync(x => x.UserId == userId);
-        //        Recipe recipe = await _context.Recipes.AsNoTracking().FirstOrDefaultAsync(x => x.RecipeId == recipeId);
-        //        user.Recipes.Add(recipe);
-        //        _context.Users.Update(user);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.StackTrace);
-        //    }
-        //}
+        public void AddRecipeToBookmark(int userId, int recipeId)
+        {
+            try
+            {
+                User? user = _context.Users
+                    .Include(x => x.Recipes)
+                    .FirstOrDefault(x => x.UserId == userId);
+                Recipe? recipe = _context.Recipes  
+                    .FirstOrDefault(x => x.RecipeId == recipeId);
+                if(recipe == null)
+                {
+                    throw new Exception();
+                }
+                user.Recipes.Add(recipe);
+                _context.Users.Update(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
 
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public void RemoveRecipeFromBookmark(int userId, int recipeId)
+        {
+            try
+            {
+                User? user = _context.Users
+                    .Include(x => x.Recipes)
+                    .FirstOrDefault(x => x.UserId == userId);
+                Recipe? recipe = _context.Recipes
+                    .FirstOrDefault(x => x.RecipeId == recipeId);
+                if (recipe == null)
+                {
+                    throw new Exception();
+                }
+                user.Recipes.Remove(recipe);
+                _context.Users.Update(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
         }
     }
 }

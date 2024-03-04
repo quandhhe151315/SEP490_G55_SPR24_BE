@@ -82,5 +82,24 @@ namespace Business.Managers
             }
             return categoryDTO;
         }
+
+        public List<CategoryDTO> GetCategoryByParentId(int? parentId)
+        {
+            List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
+            List<Category> categories = _categoryRepository.GetCategoryByParentId(parentId);
+            if (categories.Count > 0)
+            {
+                foreach (Category category in categories)
+                {
+                    CategoryDTO categoryDTO = new CategoryDTO();
+                    categoryDTO.CategoryId = category.CategoryId;
+                    categoryDTO.ParentId = category.ParentId;
+                    categoryDTO.CategoryName = category.CategoryName;
+                    categoryDTO.CategoryType = category.CategoryType;
+                    categoryDTOs.Add(categoryDTO);
+                }
+            }
+            return categoryDTOs;
+        }
     }
 }

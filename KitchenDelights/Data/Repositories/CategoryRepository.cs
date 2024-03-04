@@ -87,5 +87,19 @@ namespace Data.Repositories
         {
             _context.SaveChanges();
         }
+
+        public List<Category> GetCategoryByParentId(int? parentId)
+        {
+            List<Category> categories = new List<Category>();
+            try
+            {
+                categories = _context.Categories.Where(category => category.ParentId == parentId).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            return categories;
+        }
     }
 }
