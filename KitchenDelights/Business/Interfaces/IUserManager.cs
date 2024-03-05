@@ -22,5 +22,7 @@ namespace Business.Interfaces
         Task<UserDTO?> GetUser(string email);
 
         Task<UserDTO?> GetUser(int id);
+
+        Task<List<UserDTO>> GetUsers(int id);
     }
 }

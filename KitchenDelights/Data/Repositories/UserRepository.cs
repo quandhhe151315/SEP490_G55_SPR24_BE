@@ -46,6 +46,11 @@ namespace Data.Repositories
             return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).Include(x => x.Addresses).FirstOrDefaultAsync(x => x.UserId == id);
         }
 
+        public async Task<List<User>> GetUsers(int id)
+        {
+            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).Where(x => x.UserId != id).ToListAsync();
+        }
+
         public void Save()
         {
             _context.SaveChanges();
