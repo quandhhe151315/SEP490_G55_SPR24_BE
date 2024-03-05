@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+KitchenDelights/.vscode/launch.json
+KitchenDelights/.vscode/tasks.json

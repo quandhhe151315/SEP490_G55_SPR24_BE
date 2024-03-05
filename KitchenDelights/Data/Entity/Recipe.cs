@@ -11,6 +11,8 @@ public partial class Recipe
 
     public string? FeaturedImage { get; set; }
 
+    public string? VideoLink { get; set; }
+
     public string? RecipeTitle { get; set; }
 
     public int? RecipeServe { get; set; }
