@@ -152,6 +152,13 @@ namespace KitchenDelights.Controllers
             return profile == null ? NotFound("User profile doesn't exist!") : Ok(profile);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> List(int id)
+        {
+            List<UserDTO> users = await _userManager.GetUsers(id);
+            return Ok(users);
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UserDTO userDTO)
         {

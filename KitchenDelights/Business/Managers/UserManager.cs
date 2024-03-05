@@ -107,5 +107,16 @@ namespace Business.Managers
 
             return user == null ? null : _mapper.Map<User, UserDTO>(user);
         }
+
+        public async Task<List<UserDTO>> GetUsers(int id)
+        {
+            List<UserDTO> userDTOs = [];
+            List<User> users = await _userRepository.GetUsers(id);
+            foreach (User user in users)
+            {
+                userDTOs.Add(_mapper.Map<User, UserDTO>(user));
+            }
+            return userDTOs;
+        }
     }
 }
