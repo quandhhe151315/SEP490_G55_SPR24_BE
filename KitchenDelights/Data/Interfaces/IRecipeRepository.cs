@@ -15,6 +15,8 @@ namespace Data.Interfaces
         Task<Recipe?> GetRecipe(int id);
         Task<List<Recipe>> GetRecipeByTitle(string? title);
         Task<List<Recipe>> GetRecipeByCategory(int categoryId);
+        Task<List<Recipe>> GetRecipeFree();
+        Task<List<Recipe>> GetRecipePaid();
         Task<List<Recipe>> GetRecipes();
         void Save();
     }

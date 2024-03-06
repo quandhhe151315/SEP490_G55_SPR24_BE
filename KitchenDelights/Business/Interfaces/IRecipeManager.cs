@@ -9,9 +9,9 @@ namespace Business.Interfaces
 {
     public interface IRecipeManager
     {
-        Task CreateRecipe(RecipeDTO recipe);
+        Task CreateRecipe(RecipeRequestDTO recipe);
 
-        Task<bool> UpdateRecipe(RecipeDTO recipe);
+        Task<bool> UpdateRecipe(RecipeRequestDTO recipe);
 
         Task<bool> DeleteRecipe(int id);
 

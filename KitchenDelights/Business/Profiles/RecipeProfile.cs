@@ -32,6 +32,13 @@ namespace Business.Profiles
                 .ForMember(dest => dest.RecipeRatings, opt => opt.MapFrom(src => src.RecipeRatings))
                 ;
             CreateMap<RecipeDTO, Recipe>();
+
+            CreateMap<RecipeIngredientRequestDTO, RecipeIngredient>();
+            CreateMap<RecipeIngredient, RecipeIngredientRequestDTO>();
+
+            CreateMap<RecipeRequestDTO, Recipe>()
+                .ForMember(dest => dest.RecipeIngredients, opt => opt.MapFrom(src => src.RecipeIngredients));
+            CreateMap<Recipe, RecipeRequestDTO>();
         }
     }
 }

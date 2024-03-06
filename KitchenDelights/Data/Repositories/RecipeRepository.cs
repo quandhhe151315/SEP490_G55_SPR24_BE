@@ -79,6 +79,32 @@ namespace Data.Repositories
             return recipes;
         }
 
+        public async Task<List<Recipe>> GetRecipeFree()
+        {
+            List<Recipe> recipes = [];
+            recipes = await _context.Recipes.AsNoTracking()
+                .Include(x => x.CartItems).Include(x => x.PaymentHistories)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.Categories).Include(x => x.Countries)
+                .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
+                .Where(x => x.IsFree == true)
+                .ToListAsync();
+            return recipes;
+        }
+
+        public async Task<List<Recipe>> GetRecipePaid()
+        {
+            List<Recipe> recipes = [];
+            recipes = await _context.Recipes.AsNoTracking()
+                .Include(x => x.CartItems).Include(x => x.PaymentHistories)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.Categories).Include(x => x.Countries)
+                .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
+                .Where(x => x.IsFree == false)
+                .ToListAsync();
+            return recipes;
+        }
+
         public async Task<List<Recipe>> GetRecipes()
         {
             

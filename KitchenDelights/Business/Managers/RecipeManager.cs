@@ -24,9 +24,9 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public async Task CreateRecipe(RecipeDTO recipe)
+        public async Task CreateRecipe(RecipeRequestDTO recipe)
         {
-            _recipeRepository.CreateRecipe(_mapper.Map<RecipeDTO, Recipe>(recipe));
+            _recipeRepository.CreateRecipe(_mapper.Map<RecipeRequestDTO, Recipe>(recipe));
             _recipeRepository.Save();
         }
 
@@ -79,21 +79,16 @@ namespace Business.Managers
             return recipeDTOs;
         }
 
-        public async Task<bool> UpdateRecipe(RecipeDTO recipeDTO)
+        public async Task<bool> UpdateRecipe(RecipeRequestDTO recipeDTO)
         {
-            Recipe? recipe = await _recipeRepository.GetRecipe(recipeDTO.RecipeId);
-            if (recipe == null) return false;
-
-            //Update partially
-            recipe.RecipeId = recipeDTO.RecipeId;
-            recipe.RecipeTitle = recipeDTO.RecipeTitle;
-            recipe.RecipeServe = recipeDTO.RecipeServe;
-            recipe.RecipeContent = recipeDTO.RecipeContent;
-            recipe.RecipeRating = recipeDTO.RecipeRating;
-            recipe.RecipeStatus = recipeDTO.RecipeStatus;
-            recipe.IsFree = recipeDTO.IsFree;
-            recipe.RecipePrice = recipeDTO.RecipePrice;
-
+            Recipe? recipe = await _recipeRepository.GetRecipe(recipeDTO.RecipeId.Value);
+            if (recipe == null)
+            {
+                return false;
+            }
+            recipe.RecipeIngredients.Clear();
+            _recipeRepository.Save();
+            recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
             _recipeRepository.UpdateRecipe(recipe);
             _recipeRepository.Save();
             return true;
