@@ -21,6 +21,10 @@ namespace Business.Interfaces
 
         Task<List<RecipeDTO>> GetRecipeByCategory(int category);
 
+        Task<List<RecipeDTO>> GetRecipeFree();
+
+        Task<List<RecipeDTO>> GetRecipePaid();
+
         Task<List<RecipeDTO>> GetRecipes();
     }
 }
