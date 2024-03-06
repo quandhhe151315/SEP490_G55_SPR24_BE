@@ -68,6 +68,28 @@ namespace Business.Managers
             return recipeDTOs;
         }
 
+        public async Task<List<RecipeDTO>> GetRecipeFree()
+        {
+            List<Recipe> recipes = await _recipeRepository.GetRecipeFree();
+            List<RecipeDTO> recipeDTOs = [];
+            foreach (Recipe recipe in recipes)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
+
+        public async Task<List<RecipeDTO>> GetRecipePaid()
+        {
+            List<Recipe> recipes = await _recipeRepository.GetRecipePaid();
+            List<RecipeDTO> recipeDTOs = [];
+            foreach (Recipe recipe in recipes)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
+
         public async Task<List<RecipeDTO>> GetRecipes()
         {
             List<Recipe> recipes = await _recipeRepository.GetRecipes();
