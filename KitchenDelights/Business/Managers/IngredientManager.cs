@@ -41,5 +41,16 @@ namespace Business.Managers
             ingredientDTO = _mapper.Map<Ingredient, IngredientDTO>(ingredient);
             return ingredientDTO;
         }
+
+        public List<IngredientDTO> GetIngredientsByName(string name)
+        {
+            List<Ingredient> ingredients = _ingredientRepository.GetIngredientByName(name);
+            List<IngredientDTO> ingredientDTOs = [];
+            foreach (Ingredient ingredient in ingredients)
+            {
+                ingredientDTOs.Add(_mapper.Map<Ingredient, IngredientDTO>(ingredient));
+            }
+            return ingredientDTOs;
+        }
     }
 }
