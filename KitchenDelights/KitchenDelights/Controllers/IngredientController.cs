@@ -41,7 +41,22 @@ namespace KitchenDelights.Controllers
             try
             {
                 ingredient = _ingredientManager.GetIngredientById(ingredientId);
-                if (ingredient == null)
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(ingredient);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetIngredientByName(string name)
+        {
+            List<IngredientDTO> ingredients = [];
+            try
+            {
+                ingredients = _ingredientManager.GetIngredientsByName(name);
+                if (ingredients.Count < 0)
                 {
                     return NotFound("Ingredient not exist");
                 }
@@ -50,7 +65,7 @@ namespace KitchenDelights.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok(ingredient);
+            return Ok(ingredients);
         }
     }
 }

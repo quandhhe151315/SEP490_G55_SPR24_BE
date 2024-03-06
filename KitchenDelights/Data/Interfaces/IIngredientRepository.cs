@@ -13,6 +13,7 @@ namespace Data.Interfaces
         void UpdateIngredient(Ingredient ingredient);
         void DeleteIngredient(Ingredient ingredient);
         List<Ingredient> GetAllIngredients();
+        List<Ingredient> GetIngredientByName(string name);
         Ingredient GetIngredientById(int ingredientId);
         void Save();
     }

@@ -73,6 +73,20 @@ namespace Data.Repositories
             return ingredient;
         }
 
+        public List<Ingredient> GetIngredientByName(string name)
+        {
+            List<Ingredient> ingredients = new List<Ingredient>();
+            try
+            {
+                ingredients = _context.Ingredients.Include(x => x.IngredientMarketplaces).Where(x => x.IngredientName.Contains(name)).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            return ingredients;
+        }
+
         public void Save()
         {
             _context.SaveChanges();
