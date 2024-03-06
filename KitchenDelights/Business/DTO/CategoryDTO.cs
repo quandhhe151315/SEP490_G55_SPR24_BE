@@ -12,6 +12,8 @@ namespace Business.DTO
 
         public int? ParentId { get; set; }
 
+        public string? ParentName { get; set; }
+
         public string? CategoryName { get; set; }
 
         public bool CategoryType { get; set; }

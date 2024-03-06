@@ -61,6 +61,10 @@ namespace Business.Managers
                     CategoryDTO categoryDTO = new CategoryDTO();
                     categoryDTO.CategoryId = category.CategoryId;
                     categoryDTO.ParentId = category.ParentId;
+                    if(categoryDTO.ParentId != null)
+                    {
+                        categoryDTO.ParentName = category.Parent.CategoryName;
+                    }
                     categoryDTO.CategoryName = category.CategoryName;
                     categoryDTO.CategoryType = category.CategoryType;
                     categoryDTOs.Add(categoryDTO);
@@ -77,6 +81,10 @@ namespace Business.Managers
             {
                 categoryDTO.CategoryId = category.CategoryId;
                 categoryDTO.ParentId = category.ParentId;
+                if (categoryDTO.ParentId != null)
+                {
+                    categoryDTO.ParentName = category.Parent.CategoryName;
+                }
                 categoryDTO.CategoryName = category.CategoryName;
                 categoryDTO.CategoryType = category.CategoryType;
             }
@@ -94,6 +102,10 @@ namespace Business.Managers
                     CategoryDTO categoryDTO = new CategoryDTO();
                     categoryDTO.CategoryId = category.CategoryId;
                     categoryDTO.ParentId = category.ParentId;
+                    if (categoryDTO.ParentId != null)
+                    {
+                        categoryDTO.ParentName = category.Parent.CategoryName;
+                    }
                     categoryDTO.CategoryName = category.CategoryName;
                     categoryDTO.CategoryType = category.CategoryType;
                     categoryDTOs.Add(categoryDTO);
