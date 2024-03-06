@@ -28,6 +28,12 @@ namespace Business.Managers
             _userRepository.Save();
         }
 
+        public void CreateUser(UserDTO user)
+        {
+            _userRepository.CreateUser(_mapper.Map<UserDTO,  User>(user));
+            _userRepository.Save();
+        }
+
         public async Task<bool> CreateResetToken(ForgotPasswordDTO forgotDetail)
         {
             User? user = await _userRepository.GetUser(forgotDetail.Email);

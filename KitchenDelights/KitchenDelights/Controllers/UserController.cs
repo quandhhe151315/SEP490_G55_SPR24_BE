@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Data.Entity;
 using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
@@ -48,7 +49,7 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterRequestDTO user)
         {
-            if(user.Password.ToCharArray().Length < 6)
+            if(user.Password.Length < 6)
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable,"Password should not be shorter than 6 characters!");
             }
@@ -164,6 +165,24 @@ namespace KitchenDelights.Controllers
         {
             bool isUpdated = await _userManager.UpdateProfile(userDTO);
             return isUpdated ? Ok() : StatusCode(StatusCodes.Status500InternalServerError, "Update profile failed!");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(UserDTO userDTO)
+        {
+            if(userDTO.PasswordHash.Length < 6) return StatusCode(StatusCodes.Status406NotAcceptable, "Password should not be shorter than 6 characters!");
+
+            userDTO.PasswordHash = PasswordHelper.Hash(userDTO.PasswordHash);
+
+            try
+            {
+                _userManager.CreateUser(userDTO);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         private string GenerateJwtToken(UserDTO account)
