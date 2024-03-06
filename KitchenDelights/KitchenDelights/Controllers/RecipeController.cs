@@ -90,7 +90,7 @@ namespace KitchenDelights.Controllers
             try
             {
                 recipe = await _recipeManager.GetRecipe(recipeId);
-                if (recipe.RecipeId == 0 || recipe == null)
+                if (recipe == null)
                 {
                     return NotFound("Recipe not exist");
                 }
@@ -103,47 +103,36 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRecipe(RecipeDTO recipe)
+        public async Task<IActionResult> CreateRecipe(RecipeRequestDTO recipe)
         {
-            if (recipe.RecipeRating == null)
+            recipe.RecipeRating = 0;
+            recipe.RecipeStatus = false;
+            recipe.CreateDate = DateTime.Now;
+            try
             {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
+                _recipeManager.CreateRecipe(recipe);
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    _recipeManager.CreateRecipe(recipe);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(recipe);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateRecipe(RecipeDTO recipe)
+        public async Task<IActionResult> UpdateRecipe(RecipeRequestDTO recipe)
         {
-            if (recipe.RecipeRating == null)
+            try
             {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
+                if (await _recipeManager.GetRecipe(recipe.RecipeId.Value) == null)
+                {
+                    return NotFound("Recipe not exist");
+                }
+                await _recipeManager.UpdateRecipe(recipe);
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    if (_recipeManager.GetRecipe(recipe.RecipeId) == null)
-                    {
-                        return NotFound("Recipe not exist");
-                    }
-                    _recipeManager.UpdateRecipe(recipe);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok("Update sucessfully");
         }
@@ -153,11 +142,11 @@ namespace KitchenDelights.Controllers
         {
             try
             {
-                if (_recipeManager.GetRecipe(recipeId) == null)
+                if (await _recipeManager.GetRecipe(recipeId) == null)
                 {
                     return NotFound("Recipe not exist");
                 }
-                _recipeManager.DeleteRecipe(recipeId);
+                await _recipeManager.DeleteRecipe(recipeId);
             }
             catch (Exception ex)
             {
