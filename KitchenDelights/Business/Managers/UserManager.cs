@@ -28,6 +28,12 @@ namespace Business.Managers
             _userRepository.Save();
         }
 
+        public void CreateUser(UserDTO user)
+        {
+            _userRepository.CreateUser(_mapper.Map<UserDTO,  User>(user));
+            _userRepository.Save();
+        }
+
         public async Task<bool> CreateResetToken(ForgotPasswordDTO forgotDetail)
         {
             User? user = await _userRepository.GetUser(forgotDetail.Email);
@@ -117,6 +123,32 @@ namespace Business.Managers
                 userDTOs.Add(_mapper.Map<User, UserDTO>(user));
             }
             return userDTOs;
+        }
+
+        public async Task<bool> UpdateRole(int userId, int roleId)
+        {
+            User? user = await _userRepository.GetUser(userId);
+            if (user == null) return false;
+
+            user.Role = null; //Set role here as null to allow set role Id
+            user.RoleId = roleId;
+
+            _userRepository.UpdateUser(user);
+            _userRepository.Save();
+            return true;
+        }
+
+        public async Task<bool> UpdateStatus(int userId, int statusId)
+        {
+            User? user = await _userRepository.GetUser(userId);
+            if (user == null) return false;
+
+            user.Status = null; //Set status here as null to allow set status Id
+            user.StatusId = statusId;
+
+            _userRepository.UpdateUser(user);
+            _userRepository.Save();
+            return true;
         }
     }
 }
