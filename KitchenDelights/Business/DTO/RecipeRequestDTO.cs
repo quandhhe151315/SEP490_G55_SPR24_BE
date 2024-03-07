@@ -22,8 +22,6 @@ namespace Business.DTO
 
         public string? RecipeContent { get; set; }
 
-        public decimal RecipeRating { get; set; }
-
         public bool RecipeStatus { get; set; }
 
         public bool IsFree { get; set; }

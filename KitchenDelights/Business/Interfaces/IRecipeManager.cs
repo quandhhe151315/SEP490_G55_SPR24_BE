@@ -13,6 +13,10 @@ namespace Business.Interfaces
 
         Task<bool> UpdateRecipe(RecipeRequestDTO recipe);
 
+        Task<bool> UpdateStatusRecipe(int recipeId, bool status);
+
+        Task<bool> UpdateCategoryRecipe(int recipeId, int categoryId, int type);
+
         Task<bool> DeleteRecipe(int id);
 
         Task<RecipeDTO?> GetRecipe(int id);

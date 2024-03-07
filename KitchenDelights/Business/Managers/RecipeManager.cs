@@ -16,11 +16,13 @@ namespace Business.Managers
     public class RecipeManager : IRecipeManager
     {
         private readonly IRecipeRepository _recipeRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public RecipeManager(IRecipeRepository recipeRepository, IMapper mapper)
+        public RecipeManager(IRecipeRepository recipeRepository, ICategoryRepository categoryRepository, IMapper mapper)
         {
             _recipeRepository = recipeRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
@@ -101,6 +103,26 @@ namespace Business.Managers
             return recipeDTOs;
         }
 
+        public async Task<bool> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
+        {
+            Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
+            Category? category = _categoryRepository.GetCategoryById(categoryId);
+            if (recipe == null || category == null) return false;
+            switch (type)
+            {
+                case 1:
+                    recipe.Categories.Add(category);
+                    _recipeRepository.UpdateRecipe(recipe);
+                    break;
+                case 2:
+                    recipe.Categories.Remove(category);
+                    _recipeRepository.UpdateRecipe(recipe);
+                    break;
+            }
+            _recipeRepository.Save();
+            return true;
+        }
+
         public async Task<bool> UpdateRecipe(RecipeRequestDTO recipeDTO)
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(recipeDTO.RecipeId.Value);
@@ -111,6 +133,19 @@ namespace Business.Managers
             recipe.RecipeIngredients.Clear();
             _recipeRepository.Save();
             recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
+            _recipeRepository.UpdateRecipe(recipe);
+            _recipeRepository.Save();
+            return true;
+        }
+
+        public async Task<bool> UpdateStatusRecipe(int recipeId, bool status)
+        {
+            Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
+            if (recipe == null)
+            {
+                return false;
+            }
+            recipe.RecipeStatus = status;
             _recipeRepository.UpdateRecipe(recipe);
             _recipeRepository.Save();
             return true;

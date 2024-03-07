@@ -143,7 +143,6 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRecipe(RecipeRequestDTO recipe)
         {
-            recipe.RecipeRating = 0;
             recipe.RecipeStatus = false;
             recipe.CreateDate = DateTime.Now;
             try
@@ -167,6 +166,42 @@ namespace KitchenDelights.Controllers
                     return NotFound("Recipe not exist");
                 }
                 await _recipeManager.UpdateRecipe(recipe);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok("Update sucessfully");
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateStatusRecipe(int recipeId, bool status)
+        {
+            try
+            {
+                if (await _recipeManager.GetRecipe(recipeId) == null)
+                {
+                    return NotFound("Recipe not exist");
+                }
+                await _recipeManager.UpdateStatusRecipe(recipeId, status);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok("Update sucessfully");
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
+        {
+            try
+            {
+                if (await _recipeManager.GetRecipe(recipeId) == null)
+                {
+                    return NotFound("Recipe not exist");
+                }
+                await _recipeManager.UpdateCategoryRecipe(recipeId, categoryId, type);
             }
             catch (Exception ex)
             {
