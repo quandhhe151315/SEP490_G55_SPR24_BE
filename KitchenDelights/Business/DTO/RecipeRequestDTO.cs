@@ -30,6 +30,9 @@ namespace Business.DTO
 
         public DateTime CreateDate { get; set; }
 
+        public int CountryId { get; set; }
+
         public virtual List<RecipeIngredientRequestDTO> RecipeIngredients { get; set; } = [];
+
     }
 }

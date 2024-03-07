@@ -110,6 +110,9 @@ internal class Program
         builder.Services.AddScoped<IIngredientManager, IngredientManager>();
         builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 
+        builder.Services.AddScoped<ICountryManager, CountryManager>();
+        builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")
