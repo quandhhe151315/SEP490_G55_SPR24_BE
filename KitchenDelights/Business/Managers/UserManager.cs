@@ -124,5 +124,31 @@ namespace Business.Managers
             }
             return userDTOs;
         }
+
+        public async Task<bool> UpdateRole(int userId, int roleId)
+        {
+            User? user = await _userRepository.GetUser(userId);
+            if (user == null) return false;
+
+            user.Role = null; //Set role here as null to allow set role Id
+            user.RoleId = roleId;
+
+            _userRepository.UpdateUser(user);
+            _userRepository.Save();
+            return true;
+        }
+
+        public async Task<bool> UpdateStatus(int userId, int statusId)
+        {
+            User? user = await _userRepository.GetUser(userId);
+            if (user == null) return false;
+
+            user.Status = null; //Set status here as null to allow set status Id
+            user.StatusId = statusId;
+
+            _userRepository.UpdateUser(user);
+            _userRepository.Save();
+            return true;
+        }
     }
 }

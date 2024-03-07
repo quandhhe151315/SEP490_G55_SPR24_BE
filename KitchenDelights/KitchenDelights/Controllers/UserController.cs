@@ -181,8 +181,22 @@ namespace KitchenDelights.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> Role(ChangeRoleDTO changeRole)
+        {
+            bool isUpdated = await _userManager.UpdateRole(changeRole.UserId, changeRole.RoleId);
+            return isUpdated ? Ok() : BadRequest();
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> Delete(int id)
+        {
+            bool isUpdated = await _userManager.UpdateStatus(id, 3);
+            return isUpdated ? Ok() : BadRequest();
         }
 
         private string GenerateJwtToken(UserDTO account)

@@ -26,5 +26,9 @@ namespace Business.Interfaces
         Task<UserDTO?> GetUser(int id);
 
         Task<List<UserDTO>> GetUsers(int id);
+
+        Task<bool> UpdateRole(int userId, int roleId);
+
+        Task<bool> UpdateStatus(int userId, int statusId);
     }
 }
