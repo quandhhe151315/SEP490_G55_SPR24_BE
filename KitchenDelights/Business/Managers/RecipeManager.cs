@@ -17,18 +17,23 @@ namespace Business.Managers
     {
         private readonly IRecipeRepository _recipeRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
 
-        public RecipeManager(IRecipeRepository recipeRepository, ICategoryRepository categoryRepository, IMapper mapper)
+        public RecipeManager(IRecipeRepository recipeRepository, ICategoryRepository categoryRepository, ICountryRepository countryRepository, IMapper mapper)
         {
             _recipeRepository = recipeRepository;
             _categoryRepository = categoryRepository;
+            _countryRepository = countryRepository;
             _mapper = mapper;
         }
 
-        public async Task CreateRecipe(RecipeRequestDTO recipe)
+        public async Task CreateRecipe(RecipeRequestDTO recipeDTO)
         {
-            _recipeRepository.CreateRecipe(_mapper.Map<RecipeRequestDTO, Recipe>(recipe));
+            Country country = _countryRepository.GetCountry(recipeDTO.CountryId);
+            Recipe recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
+            recipe.Countries.Add(country);
+            _recipeRepository.CreateRecipe(recipe);
             _recipeRepository.Save();
         }
 
