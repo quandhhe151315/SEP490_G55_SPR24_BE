@@ -23,6 +23,7 @@ namespace Data.Repositories
         {
             try
             {
+                recipe.RecipeRating = 0;
                 _context.Recipes.Add(recipe);
             }
             catch (Exception ex)
@@ -45,7 +46,7 @@ namespace Data.Repositories
 
         public async Task<Recipe?> GetRecipe(int id)
         {
-            return await _context.Recipes.AsNoTracking()
+            return await _context.Recipes
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
                 .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
                 .Include(x => x.Categories).Include(x => x.Countries)
