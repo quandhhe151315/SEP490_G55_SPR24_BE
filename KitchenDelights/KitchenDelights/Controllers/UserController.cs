@@ -199,6 +199,20 @@ namespace KitchenDelights.Controllers
             return isUpdated ? Ok() : BadRequest();
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> Ban(int id)
+        {
+            UserDTO? userDTO = await _userManager.GetUser(id);
+            if(userDTO == null) return NotFound();
+            bool isUpdated = userDTO.Status!.StatusId switch
+            {
+                1 => await _userManager.UpdateStatus(id, 2),
+                2 => await _userManager.UpdateStatus(id, 1),
+                _ => false,
+            };
+            return isUpdated ? Ok() : BadRequest();
+        }
+
         private string GenerateJwtToken(UserDTO account)
         {
             string name;
