@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Business.DTO
 {
-    public class ChangeStatusDTO
+    public class ChangeRoleDTO
     {
         public int UserId { get; set; }
-        public int StatusId { get; set; }
+        public int RoleId { get; set; }
     }
 }
