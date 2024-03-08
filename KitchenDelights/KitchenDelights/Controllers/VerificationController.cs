@@ -1,0 +1,48 @@
+﻿using Business.DTO;
+using Business.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace KitchenDelights.Controllers
+{
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class VerificationController : Controller
+    {
+        private readonly IVerificationManager _verificationManager;
+        private readonly IConfiguration _configuration;
+
+        public VerificationController(IVerificationManager verificationManager, IConfiguration configuration)
+        {
+            _verificationManager = verificationManager;
+            _configuration = configuration;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _verificationManager.GetVerifications());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(VerificationDTO verification)
+        {
+            verification.VerificationStatus = 0; //Default to not yet verified
+            verification.VerificationDate = DateTime.Now;
+
+            bool isCreated = await _verificationManager.CreateVerification(verification);
+
+            return isCreated ? Ok() : BadRequest("Create Verification entry failed!");
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> Update(VerificationDTO verification)
+        {
+            verification.VerificationDate = DateTime.Now;
+            if (verification.VerificationStatus is not 1 and not 2) return BadRequest("Wrong Verification status!");
+
+            bool isUpdated = await _verificationManager.UpdateVerification(verification);
+            return isUpdated ? Ok() : BadRequest("Update Verification entry failed!");
+        }
+    }
+}
