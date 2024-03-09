@@ -17,6 +17,6 @@ namespace Business.Interfaces
 
         Task<BlogDTO?> GetBlog(int id);
 
-        Task<List<BlogDTO>> GetBlogs();
+        Task<List<BlogDTO>> GetBlogs(int? category, string? sort);
     }
 }

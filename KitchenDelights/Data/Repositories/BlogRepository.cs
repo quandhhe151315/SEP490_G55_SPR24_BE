@@ -67,6 +67,15 @@ namespace Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Blog>> GetBlogs(int categoryId)
+        {
+            return await _context.Blogs.AsNoTracking()
+                .Include(x => x.User).Include(x => x.Category)
+                .Where(x => x.CategoryId == categoryId)
+                .Where(x => x.BlogStatus != 0)
+                .ToListAsync();
+        }
+
         public void Save()
         {
             _context.SaveChanges();

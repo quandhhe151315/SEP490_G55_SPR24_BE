@@ -18,11 +18,11 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int? id)
+        public async Task<IActionResult> Get(int? id, int? category, string? sort)
         {
             if (id == null)
             {
-                List<BlogDTO> blogs = await _blogManager.GetBlogs();
+                List<BlogDTO> blogs = await _blogManager.GetBlogs(category, sort);
                 if (blogs.Count == 0) return NotFound("There's no blog here!");
                 return Ok(blogs);
             }
