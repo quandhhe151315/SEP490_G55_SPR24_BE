@@ -23,6 +23,7 @@ namespace Data.Repositories
                 .Include(x => x.User)
                 .Include(x => x.InverseParent)
                 .ThenInclude(x => x.InverseParent)
+                .Where(x => x.CommentStatus != 0)
                 .FirstOrDefaultAsync(x => x.CommentId == id);
         }
 

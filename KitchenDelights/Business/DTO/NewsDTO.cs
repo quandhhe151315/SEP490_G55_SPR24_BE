@@ -20,7 +20,7 @@ namespace Business.DTO
 
         public string? NewsContent { get; set; }
 
-        public bool NewsStatus { get; set; }
+        public int NewsStatus { get; set; } = 0;
 
         public DateTime? CreateDate { get; set; }
     }

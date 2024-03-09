@@ -15,6 +15,8 @@ public partial class RecipeRating
 
     public string? RatingContent { get; set; }
 
+    public int RatingStatus { get; set; }
+
     public DateTime CreateDate { get; set; }
 
     public virtual Recipe Recipe { get; set; } = null!;

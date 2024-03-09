@@ -15,7 +15,7 @@ public partial class News
 
     public string? NewsContent { get; set; }
 
-    public bool NewsStatus { get; set; }
+    public int NewsStatus { get; set; }
 
     public DateTime? CreateDate { get; set; }
 

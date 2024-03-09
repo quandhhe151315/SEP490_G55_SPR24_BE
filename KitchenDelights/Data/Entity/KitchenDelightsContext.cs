@@ -58,13 +58,14 @@ public partial class KitchenDelightsContext : DbContext
     public virtual DbSet<Verification> Verifications { get; set; }
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Latin1_General_100_CI_AI_SC_UTF8");
 
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(e => e.AddressId).HasName("PK__address__CAA247C8B76CC604");
+            entity.HasKey(e => e.AddressId).HasName("PK__address__CAA247C8AD251386");
 
             entity.ToTable("address");
 
@@ -80,7 +81,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Advertisement>(entity =>
         {
-            entity.HasKey(e => e.AdvertisementId).HasName("PK__advertis__7F501791981139DA");
+            entity.HasKey(e => e.AdvertisementId).HasName("PK__advertis__7F501791ED65E0BD");
 
             entity.ToTable("advertisement");
 
@@ -96,7 +97,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Blog>(entity =>
         {
-            entity.HasKey(e => e.BlogId).HasName("PK__blog__2975AA28599BFBE7");
+            entity.HasKey(e => e.BlogId).HasName("PK__blog__2975AA286319A7FC");
 
             entity.ToTable("blog");
 
@@ -124,13 +125,14 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<BlogComment>(entity =>
         {
-            entity.HasKey(e => e.CommentId).HasName("PK__blog_com__E795768710978A30");
+            entity.HasKey(e => e.CommentId).HasName("PK__blog_com__E79576875196F5C1");
 
             entity.ToTable("blog_comment");
 
             entity.Property(e => e.CommentId).HasColumnName("comment_id");
             entity.Property(e => e.BlogId).HasColumnName("blog_id");
             entity.Property(e => e.CommentContent).HasColumnName("comment_content");
+            entity.Property(e => e.CommentStatus).HasColumnName("comment_status");
             entity.Property(e => e.CreateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
@@ -139,12 +141,11 @@ public partial class KitchenDelightsContext : DbContext
 
             entity.HasOne(d => d.Blog).WithMany(p => p.BlogComments)
                 .HasForeignKey(d => d.BlogId)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__blog_comm__blog___6C190EBB");
 
             entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
                 .HasForeignKey(d => d.ParentId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__blog_comm__paren__6D0D32F4");
 
             entity.HasOne(d => d.User).WithMany(p => p.BlogComments)
@@ -155,7 +156,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.RecipeId }).HasName("PK__cart_ite__1AE929D6E28D086D");
+            entity.HasKey(e => new { e.UserId, e.RecipeId }).HasName("PK__cart_ite__1AE929D6F72FA2CC");
 
             entity.ToTable("cart_item");
 
@@ -183,12 +184,13 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__category__D54EE9B40536A514");
+            entity.HasKey(e => e.CategoryId).HasName("PK__category__D54EE9B45FA4C7CD");
 
             entity.ToTable("category");
 
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
             entity.Property(e => e.CategoryName).HasColumnName("category_name");
+            entity.Property(e => e.CategoryStatus).HasColumnName("category_status");
             entity.Property(e => e.CategoryType).HasColumnName("category_type");
             entity.Property(e => e.ParentId).HasColumnName("parent_id");
 
@@ -199,22 +201,24 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Country>(entity =>
         {
-            entity.HasKey(e => e.CountryId).HasName("PK__countrie__7E8CD055107A42AC");
+            entity.HasKey(e => e.CountryId).HasName("PK__countrie__7E8CD05545EBF9CE");
 
             entity.ToTable("countries");
 
             entity.Property(e => e.CountryId).HasColumnName("country_id");
             entity.Property(e => e.CountryName).HasColumnName("country_name");
+            entity.Property(e => e.CountryStatus).HasColumnName("country_status");
         });
 
         modelBuilder.Entity<Ingredient>(entity =>
         {
-            entity.HasKey(e => e.IngredientId).HasName("PK__ingredie__B0E453CF5194DEE5");
+            entity.HasKey(e => e.IngredientId).HasName("PK__ingredie__B0E453CFDD5AD6AD");
 
             entity.ToTable("ingredient");
 
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
             entity.Property(e => e.IngredientName).HasColumnName("ingredient_name");
+            entity.Property(e => e.IngredientStatus).HasColumnName("ingredient_status");
             entity.Property(e => e.IngredientUnit)
                 .HasMaxLength(50)
                 .HasColumnName("ingredient_unit");
@@ -222,7 +226,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<IngredientMarketplace>(entity =>
         {
-            entity.HasKey(e => new { e.IngredientId, e.MarketplaceId }).HasName("PK__ingredie__4858CF75B474B14A");
+            entity.HasKey(e => new { e.IngredientId, e.MarketplaceId }).HasName("PK__ingredie__4858CF754666B5E2");
 
             entity.ToTable("ingredient_marketplace");
 
@@ -243,18 +247,19 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Marketplace>(entity =>
         {
-            entity.HasKey(e => e.MarketplaceId).HasName("PK__marketpl__8BC9CBAEA1EE16C4");
+            entity.HasKey(e => e.MarketplaceId).HasName("PK__marketpl__8BC9CBAE677FB96A");
 
             entity.ToTable("marketplace");
 
             entity.Property(e => e.MarketplaceId).HasColumnName("marketplace_id");
             entity.Property(e => e.MarketplaceLogo).HasColumnName("marketplace_logo");
             entity.Property(e => e.MarketplaceName).HasColumnName("marketplace_name");
+            entity.Property(e => e.MarketplaceStatus).HasColumnName("marketplace_status");
         });
 
         modelBuilder.Entity<Menu>(entity =>
         {
-            entity.HasKey(e => e.MenuId).HasName("PK__menu__4CA0FADC54AF5B36");
+            entity.HasKey(e => e.MenuId).HasName("PK__menu__4CA0FADC655F8991");
 
             entity.ToTable("menu");
 
@@ -282,7 +287,7 @@ public partial class KitchenDelightsContext : DbContext
                         .HasConstraintName("FK__menu_reci__menu___778AC167"),
                     j =>
                     {
-                        j.HasKey("MenuId", "RecipeId").HasName("PK__menu_rec__EFF7E40599DF4458");
+                        j.HasKey("MenuId", "RecipeId").HasName("PK__menu_rec__EFF7E4053A10F78B");
                         j.ToTable("menu_recipe");
                         j.IndexerProperty<int>("MenuId").HasColumnName("menu_id");
                         j.IndexerProperty<int>("RecipeId").HasColumnName("recipe_id");
@@ -291,7 +296,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<News>(entity =>
         {
-            entity.HasKey(e => e.NewsId).HasName("PK__news__4C27CCD8365F9412");
+            entity.HasKey(e => e.NewsId).HasName("PK__news__4C27CCD8BD530B2E");
 
             entity.ToTable("news");
 
@@ -313,7 +318,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<PaymentHistory>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.RecipeId }).HasName("PK__payment___1AE929D6DD1C7D72");
+            entity.HasKey(e => new { e.UserId, e.RecipeId }).HasName("PK__payment___1AE929D695D84CE1");
 
             entity.ToTable("payment_history");
 
@@ -339,17 +344,20 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Recipe>(entity =>
         {
-            entity.HasKey(e => e.RecipeId).HasName("PK__recipe__3571ED9B127187D8");
+            entity.HasKey(e => e.RecipeId).HasName("PK__recipe__3571ED9BDE3AA6D3");
 
             entity.ToTable("recipe");
 
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id");
+            entity.Property(e => e.CookTime).HasColumnName("cook_time");
             entity.Property(e => e.CreateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
             entity.Property(e => e.FeaturedImage).HasColumnName("featured_image");
             entity.Property(e => e.IsFree).HasColumnName("is_free");
+            entity.Property(e => e.PreparationTime).HasColumnName("preparation_time");
             entity.Property(e => e.RecipeContent).HasColumnName("recipe_content");
+            entity.Property(e => e.RecipeDescription).HasColumnName("recipe_description");
             entity.Property(e => e.RecipePrice)
                 .HasColumnType("money")
                 .HasColumnName("recipe_price");
@@ -380,7 +388,7 @@ public partial class KitchenDelightsContext : DbContext
                         .HasConstraintName("FK__recipe_ca__recip__5165187F"),
                     j =>
                     {
-                        j.HasKey("RecipeId", "CategoryId").HasName("PK__recipe_c__68250300D65B697D");
+                        j.HasKey("RecipeId", "CategoryId").HasName("PK__recipe_c__68250300B0326DFF");
                         j.ToTable("recipe_category");
                         j.IndexerProperty<int>("RecipeId").HasColumnName("recipe_id");
                         j.IndexerProperty<int>("CategoryId").HasColumnName("category_id");
@@ -399,7 +407,7 @@ public partial class KitchenDelightsContext : DbContext
                         .HasConstraintName("FK__recipe_co__recip__5535A963"),
                     j =>
                     {
-                        j.HasKey("RecipeId", "CountryId").HasName("PK__recipe_c__7299209EF5324744");
+                        j.HasKey("RecipeId", "CountryId").HasName("PK__recipe_c__7299209E5EE6E059");
                         j.ToTable("recipe_country");
                         j.IndexerProperty<int>("RecipeId").HasColumnName("recipe_id");
                         j.IndexerProperty<int>("CountryId").HasColumnName("country_id");
@@ -408,7 +416,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<RecipeIngredient>(entity =>
         {
-            entity.HasKey(e => new { e.RecipeId, e.IngredientId }).HasName("PK__recipe_i__DE7FA8A792F638EB");
+            entity.HasKey(e => new { e.RecipeId, e.IngredientId }).HasName("PK__recipe_i__DE7FA8A7F75B1B64");
 
             entity.ToTable("recipe_ingredient");
 
@@ -431,7 +439,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<RecipeRating>(entity =>
         {
-            entity.HasKey(e => e.RatingId).HasName("PK__recipe_r__D35B278B9D893757");
+            entity.HasKey(e => e.RatingId).HasName("PK__recipe_r__D35B278BB447AF49");
 
             entity.ToTable("recipe_rating");
 
@@ -440,6 +448,7 @@ public partial class KitchenDelightsContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
             entity.Property(e => e.RatingContent).HasColumnName("rating_content");
+            entity.Property(e => e.RatingStatus).HasColumnName("rating_status");
             entity.Property(e => e.RatingValue).HasColumnName("rating_value");
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -457,7 +466,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<RestaurantRecommendation>(entity =>
         {
-            entity.HasKey(e => e.RestaurantId).HasName("PK__restaura__3B0FAA91155BA2C1");
+            entity.HasKey(e => e.RestaurantId).HasName("PK__restaura__3B0FAA91E8E457CC");
 
             entity.ToTable("restaurant_recommendation");
 
@@ -476,7 +485,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__role__760965CC46AF9759");
+            entity.HasKey(e => e.RoleId).HasName("PK__role__760965CC5638FC6E");
 
             entity.ToTable("role");
 
@@ -488,7 +497,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.StatusId).HasName("PK__status__3683B53120A45873");
+            entity.HasKey(e => e.StatusId).HasName("PK__status__3683B5313C5CDA4B");
 
             entity.ToTable("status");
 
@@ -500,7 +509,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370FA8D872D2");
+            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370FA8E2CEFF");
 
             entity.ToTable("users");
 
@@ -563,7 +572,7 @@ public partial class KitchenDelightsContext : DbContext
                         .HasConstraintName("FK__bookmark__user_i__70DDC3D8"),
                     j =>
                     {
-                        j.HasKey("UserId", "RecipeId").HasName("PK__bookmark__1AE929D6CC1480D5");
+                        j.HasKey("UserId", "RecipeId").HasName("PK__bookmark__1AE929D60386F16B");
                         j.ToTable("bookmark");
                         j.IndexerProperty<int>("UserId").HasColumnName("user_id");
                         j.IndexerProperty<int>("RecipeId").HasColumnName("recipe_id");
@@ -572,7 +581,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Verification>(entity =>
         {
-            entity.HasKey(e => e.VerificationId).HasName("PK__verifica__24F1796917D8A351");
+            entity.HasKey(e => e.VerificationId).HasName("PK__verifica__24F17969FFC868B1");
 
             entity.ToTable("verification");
 
@@ -591,7 +600,7 @@ public partial class KitchenDelightsContext : DbContext
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.VoucherCode).HasName("PK__voucher__217310682E8DD4D6");
+            entity.HasKey(e => e.VoucherCode).HasName("PK__voucher__21731068B017F2EC");
 
             entity.ToTable("voucher");
 

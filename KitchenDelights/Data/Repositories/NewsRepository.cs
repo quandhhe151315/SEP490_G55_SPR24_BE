@@ -56,12 +56,12 @@ namespace Data.Repositories
 
         public async Task<News?> GetNews(int id)
         {
-            return await _context.News.AsNoTracking().Include(news => news.User).FirstOrDefaultAsync(x => x.NewsId == id);
+            return await _context.News.AsNoTracking().Include(news => news.User).Where(x => x.NewsStatus != 0).FirstOrDefaultAsync(x => x.NewsId == id);
         }
 
         public async Task<List<News>> GetNews()
         {
-            return await _context.News.AsNoTracking().Include(news => news.User).ToListAsync();
+            return await _context.News.AsNoTracking().Include(news => news.User).Where(x => x.NewsStatus != 0).ToListAsync();
         }
 
         public void Save()

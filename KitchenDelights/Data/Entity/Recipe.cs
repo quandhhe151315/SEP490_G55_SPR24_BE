@@ -11,9 +11,15 @@ public partial class Recipe
 
     public string? FeaturedImage { get; set; }
 
+    public string? RecipeTitle { get; set; }
+
+    public string? RecipeDescription { get; set; }
+
     public string? VideoLink { get; set; }
 
-    public string? RecipeTitle { get; set; }
+    public int PreparationTime { get; set; }
+
+    public int CookTime { get; set; }
 
     public int? RecipeServe { get; set; }
 
@@ -21,7 +27,7 @@ public partial class Recipe
 
     public decimal RecipeRating { get; set; }
 
-    public bool RecipeStatus { get; set; }
+    public int RecipeStatus { get; set; }
 
     public bool IsFree { get; set; }
 

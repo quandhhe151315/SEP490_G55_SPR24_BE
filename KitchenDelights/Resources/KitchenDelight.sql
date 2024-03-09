@@ -18,7 +18,7 @@ CREATE TABLE [advertisement]
 [advertisement_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [advertisement_image] [varchar](MAX),
 [advertisement_link] [varchar](MAX),
-[advertisement_status] [bit] NOT NULL
+[advertisement_status] [int] NOT NULL
 );
 GO
 
@@ -81,7 +81,7 @@ CREATE TABLE [news]
 [featured_image] [nvarchar](MAX),
 [news_title] [nvarchar](MAX),
 [news_content] [nvarchar](MAX),
-[news_status] [bit] NOT NULL,
+[news_status] [int] NOT NULL,
 [create_date] [datetime]
 );
 GO
@@ -91,14 +91,16 @@ CREATE TABLE [category]
 [category_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [parent_id] [int] NULL FOREIGN KEY REFERENCES [category]([category_id]),
 [category_name] [nvarchar](MAX),
-[category_type] [bit] NOT NULL
+[category_type] [bit] NOT NULL,
+[category_status] [int] NOT NULL
 );
 GO
 
 CREATE TABLE [countries]
 (
 [country_id] [int] IDENTITY(1,1) PRIMARY KEY,
-[country_name] [nvarchar](MAX)
+[country_name] [nvarchar](MAX),
+[country_status] [int] NOT NULL
 );
 GO
 
@@ -107,12 +109,15 @@ CREATE TABLE [recipe]
 [recipe_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [featured_image] [nvarchar](MAX),
-[video_link] [nvarchar](MAX),
 [recipe_title] [nvarchar](MAX),
+[recipe_description] [nvarchar](MAX),
+[video_link] [nvarchar](MAX),
+[preparation_time] [int] NOT NULL,
+[cook_time] [int] NOT NULL,
 [recipe_serve] [int],
 [recipe_content] [nvarchar](MAX),
 [recipe_rating] [decimal](2,1) NOT NULL,
-[recipe_status] [bit] NOT NULL,
+[recipe_status] [int] NOT NULL,
 [is_free] [bit] NOT NULL,
 [recipe_price] [money],
 [create_date] [datetime] NOT NULL
@@ -140,6 +145,7 @@ CREATE TABLE [ingredient]
 [ingredient_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [ingredient_name] [nvarchar](MAX),
 [ingredient_unit] [nvarchar](50), 
+[ingredient_status] [int] NOT NULL,
 );
 GO
 
@@ -147,7 +153,8 @@ CREATE TABLE [marketplace]
 (
 [marketplace_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [marketplace_name] [nvarchar](MAX),
-[marketplace_logo] [nvarchar](MAX)
+[marketplace_logo] [nvarchar](MAX),
+[marketplace_status] [int] NOT NULL
 );
 GO
 
@@ -176,6 +183,7 @@ CREATE TABLE [recipe_rating]
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [rating_value] [int] NOT NULL,
 [rating_content] [nvarchar](MAX),
+[rating_status] [int] NOT NULL,
 [create_date] [datetime] NOT NULL
 );
 GO
@@ -188,7 +196,7 @@ CREATE TABLE [blog]
 [blog_title] [nvarchar](MAX),
 [blog_content] [nvarchar](MAX),
 [blog_image] [nvarchar](MAX),
-[blog_status] [bit],
+[blog_status] [int] NOT NULL,
 [create_date] [datetime] NOT NULL
 );
 GO
@@ -200,6 +208,7 @@ CREATE TABLE [blog_comment]
 [parent_id] [int] NULL FOREIGN KEY REFERENCES [blog_comment](comment_id),
 [user_id] [int] NOT NULL FOREIGN KEY REFERENCES [users]([user_id]),
 [comment_content] [nvarchar](MAX),
+[comment_status] [int] NOT NULL,
 [create_date] [datetime] NOT NULL
 );
 GO

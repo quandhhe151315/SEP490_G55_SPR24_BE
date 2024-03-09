@@ -11,5 +11,5 @@ public partial class Advertisement
 
     public string? AdvertisementLink { get; set; }
 
-    public bool AdvertisementStatus { get; set; }
+    public int AdvertisementStatus { get; set; }
 }

@@ -56,7 +56,8 @@ namespace Business.Managers
             BlogComment? comment = await _commentRepository.GetComment(id);
             if (comment == null) return false;
 
-            _commentRepository.DeleteComment(comment);
+            comment.CommentStatus = 0;
+            _commentRepository.UpdateComment(comment);
             _commentRepository.Save();
             return true;
         }

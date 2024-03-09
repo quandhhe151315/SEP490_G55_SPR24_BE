@@ -9,5 +9,7 @@ public partial class Country
 
     public string? CountryName { get; set; }
 
+    public int CountryStatus { get; set; }
+
     public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 }

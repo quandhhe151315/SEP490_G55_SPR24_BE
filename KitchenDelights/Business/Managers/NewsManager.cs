@@ -44,7 +44,8 @@ namespace Business.Managers
             News? news = await _newsRepository.GetNews(id);
             if (news == null) return false;
 
-            _newsRepository.DeleteNews(news);
+            news.NewsStatus = 0;
+            _newsRepository.UpdateNews(news);
             _newsRepository.Save();
             return true;
         }
