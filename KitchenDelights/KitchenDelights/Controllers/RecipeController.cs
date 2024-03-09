@@ -175,7 +175,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateStatusRecipe(int recipeId, bool status)
+        public async Task<IActionResult> UpdateStatusRecipe(int recipeId, int status)
         {
             try
             {

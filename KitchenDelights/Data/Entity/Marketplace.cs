@@ -11,5 +11,7 @@ public partial class Marketplace
 
     public string? MarketplaceLogo { get; set; }
 
+    public int MarketplaceStatus { get; set; }
+
     public virtual ICollection<IngredientMarketplace> IngredientMarketplaces { get; set; } = new List<IngredientMarketplace>();
 }

@@ -35,7 +35,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Create(NewsDTO news)
         {
             news.CreateDate = DateTime.Now;
-            news.NewsStatus = false;
+            news.NewsStatus = 2;
             try
             {
                 _newsManager.CreateNews(news);

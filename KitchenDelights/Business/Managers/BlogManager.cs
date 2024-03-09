@@ -49,7 +49,8 @@ namespace Business.Managers
             Blog? blog = await _blogRepository.GetBlog(id);
             if (blog == null) return false;
 
-            _blogRepository.DeleteBlog(blog);
+            blog.BlogStatus = 0;
+            _blogRepository.UpdateBlog(blog);
             _blogRepository.Save();
             return true;
         }

@@ -11,6 +11,8 @@ public partial class Ingredient
 
     public string? IngredientUnit { get; set; }
 
+    public int IngredientStatus { get; set; }
+
     public virtual ICollection<IngredientMarketplace> IngredientMarketplaces { get; set; } = new List<IngredientMarketplace>();
 
     public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();

@@ -36,7 +36,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Create(BlogDTO blog)
         {
             blog.CreateDate = DateTime.Now;
-            blog.BlogStatus = false;           
+            blog.BlogStatus = 2;           
             try
             {
                 _blogManager.CreateBlog(blog);
