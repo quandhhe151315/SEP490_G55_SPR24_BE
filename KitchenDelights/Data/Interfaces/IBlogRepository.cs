@@ -14,6 +14,7 @@ namespace Data.Interfaces
         void DeleteBlog(Blog blog);
         Task<Blog?> GetBlog(int id);
         Task<List<Blog>> GetBlogs();
+        Task<List<Blog>> GetBlogs(int categoryId);
         void Save();
     }
 }

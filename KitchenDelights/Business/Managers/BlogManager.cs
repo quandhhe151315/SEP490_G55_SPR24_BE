@@ -3,6 +3,7 @@ using Business.DTO;
 using Business.Interfaces;
 using Data.Entity;
 using Data.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,14 +62,34 @@ namespace Business.Managers
             return blog is null ? null : _mapper.Map<Blog, BlogDTO>(blog);
         }
 
-        public async Task<List<BlogDTO>> GetBlogs()
+        public async Task<List<BlogDTO>> GetBlogs(int? category, string? sort)
         {
-            List<Blog> blogs = await _blogRepository.GetBlogs();
             List<BlogDTO> blogDTOs = [];
+            List<Blog> blogs = [];
+
+            //Get all blogs or by category
+            if (category != null)
+            {
+                blogs = await _blogRepository.GetBlogs(category.Value);
+            } else
+            {
+                blogs = await _blogRepository.GetBlogs();
+            }
+
+            //Map to list of DTOs
             foreach (Blog blog in blogs)
             {
                 blogDTOs.Add(_mapper.Map<Blog, BlogDTO>(blog));
             }
+
+            //Sort list of DTOs
+            blogDTOs = sort switch
+            {
+                "desc" => [.. blogDTOs.OrderByDescending(x => x.CreateDate)],
+                "asc" => [.. blogDTOs.OrderBy(x => x.CreateDate)],
+                _ => [.. blogDTOs.OrderByDescending(x => x.CreateDate)],
+            };
+
             return blogDTOs;
         }
     }
