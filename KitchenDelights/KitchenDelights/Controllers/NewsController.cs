@@ -66,5 +66,11 @@ namespace KitchenDelights.Controllers
             return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> Accept(int id)
+        {
+            bool isAccepted = await _newsManager.Accept(id);
+            return isAccepted ? Ok() : StatusCode(500, "Approve News failed!");
+        }
     }
 }

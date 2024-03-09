@@ -15,6 +15,8 @@ namespace Business.Interfaces
 
         Task<bool> DeleteNews(int id);
 
+        Task<bool> Accept(int id);
+
         Task<NewsDTO?> GetNews(int id);
 
         Task<List<NewsDTO>> GetNews();
