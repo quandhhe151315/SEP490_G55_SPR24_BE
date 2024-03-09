@@ -18,6 +18,8 @@ namespace Business.DTO
 
         public int RatingValue { get; set; }
 
+        public int RatingStatus { get; set; } = 1;
+
         public string? RatingContent { get; set; }
 
         public DateTime CreateDate { get; set; }

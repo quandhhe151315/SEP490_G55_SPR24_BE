@@ -20,12 +20,12 @@ namespace Data.Repositories
 
         public async Task<RecipeRating?> GetRating(int id)
         {
-            return await _context.RecipeRatings.AsNoTracking().Include(x => x.User).FirstOrDefaultAsync(x => x.RatingId == id);
+            return await _context.RecipeRatings.AsNoTracking().Include(x => x.User).Where(x => x.RatingStatus != 0).FirstOrDefaultAsync(x => x.RatingId == id);
         }
 
         public async Task<List<RecipeRating>> GetRatings(int id)
         {
-            return await _context.RecipeRatings.AsNoTracking().Include(x => x.User).Where(rating => rating.RecipeId == id).ToListAsync();
+            return await _context.RecipeRatings.AsNoTracking().Include(x => x.User).Where(x => x.RatingStatus != 0).Where(rating => rating.RecipeId == id).ToListAsync();
         }
 
         public void CreateRating(RecipeRating rating)

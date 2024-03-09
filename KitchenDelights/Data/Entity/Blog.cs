@@ -17,7 +17,7 @@ public partial class Blog
 
     public string? BlogImage { get; set; }
 
-    public bool? BlogStatus { get; set; }
+    public int BlogStatus { get; set; }
 
     public DateTime CreateDate { get; set; }
 

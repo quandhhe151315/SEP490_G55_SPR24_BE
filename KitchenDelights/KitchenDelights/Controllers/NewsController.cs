@@ -35,7 +35,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Create(NewsDTO news)
         {
             news.CreateDate = DateTime.Now;
-            news.NewsStatus = false;
+            news.NewsStatus = 2;
             try
             {
                 _newsManager.CreateNews(news);
@@ -66,5 +66,11 @@ namespace KitchenDelights.Controllers
             return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> Accept(int id)
+        {
+            bool isAccepted = await _newsManager.Accept(id);
+            return isAccepted ? Ok() : StatusCode(500, "Approve News failed!");
+        }
     }
 }

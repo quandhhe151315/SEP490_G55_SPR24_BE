@@ -143,7 +143,7 @@ namespace Business.Managers
             return true;
         }
 
-        public async Task<bool> UpdateStatusRecipe(int recipeId, bool status)
+        public async Task<bool> UpdateStatusRecipe(int recipeId, int status)
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
             if (recipe == null)

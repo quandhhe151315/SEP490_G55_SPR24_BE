@@ -24,6 +24,7 @@ namespace Business.Managers
 
         public void CreateNews(NewsDTO news)
         {
+            news.NewsStatus = 2;
             _newsRepository.CreateNews(_mapper.Map<NewsDTO, News>(news));
             _newsRepository.Save();
         }
@@ -44,7 +45,19 @@ namespace Business.Managers
             News? news = await _newsRepository.GetNews(id);
             if (news == null) return false;
 
-            _newsRepository.DeleteNews(news);
+            news.NewsStatus = 0;
+            _newsRepository.UpdateNews(news);
+            _newsRepository.Save();
+            return true;
+        }
+
+        public async Task<bool> Accept(int id)
+        {
+            News? news = await _newsRepository.GetNews(id);
+            if (news == null) return false;
+
+            news.NewsStatus = 1;
+            _newsRepository.UpdateNews(news);
             _newsRepository.Save();
             return true;
         }

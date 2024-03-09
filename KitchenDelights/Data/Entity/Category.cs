@@ -13,6 +13,8 @@ public partial class Category
 
     public bool CategoryType { get; set; }
 
+    public int CategoryStatus { get; set; }
+
     public virtual ICollection<Blog> Blogs { get; set; } = new List<Blog>();
 
     public virtual ICollection<Category> InverseParent { get; set; } = new List<Category>();

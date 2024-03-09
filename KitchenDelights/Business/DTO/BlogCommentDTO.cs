@@ -21,6 +21,8 @@ namespace Business.DTO
 
         public string? CommentContent { get; set; }
 
+        public int CommentStatus { get; set; } = 1;
+
         public DateTime CreateDate { get; set; }
 
         public List<BlogCommentDTO> SubComments { get; set; } = [];

@@ -15,6 +15,8 @@ public partial class BlogComment
 
     public string? CommentContent { get; set; }
 
+    public int CommentStatus { get; set; }
+
     public DateTime CreateDate { get; set; }
 
     public virtual Blog Blog { get; set; } = null!;
