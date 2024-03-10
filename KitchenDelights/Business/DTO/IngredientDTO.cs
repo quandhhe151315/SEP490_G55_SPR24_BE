@@ -15,6 +15,8 @@ namespace Business.DTO
 
         public string? IngredientUnit { get; set; }
 
+        public int IngredientStatus { get; set; }
+
         public virtual List<IngredientMarketplaceDTO> IngredientMarketplaces { get; set; } = [];
     }
 }

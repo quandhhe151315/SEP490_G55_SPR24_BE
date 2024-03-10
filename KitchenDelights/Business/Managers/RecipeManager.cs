@@ -18,13 +18,19 @@ namespace Business.Managers
         private readonly IRecipeRepository _recipeRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICountryRepository _countryRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public RecipeManager(IRecipeRepository recipeRepository, ICategoryRepository categoryRepository, ICountryRepository countryRepository, IMapper mapper)
+        public RecipeManager(IRecipeRepository recipeRepository, 
+                            ICategoryRepository categoryRepository, 
+                            ICountryRepository countryRepository,
+                            IUserRepository userRepository,
+                            IMapper mapper)
         {
             _recipeRepository = recipeRepository;
             _categoryRepository = categoryRepository;
             _countryRepository = countryRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
