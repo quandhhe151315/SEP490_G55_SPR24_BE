@@ -26,7 +26,7 @@ namespace Business.DTO
 
         public string? RecipeContent { get; set; }
 
-        public bool RecipeStatus { get; set; }
+        public int RecipeStatus { get; set; }
 
         public bool IsFree { get; set; }
 

@@ -162,7 +162,7 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRecipe(RecipeRequestDTO recipe)
         {
-            recipe.RecipeStatus = false;
+            recipe.RecipeStatus = 1;
             recipe.CreateDate = DateTime.Now;
             try
             {

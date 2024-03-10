@@ -15,6 +15,8 @@ namespace Data.Interfaces
 
         void CreateVoucher(Voucher voucher);
 
+        void UpdateVoucher(Voucher voucher);
+
         void RemoveVoucher(Voucher voucher);
 
         void Save();
