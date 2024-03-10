@@ -14,9 +14,13 @@ namespace Business.DTO
 
         public string? FeaturedImage { get; set; }
 
+        public string? RecipeDescription { get; set; }
+
         public string? VideoLink { get; set; }
 
-        public string? RecipeTitle { get; set; }
+        public int PreparationTime { get; set; }
+
+        public int CookTime { get; set; }
 
         public int? RecipeServe { get; set; }
 

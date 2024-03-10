@@ -32,13 +32,18 @@ namespace KitchenDelights.Controllers
         {
             try
             {
-                if(type == 1)
+                if (userId == 0 || recipeId == 0)
                 {
-                    await _bookmarkManager.AddRecipeToBookmark(userId, recipeId);
+                    return BadRequest("please enter require input");
                 }
-                else if(type == 2)
+                switch (type)
                 {
-                    await _bookmarkManager.RemoveRecipeFromBookmark(userId, recipeId);
+                    case 1:
+                        await _bookmarkManager.AddRecipeToBookmark(userId, recipeId);
+                        break;
+                    case 2:
+                        await _bookmarkManager.RemoveRecipeFromBookmark(userId, recipeId);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -53,7 +58,7 @@ namespace KitchenDelights.Controllers
             {
                 return Ok("Remove recipe to bookmark sucessful");
             }
-            return BadRequest("Please try again make sure type 1 to add and 2 to reomove");
+            return BadRequest("Please try again make sure type 1 to add and 2 to remove");
         }
     }
 }

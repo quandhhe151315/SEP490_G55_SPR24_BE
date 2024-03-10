@@ -122,6 +122,25 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllRecipeByCountry(int country)
+        {
+            List<RecipeDTO> recipes = [];
+            try
+            {
+                recipes = await _recipeManager.GetRecipeByCountry(country);
+                if (recipes.Count <= 0)
+                {
+                    return NotFound("Recipe not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(recipes);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetRecipeById(int recipeId)
         {
             RecipeDTO recipe;
