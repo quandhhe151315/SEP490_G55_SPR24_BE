@@ -18,6 +18,8 @@ namespace Business.DTO
 
         public string? VideoLink { get; set; }
 
+        public string? RecipeTitle { get; set; }
+
         public int PreparationTime { get; set; }
 
         public int CookTime { get; set; }

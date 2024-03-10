@@ -167,12 +167,12 @@ namespace KitchenDelights.Controllers
             try
             {
                 _recipeManager.CreateRecipe(recipe);
+                return Ok(recipe);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok(recipe);
         }
 
         [HttpPut]
