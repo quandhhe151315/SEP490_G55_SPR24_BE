@@ -33,7 +33,7 @@ namespace Business.DTO
 
         public decimal RecipeRating { get; set; }
 
-        public bool RecipeStatus { get; set; }
+        public int RecipeStatus { get; set; }
 
         public bool IsFree { get; set; }
 

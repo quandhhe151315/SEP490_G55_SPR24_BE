@@ -55,5 +55,16 @@ namespace Data.Repositories
         {
             _context.SaveChanges();
         }
+
+        public void UpdateVoucher(Voucher voucher)
+        {
+            try
+            {
+                _context.Vouchers.Update(voucher);
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
     }
 }
