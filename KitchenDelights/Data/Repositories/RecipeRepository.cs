@@ -67,6 +67,19 @@ namespace Data.Repositories
             return recipes;
         }
 
+        public async Task<List<Recipe>> GetRecipeByCountry(int countryId)
+        {
+            List<Recipe> recipes = [];
+            recipes = await _context.Recipes.AsNoTracking()
+                .Include(x => x.CartItems).Include(x => x.PaymentHistories)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.Categories).Include(x => x.Countries)
+                .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
+                .Where(x => x.Countries.Any(x => x.CountryId == countryId))
+                .ToListAsync();
+            return recipes;
+        }
+
         public async Task<List<Recipe>> GetRecipeByTitle(string? title)
         {
             List<Recipe> recipes = [];

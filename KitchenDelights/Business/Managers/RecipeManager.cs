@@ -64,6 +64,17 @@ namespace Business.Managers
             return recipeDTOs;
         }
 
+        public async Task<List<RecipeDTO>> GetRecipeByCountry(int country)
+        {
+            List<Recipe>? recipes = await _recipeRepository.GetRecipeByCountry(country);
+            List<RecipeDTO> recipeDTOs = [];
+            foreach (Recipe recipe in recipes)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
+
         public async Task<List<RecipeDTO>> GetRecipeByTitle(string? title)
         {
             List<Recipe>? recipes = await _recipeRepository.GetRecipeByTitle(title);
