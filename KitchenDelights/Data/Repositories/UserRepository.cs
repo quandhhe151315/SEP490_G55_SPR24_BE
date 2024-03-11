@@ -52,6 +52,7 @@ namespace Data.Repositories
                                                     .Include(x => x.Recipes).ThenInclude(x => x.RecipeRatings)
                                                     .Include(x => x.Recipes).ThenInclude(x => x.Categories)
                                                     .Include(x => x.Recipes).ThenInclude(x => x.Countries)
+                                                    .Include(x => x.Recipes).ThenInclude(x => x.User)
                                                     .FirstOrDefaultAsync(x => x.UserId == id);
         }
 
