@@ -28,9 +28,9 @@ namespace Business.Managers
             _userRepository.Save();
         }
 
-        public void CreateUser(UserDTO user)
+        public void CreateUser(CreateUserDTO user)
         {
-            _userRepository.CreateUser(_mapper.Map<UserDTO,  User>(user));
+            _userRepository.CreateUser(_mapper.Map<CreateUserDTO,  User>(user));
             _userRepository.Save();
         }
 

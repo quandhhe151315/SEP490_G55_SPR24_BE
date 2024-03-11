@@ -168,11 +168,11 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(UserDTO userDTO)
+        public async Task<IActionResult> Create(CreateUserDTO userDTO)
         {
-            if(userDTO.PasswordHash.Length < 6) return StatusCode(StatusCodes.Status406NotAcceptable, "Password should not be shorter than 6 characters!");
+            if(userDTO.Password.Length < 6) return StatusCode(StatusCodes.Status406NotAcceptable, "Password should not be shorter than 6 characters!");
 
-            userDTO.PasswordHash = PasswordHelper.Hash(userDTO.PasswordHash);
+            userDTO.Password = PasswordHelper.Hash(userDTO.Password);
 
             try
             {

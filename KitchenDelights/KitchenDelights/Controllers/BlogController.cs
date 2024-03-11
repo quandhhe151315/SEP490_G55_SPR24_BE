@@ -46,5 +46,12 @@ namespace KitchenDelights.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            bool isDeleted = await _blogManager.DeleteBlog(id);
+            return isDeleted ? Ok() : StatusCode(500, "Delete blog failed!");
+        }
     }
 }
