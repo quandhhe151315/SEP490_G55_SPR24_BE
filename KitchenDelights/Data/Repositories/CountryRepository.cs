@@ -1,5 +1,6 @@
 ﻿using Data.Entity;
 using Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +18,14 @@ namespace Data.Repositories
             _context = context;
         }
 
-        public List<Country> GetCountries()
+        public async Task<List<Country>> GetCountries()
         {
-            List<Country> countries = _context.Countries.ToList();
-            return countries;
+            return await _context.Countries.ToListAsync();
         }
 
-        public Country GetCountry(int id)
+        public async Task<Country?> GetCountry(int id)
         {
-            Country? country = _context.Countries.FirstOrDefault(x => x.CountryId == id);
-            return country;
+            return await _context.Countries.FirstOrDefaultAsync(x => x.CountryId == id);
         }
     }
 }

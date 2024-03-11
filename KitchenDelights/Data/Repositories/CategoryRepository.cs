@@ -1,5 +1,6 @@
 ﻿using Data.Entity;
 using Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,32 +56,14 @@ namespace Data.Repositories
             }
         }
 
-        public List<Category> GetAllCategories()
+        public async Task<List<Category>> GetAllCategories()
         {
-            List<Category> categories = new List<Category>();
-            try
-            {
-                categories = _context.Categories.ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            return categories;
+            return await _context.Categories.Include(x => x.Parent).ToListAsync();
         }
 
-        public Category GetCategoryById(int categoryId)
+        public async Task<Category?> GetCategoryById(int categoryId)
         {
-            Category category = new Category();
-            try
-            {
-                category = _context.Categories.FirstOrDefault(category => category.CategoryId == categoryId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            return category;
+            return await _context.Categories.Include(x => x.Parent).FirstOrDefaultAsync(category => category.CategoryId == categoryId);
         }
 
         public void Save()
@@ -88,18 +71,9 @@ namespace Data.Repositories
             _context.SaveChanges();
         }
 
-        public List<Category> GetCategoryByParentId(int? parentId)
+        public async Task<List<Category>> GetCategoryByParentId(int? parentId)
         {
-            List<Category> categories = new List<Category>();
-            try
-            {
-                categories = _context.Categories.Where(category => category.ParentId == parentId).ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            return categories;
+            return await _context.Categories.Include(x => x.Parent).Where(category => category.ParentId == parentId).ToListAsync();
         }
     }
 }

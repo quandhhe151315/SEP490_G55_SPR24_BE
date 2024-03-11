@@ -9,7 +9,7 @@ namespace Data.Interfaces
 {
     public interface ICountryRepository
     {
-        List<Country> GetCountries();
-        Country GetCountry(int id);
+        Task<List<Country>> GetCountries();
+        Task<Country?> GetCountry(int id);
     }
 }

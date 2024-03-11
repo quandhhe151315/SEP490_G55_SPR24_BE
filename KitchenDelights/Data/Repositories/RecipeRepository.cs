@@ -23,7 +23,6 @@ namespace Data.Repositories
         {
             try
             {
-                recipe.RecipeRating = 0;
                 _context.Recipes.Add(recipe);
             }
             catch (Exception ex)
@@ -56,72 +55,61 @@ namespace Data.Repositories
 
         public async Task<List<Recipe>> GetRecipeByCategory(int categoryId)
         {
-            List<Recipe> recipes = [];
-            recipes = await _context.Recipes.AsNoTracking()
+            return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
                 .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.Categories.Any(x => x.CategoryId == categoryId))
                 .ToListAsync();
-            return recipes;
         }
 
         public async Task<List<Recipe>> GetRecipeByCountry(int countryId)
-        {
-            List<Recipe> recipes = [];
-            recipes = await _context.Recipes.AsNoTracking()
+        {           
+            return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
                 .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.Countries.Any(x => x.CountryId == countryId))
                 .ToListAsync();
-            return recipes;
         }
 
         public async Task<List<Recipe>> GetRecipeByTitle(string? title)
         {
-            List<Recipe> recipes = [];
-            recipes = await _context.Recipes.AsNoTracking()
+            return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
                 .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.RecipeTitle.Contains(title))
                 .ToListAsync();
-            return recipes;
         }
 
         public async Task<List<Recipe>> GetRecipeFree()
         {
-            List<Recipe> recipes = [];
-            recipes = await _context.Recipes.AsNoTracking()
+            return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
                 .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.IsFree == true)
                 .ToListAsync();
-            return recipes;
         }
 
         public async Task<List<Recipe>> GetRecipePaid()
         {
-            List<Recipe> recipes = [];
-            recipes = await _context.Recipes.AsNoTracking()
+            return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
                 .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.IsFree == false)
                 .ToListAsync();
-            return recipes;
         }
 
         public async Task<List<Recipe>> GetRecipes()
         {
-            
             return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
                 .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)

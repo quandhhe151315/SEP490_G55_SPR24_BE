@@ -9,12 +9,8 @@ namespace Data.Interfaces
 {
     public interface IIngredientRepository
     {
-        void CreateIngredient(Ingredient ingredient);
-        void UpdateIngredient(Ingredient ingredient);
-        void DeleteIngredient(Ingredient ingredient);
-        List<Ingredient> GetAllIngredients();
-        List<Ingredient> GetIngredientByName(string name);
-        Ingredient GetIngredientById(int ingredientId);
-        void Save();
+        Task<List<Ingredient>> GetAllIngredients();
+        Task<List<Ingredient>> GetIngredientByName(string name);
+        Task<Ingredient?> GetIngredientById(int ingredientId);
     }
 }

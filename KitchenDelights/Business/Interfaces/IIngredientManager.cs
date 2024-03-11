@@ -9,8 +9,8 @@ namespace Business.Interfaces
 {
     public interface IIngredientManager
     {
-        List<IngredientDTO> GetAllIngredients();
-        List<IngredientDTO> GetIngredientsByName(string name);
-        IngredientDTO GetIngredientById(int ingredientId);
+        Task<List<IngredientDTO>> GetAllIngredients();
+        Task<List<IngredientDTO>> GetIngredientsByName(string name);
+        Task<IngredientDTO?> GetIngredientById(int ingredientId);
     }
 }

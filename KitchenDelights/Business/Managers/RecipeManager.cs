@@ -36,9 +36,10 @@ namespace Business.Managers
 
         public async Task CreateRecipe(RecipeRequestDTO recipeDTO)
         {
-            Country country = _countryRepository.GetCountry(recipeDTO.CountryId);
+            Country? country = await _countryRepository.GetCountry(recipeDTO.CountryId);
             Recipe recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
             recipe.Countries.Add(country);
+            recipe.RecipeRating = 0;
             _recipeRepository.CreateRecipe(recipe);
             _recipeRepository.Save();
         }
@@ -128,7 +129,7 @@ namespace Business.Managers
         public async Task<bool> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
-            Category? category = _categoryRepository.GetCategoryById(categoryId);
+            Category? category = await _categoryRepository.GetCategoryById(categoryId);
             if (recipe == null || category == null) return false;
             switch (type)
             {

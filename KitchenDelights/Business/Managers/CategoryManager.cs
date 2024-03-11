@@ -23,37 +23,57 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public void CreateCategory(CategoryDTO categoryDTO)
+        public async Task CreateCategory(CategoryDTO categoryDTO)
         {
             Category category = new Category();
-            category.ParentId = categoryDTO.ParentId;
+            if (categoryDTO.ParentId == 0 || categoryDTO.ParentId == null)
+            {
+                category.ParentId = null;
+            }
+            else
+            {
+                category.ParentId = categoryDTO.ParentId;   
+            }
             category.CategoryName = categoryDTO.CategoryName;
             category.CategoryType = categoryDTO.CategoryType;
             _categoryRepository.CreateCategory(category);
             _categoryRepository.Save();
         }
 
-        public void UpdateCategory(CategoryDTO categoryDTO)
+        public async Task<bool> UpdateCategory(CategoryDTO categoryDTO)
         {
-            Category category = _categoryRepository.GetCategoryById(categoryDTO.CategoryId);
-            category.ParentId = categoryDTO.ParentId;
+            Category? category = await _categoryRepository.GetCategoryById(categoryDTO.CategoryId.Value);
+            if (category == null) return false;
+
+            if (categoryDTO.ParentId == 0 || categoryDTO.ParentId == null)
+            {
+                category.ParentId = null;
+            }
+            else
+            {
+                category.ParentId = categoryDTO.ParentId;
+            }
             category.CategoryName = categoryDTO.CategoryName;
             category.CategoryType = categoryDTO.CategoryType;
             _categoryRepository.UpdateCategory(category);
             _categoryRepository.Save();
+            return true;
         }
 
-        public void DeleteCategory(int categoryId)
+        public async Task<bool> DeleteCategory(int categoryId)
         {
-            Category category = _categoryRepository.GetCategoryById(categoryId);
+            Category? category = await _categoryRepository.GetCategoryById(categoryId);
+            if (category == null) return false;
+
             _categoryRepository.DeleteCategory(category);
             _categoryRepository.Save();
+            return true;
         }
 
-        public List<CategoryDTO> GetAllCategories()
+        public async Task<List<CategoryDTO>> GetAllCategories()
         {
             List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
-            List<Category> categories = _categoryRepository.GetAllCategories();
+            List<Category> categories = await _categoryRepository.GetAllCategories();
             if (categories.Count > 0)
             {
                 foreach (Category category in categories)
@@ -73,12 +93,12 @@ namespace Business.Managers
             return categoryDTOs;
         }
 
-        public CategoryDTO GetCategoryById(int categoryId)
+        public async Task<CategoryDTO?> GetCategoryById(int categoryId)
         {
-            CategoryDTO categoryDTO = new CategoryDTO();
-            Category category = _categoryRepository.GetCategoryById(categoryId);
+            Category? category = await _categoryRepository.GetCategoryById(categoryId);
             if (category != null)
             {
+                CategoryDTO? categoryDTO = new CategoryDTO();
                 categoryDTO.CategoryId = category.CategoryId;
                 categoryDTO.ParentId = category.ParentId;
                 if (categoryDTO.ParentId != null)
@@ -87,14 +107,15 @@ namespace Business.Managers
                 }
                 categoryDTO.CategoryName = category.CategoryName;
                 categoryDTO.CategoryType = category.CategoryType;
+                return categoryDTO;
             }
-            return categoryDTO;
+            else return null;
         }
 
-        public List<CategoryDTO> GetCategoryByParentId(int? parentId)
+        public async Task<List<CategoryDTO>> GetCategoryByParentId(int? parentId)
         {
             List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
-            List<Category> categories = _categoryRepository.GetCategoryByParentId(parentId);
+            List<Category> categories = await _categoryRepository.GetCategoryByParentId(parentId);
             if (categories.Count > 0)
             {
                 foreach (Category category in categories)

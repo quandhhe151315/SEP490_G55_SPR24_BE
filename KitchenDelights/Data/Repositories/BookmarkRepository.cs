@@ -36,10 +36,7 @@ namespace Data.Repositories
                     .FirstOrDefault(x => x.UserId == userId);
                 Recipe? recipe = _context.Recipes  
                     .FirstOrDefault(x => x.RecipeId == recipeId);
-                if(recipe == null)
-                {
-                    throw new Exception();
-                }
+                if(recipe == null) throw new Exception();
                 user.Recipes.Add(recipe);
                 _context.Users.Update(user);
             }
@@ -63,10 +60,7 @@ namespace Data.Repositories
                     .FirstOrDefault(x => x.UserId == userId);
                 Recipe? recipe = _context.Recipes
                     .FirstOrDefault(x => x.RecipeId == recipeId);
-                if (recipe == null)
-                {
-                    throw new Exception();
-                }
+                if (recipe == null) throw new Exception();
                 user.Recipes.Remove(recipe);
                 _context.Users.Update(user);
             }

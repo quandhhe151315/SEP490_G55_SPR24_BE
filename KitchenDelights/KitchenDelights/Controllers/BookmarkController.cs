@@ -22,7 +22,14 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> GetBookmarkOfUser(int id)
         {
             BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(id);
-            return bookmark == null ? NotFound("There not have any recipe in bookmark!") : Ok(bookmark);
+            if (bookmark.Recipes.Count == 0)
+            {
+                return NotFound("There not have any recipe in bookmark!");
+            }
+            else
+            {
+                return Ok(bookmark);
+            }
         }
 
 
@@ -32,6 +39,7 @@ namespace KitchenDelights.Controllers
         {
             try
             {
+                BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(userId);
                 if (userId == 0 || recipeId == 0)
                 {
                     return BadRequest("please enter require input");
@@ -39,25 +47,39 @@ namespace KitchenDelights.Controllers
                 switch (type)
                 {
                     case 1:
+                        foreach (RecipeDTO recipe in bookmark.Recipes)
+                        {
+                            if (recipe.RecipeId == recipeId)
+                            {
+                                return StatusCode(StatusCodes.Status406NotAcceptable, "Already exist this recipe in bookmark");
+                            }
+                        }
                         await _bookmarkManager.AddRecipeToBookmark(userId, recipeId);
-                        break;
+                        return Ok("Add recipe to bookmark sucessful");
                     case 2:
-                        await _bookmarkManager.RemoveRecipeFromBookmark(userId, recipeId);
-                        break;
+                        int count = 0;
+                        foreach (RecipeDTO recipe in bookmark.Recipes)
+                        {
+                            if (recipe.RecipeId == recipeId)
+                            {
+                                count++;
+                                await _bookmarkManager.RemoveRecipeFromBookmark(userId, recipeId);
+                            }
+                        }
+                        if (count <= 0)
+                        {
+                            return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter exist recipe in bookmark to delete");
+                        }
+                        else
+                        {
+                            return Ok("Remove recipe to bookmark sucessful");
+                        }
                 }
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            if (type == 1)
-            {
-                return Ok("Add recipe to bookmark sucessful");
-            }
-            else if (type == 2)
-            {
-                return Ok("Remove recipe to bookmark sucessful");
-            }
+            };
             return BadRequest("Please try again make sure type 1 to add and 2 to remove");
         }
     }
