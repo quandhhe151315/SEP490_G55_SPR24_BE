@@ -119,6 +119,9 @@ internal class Program
         builder.Services.AddScoped<IVoucherManager, VoucherManager>();
         builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 
+        builder.Services.AddScoped<IAdvertisementManager, AdvertisementManager>();
+        builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")
