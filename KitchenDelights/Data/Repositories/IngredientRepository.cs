@@ -18,90 +18,25 @@ namespace Data.Repositories
             _context = context;
         }
 
-        public void CreateIngredient(Ingredient ingredient)
+        public async Task<List<Ingredient>> GetAllIngredients()
         {
-            try
-            {
-                _context.Ingredients.Add(ingredient);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
+            return await _context.Ingredients.Include(x => x.IngredientMarketplaces).ToListAsync();
         }
 
-        public void DeleteIngredient(Ingredient ingredient)
+        public async Task<Ingredient?> GetIngredientById(int ingredientId)
         {
-            try
-            {
-                if (ingredient != null)
-                {
-                    _context.Ingredients.Remove(ingredient);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
+            return await _context.Ingredients.Include(x => x.IngredientMarketplaces)
+                .FirstOrDefaultAsync(ingredient => ingredient.IngredientId == ingredientId);
         }
 
-        public List<Ingredient> GetAllIngredients()
+        public async Task<List<Ingredient>> GetIngredientByName(string name)
         {
-            List<Ingredient> ingredients = new List<Ingredient>();
-            try
-            {
-                ingredients = _context.Ingredients.Include(x => x.IngredientMarketplaces).ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            return ingredients;
-        }
-
-        public Ingredient GetIngredientById(int ingredientId)
-        {
-            Ingredient ingredient = new Ingredient();
-            try
-            {
-                ingredient = _context.Ingredients.Include(x => x.IngredientMarketplaces).FirstOrDefault(ingredient => ingredient.IngredientId == ingredientId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            return ingredient;
-        }
-
-        public List<Ingredient> GetIngredientByName(string name)
-        {
-            List<Ingredient> ingredients = new List<Ingredient>();
-            try
-            {
-                ingredients = _context.Ingredients.Include(x => x.IngredientMarketplaces).Where(x => x.IngredientName.Contains(name)).ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            return ingredients;
+            return await _context.Ingredients.Include(x => x.IngredientMarketplaces).Where(x => x.IngredientName.Contains(name)).ToListAsync();
         }
 
         public void Save()
         {
             _context.SaveChanges();
-        }
-
-        public void UpdateIngredient(Ingredient ingredient)
-        {
-            try
-            {
-                _context.Ingredients.Update(ingredient);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
+        }  
     }
 }

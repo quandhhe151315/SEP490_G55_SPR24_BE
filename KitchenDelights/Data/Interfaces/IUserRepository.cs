@@ -17,6 +17,8 @@ namespace Data.Interfaces
 
         Task<User?> GetUser(int id);
 
+        Task<User?> GetBookmarkOfUser(int id);
+
         Task<List<User>> GetUsers(int id);
 
         void Save();

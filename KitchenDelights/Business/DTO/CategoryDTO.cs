@@ -8,7 +8,7 @@ namespace Business.DTO
 {
     public class CategoryDTO
     {
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         public int? ParentId { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Business.Managers;
 using Data.Entity;
 using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Http;
@@ -13,12 +14,12 @@ namespace KitchenDelights.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly ICategoryManager categoryManager;
+        private readonly ICategoryManager _categoryManager;
 
         public CategoryController(IConfiguration configuration, ICategoryManager categoryManagers)
         {
             _configuration = configuration;
-            categoryManager = categoryManagers;
+            _categoryManager = categoryManagers;
         }
 
         [HttpGet]
@@ -27,7 +28,7 @@ namespace KitchenDelights.Controllers
             List<CategoryDTO> categories = [];
             try
             {
-                categories = categoryManager.GetAllCategories();
+                categories = await _categoryManager.GetAllCategories();
                 if (categories.Count <= 0)
                 {
                     return NotFound("There are not exist any category in database");
@@ -43,20 +44,31 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCategoryById(int categoryId)
         {
-            CategoryDTO category;
             try
             {
-                category = categoryManager.GetCategoryById(categoryId);
-                if (category.CategoryId == 0)
+                if (categoryId != 0)
                 {
-                    return NotFound("Category not exist");
+                    CategoryDTO? category = await _categoryManager.GetCategoryById(categoryId);
+                    if (category == null)
+                    {
+                        return NotFound("Category not exist");
+                    }
+                    return Ok(category);
+                }
+                else
+                {
+                    List<CategoryDTO> categories = await _categoryManager.GetAllCategories();
+                    if (categories.Count <= 0)
+                    {
+                        return NotFound("There are not exist any category in database");
+                    }
+                    return Ok(categories);
                 }
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok(category);
         }
 
         [HttpGet]
@@ -65,81 +77,60 @@ namespace KitchenDelights.Controllers
             List<CategoryDTO> categoryDTOs;
             try
             {
-                categoryDTOs = categoryManager.GetCategoryByParentId(parentId);
-                if (categoryDTOs.Count <= 0)
+                if (parentId != null)
                 {
-                    return NotFound("Category not exist");
+                    categoryDTOs = await _categoryManager.GetCategoryByParentId(parentId);
+                    if (categoryDTOs.Count <= 0)
+                    {
+                        return NotFound("Category with parentId = " + parentId + " not exist");
+                    }
+                    return Ok(categoryDTOs);
+                }
+                else
+                {
+                    categoryDTOs = await _categoryManager.GetCategoryByParentId(parentId);
+                    return Ok(categoryDTOs);
                 }
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok(categoryDTOs);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CategoryDTO category)
         {
-            if (category.CategoryType == null)
-            {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
-            }
-            else
-            {
-                try
-                {
-                    categoryManager.CreateCategory(category);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
-            }
-            return Ok(category);
-        }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCategory(CategoryDTO category)
-        {
-            if (category.CategoryType == null)
-            {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
-            }
-            else
-            {
-                try
-                {
-                    if (categoryManager.GetCategoryById(category.CategoryId) == null || categoryManager.GetCategoryById(category.CategoryId).CategoryId == 0)
-                    {
-                        return NotFound("Category not exist");
-                    }
-                    categoryManager.UpdateCategory(category);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
-            }
-            return Ok("Update sucessfully");
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCategory(int categoryId)
-        {
             try
             {
-                if (categoryManager.GetCategoryById(categoryId) == null)
-                {
-                    return NotFound("Category not exist");
-                }
-                categoryManager.DeleteCategory(categoryId);
+                _categoryManager.CreateCategory(category);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok("Delete sucessfully");
+            return Ok("Create successful");
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(CategoryDTO category)
+        {
+            CategoryDTO? categoryDTO = await _categoryManager.GetCategoryById(category.CategoryId.Value);
+            if (categoryDTO == null) return NotFound("Category not exist");
+
+            bool isUpdated = await _categoryManager.UpdateCategory(category);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCategory(int categoryId)
+        {
+            CategoryDTO? category = await _categoryManager.GetCategoryById(categoryId);
+            if (category == null) return NotFound("Category not exist");
+
+            bool isDeleted = await _categoryManager.DeleteCategory(categoryId);
+            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
         }
     }
 }

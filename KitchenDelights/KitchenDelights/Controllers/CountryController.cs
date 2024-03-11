@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
+using Data.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,7 @@ namespace KitchenDelights.Controllers
             List<CountryDTO> countries = [];
             try
             {
-                countries = _countryManager.GetCountries();
+                countries = await _countryManager.GetCountries();
                 if (countries.Count <= 0)
                 {
                     return NotFound("There are not exist any country in database");
@@ -39,22 +40,33 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCountryById(int id)
+        public async Task<IActionResult> GetAllCountryById(int countryId)
         {
-            CountryDTO country;
             try
             {
-                country = _countryManager.GetCountry(id);
-                if (country == null)
+                if (countryId != 0)
                 {
-                    return NotFound("country not exist");
+                    CountryDTO? country = await _countryManager.GetCountry(countryId);
+                    if (country == null)
+                    {
+                        return NotFound("country not exist");
+                    }
+                    return Ok(country);
+                }
+                else
+                {
+                    List<CountryDTO> countries = await _countryManager.GetCountries();
+                    if (countries.Count <= 0)
+                    {
+                        return NotFound("There are not exist any country in database");
+                    }
+                    return Ok(countries);
                 }
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok(country);
         }
     }
 }

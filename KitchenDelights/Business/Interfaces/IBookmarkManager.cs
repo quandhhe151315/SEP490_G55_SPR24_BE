@@ -11,8 +11,8 @@ namespace Business.Interfaces
     {
         Task<BookmarkDTO?> GetBookmarkOfUser(int id);
 
-        Task AddRecipeToBookmark(int userId, int recipeId);
+        Task<bool> AddRecipeToBookmark(int userId, int recipeId);
 
-        Task RemoveRecipeFromBookmark(int userId, int recipeId);
+        Task<bool> RemoveRecipeFromBookmark(int userId, int recipeId);
     }
 }

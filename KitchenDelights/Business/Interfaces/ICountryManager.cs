@@ -10,7 +10,7 @@ namespace Business.Interfaces
 {
     public interface ICountryManager
     {
-        List<CountryDTO> GetCountries();
-        CountryDTO GetCountry(int id);
+        Task<List<CountryDTO>> GetCountries();
+        Task<CountryDTO?> GetCountry(int id);
     }
 }

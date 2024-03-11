@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
+using Data.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,11 @@ namespace KitchenDelights.Controllers
             List<IngredientDTO> ingredients = [];
             try
             {
-                ingredients = _ingredientManager.GetAllIngredients();
+                ingredients = await _ingredientManager.GetAllIngredients();
+                if (ingredients.Count < 0)
+                {
+                    return NotFound("There are not exist any ingredient in database");
+                }
             }
             catch (Exception ex)
             {
@@ -37,16 +42,32 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetIngredientById(int ingredientId)
         {
-            IngredientDTO ingredient;
             try
             {
-                ingredient = _ingredientManager.GetIngredientById(ingredientId);
+                if(ingredientId != 0)
+                {
+                    IngredientDTO? ingredient = await _ingredientManager.GetIngredientById(ingredientId);
+                    if (ingredient == null)
+                    {
+                        return NotFound("ingredient not exist");
+                    }
+                    return Ok(ingredient);
+                }
+                else
+                {
+                    List<IngredientDTO>  ingredients = await _ingredientManager.GetAllIngredients();
+                    if (ingredients.Count < 0)
+                    {
+                        return NotFound("There are not exist any ingredient in database");
+                    }
+                    return Ok(ingredients);
+                }
+                
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok(ingredient);
         }
 
         [HttpGet]
@@ -55,10 +76,10 @@ namespace KitchenDelights.Controllers
             List<IngredientDTO> ingredients = [];
             try
             {
-                ingredients = _ingredientManager.GetIngredientsByName(name);
-                if (ingredients.Count < 0)
+                ingredients = await _ingredientManager.GetIngredientsByName(name);
+                if (ingredients.Count <= 0)
                 {
-                    return NotFound("Ingredient not exist");
+                    return NotFound("There are not exist any ingredient in database");
                 }
             }
             catch (Exception ex)

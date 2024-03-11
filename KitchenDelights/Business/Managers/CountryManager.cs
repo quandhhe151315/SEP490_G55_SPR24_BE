@@ -22,9 +22,9 @@ namespace Business.Managers
             _countryRepository = countryRepository;
             _mapper = mapper;
         }
-        public List<CountryDTO> GetCountries()
+        public async Task<List<CountryDTO>> GetCountries()
         {
-            List<Country> countries = _countryRepository.GetCountries();
+            List<Country> countries = await _countryRepository.GetCountries();
             List<CountryDTO> countryDTOs = new List<CountryDTO>();
             foreach(Country country in countries)
             {
@@ -33,9 +33,9 @@ namespace Business.Managers
             return countryDTOs;
         }
 
-        public CountryDTO GetCountry(int id)
+        public async Task<CountryDTO?> GetCountry(int id)
         {
-            Country? country = _countryRepository.GetCountry(id);
+            Country? country = await _countryRepository.GetCountry(id);
             return country == null ? null : _mapper.Map<Country, CountryDTO>(country);
         }
     }

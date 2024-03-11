@@ -12,9 +12,9 @@ namespace Data.Interfaces
         void CreateCategory(Category category);
         void UpdateCategory(Category category);
         void DeleteCategory(Category category);
-        List<Category> GetAllCategories();
-        Category GetCategoryById(int categoryId);
-        List<Category> GetCategoryByParentId(int? parentId);
+        Task<List<Category>> GetAllCategories();
+        Task<Category?> GetCategoryById(int categoryId);
+        Task<List<Category>> GetCategoryByParentId(int? parentId);
         void Save();
     }
 }

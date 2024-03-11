@@ -43,7 +43,16 @@ namespace Data.Repositories
 
         public async Task<User?> GetUser(int id)
         {
-            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).Include(x => x.Addresses).FirstOrDefaultAsync(x => x.UserId == id);
+            return await _context.Users.Include(x => x.Role).Include(x => x.Status).Include(x => x.Addresses).Include(x => x.Recipes).FirstOrDefaultAsync(x => x.UserId == id);
+        }
+
+        public async Task<User?> GetBookmarkOfUser(int id)
+        {
+            return await _context.Users.AsNoTracking().Include(x => x.Recipes).ThenInclude(x => x.RecipeIngredients)
+                                                    .Include(x => x.Recipes).ThenInclude(x => x.RecipeRatings)
+                                                    .Include(x => x.Recipes).ThenInclude(x => x.Categories)
+                                                    .Include(x => x.Recipes).ThenInclude(x => x.Countries)
+                                                    .FirstOrDefaultAsync(x => x.UserId == id);
         }
 
         public async Task<List<User>> GetUsers(int id)

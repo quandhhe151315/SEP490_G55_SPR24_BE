@@ -6,6 +6,7 @@ using Data.Interfaces;
 using Data.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,9 +24,9 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public List<IngredientDTO> GetAllIngredients()
+        public async Task<List<IngredientDTO>> GetAllIngredients()
         {
-            List<Ingredient> ingredients = _ingredientRepository.GetAllIngredients();
+            List<Ingredient> ingredients = await _ingredientRepository.GetAllIngredients();
             List<IngredientDTO> ingredientDTOs = [];
             foreach (Ingredient ingredient in ingredients)
             {
@@ -34,17 +35,15 @@ namespace Business.Managers
             return ingredientDTOs;
         }
 
-        public IngredientDTO GetIngredientById(int ingredientId)
+        public async Task<IngredientDTO?> GetIngredientById(int ingredientId)
         {
-            IngredientDTO ingredientDTO = new IngredientDTO();
-            Ingredient ingredient = _ingredientRepository.GetIngredientById(ingredientId);
-            ingredientDTO = _mapper.Map<Ingredient, IngredientDTO>(ingredient);
-            return ingredientDTO;
+            Ingredient? ingredient = await _ingredientRepository.GetIngredientById(ingredientId);
+            return ingredient == null ? null : _mapper.Map<Ingredient, IngredientDTO>(ingredient);
         }
 
-        public List<IngredientDTO> GetIngredientsByName(string name)
+        public async Task<List<IngredientDTO>> GetIngredientsByName(string name)
         {
-            List<Ingredient> ingredients = _ingredientRepository.GetIngredientByName(name);
+            List<Ingredient> ingredients = await _ingredientRepository.GetIngredientByName(name);
             List<IngredientDTO> ingredientDTOs = [];
             foreach (Ingredient ingredient in ingredients)
             {
