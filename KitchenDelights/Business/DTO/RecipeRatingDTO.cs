@@ -16,6 +16,8 @@ namespace Business.DTO
 
         public string? Username { get; set; }
 
+        public string? Avatar { get; set; }
+
         public int RatingValue { get; set; }
 
         public int RatingStatus { get; set; } = 1;
