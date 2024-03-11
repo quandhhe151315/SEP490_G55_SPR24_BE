@@ -121,6 +121,9 @@ internal class Program
         builder.Services.AddScoped<IAdvertisementManager, AdvertisementManager>();
         builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
 
+        builder.Services.AddScoped<IRoleManager, RoleManager>();
+        builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")
