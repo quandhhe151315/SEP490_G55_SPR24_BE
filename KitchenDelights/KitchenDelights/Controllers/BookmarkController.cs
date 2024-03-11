@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Business.Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,10 +40,14 @@ namespace KitchenDelights.Controllers
         {
             try
             {
-                BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(userId);
                 if (userId == 0 || recipeId == 0)
                 {
                     return BadRequest("please enter require input");
+                }
+                BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(userId);
+                if (bookmark == null)
+                {
+                    return NotFound("User not exist");
                 }
                 switch (type)
                 {
@@ -54,8 +59,9 @@ namespace KitchenDelights.Controllers
                                 return StatusCode(StatusCodes.Status406NotAcceptable, "Already exist this recipe in bookmark");
                             }
                         }
-                        await _bookmarkManager.AddRecipeToBookmark(userId, recipeId);
-                        return Ok("Add recipe to bookmark sucessful");
+                        bool isAdded = await _bookmarkManager.AddRecipeToBookmark(userId, recipeId);
+                        if (isAdded) return Ok("Add recipe to bookmark sucessful");
+                        break;
                     case 2:
                         int count = 0;
                         foreach (RecipeDTO recipe in bookmark.Recipes)
@@ -67,13 +73,9 @@ namespace KitchenDelights.Controllers
                             }
                         }
                         if (count <= 0)
-                        {
                             return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter exist recipe in bookmark to delete");
-                        }
                         else
-                        {
                             return Ok("Remove recipe to bookmark sucessful");
-                        }
                 }
             }
             catch (Exception ex)

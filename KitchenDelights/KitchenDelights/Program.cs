@@ -88,7 +88,6 @@ internal class Program
         builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 
         builder.Services.AddScoped<IBookmarkManager, BookmarkManager>();
-        builder.Services.AddScoped<IBookmarkRepository, BookmarkRepository>();
 
         builder.Services.AddScoped<ICommentManager, CommentManager>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
