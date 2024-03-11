@@ -17,6 +17,7 @@ namespace Business.Profiles
             CreateMap<UserDTO, User>().ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.Role.RoleId));
             CreateMap<BookmarkDTO, User>();
             CreateMap<User, BookmarkDTO>();
+            CreateMap<CreateUserDTO, User>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
         }
     }
 }

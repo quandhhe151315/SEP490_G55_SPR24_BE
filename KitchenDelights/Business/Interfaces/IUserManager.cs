@@ -11,7 +11,7 @@ namespace Business.Interfaces
     {
         void CreateUser(RegisterRequestDTO user);
 
-        void CreateUser(UserDTO user);
+        void CreateUser(CreateUserDTO user);
 
         Task<bool> CreateResetToken(ForgotPasswordDTO forgotDetail);
 
