@@ -12,11 +12,9 @@ namespace Data.Interfaces
         void CreateMenu(Menu menu);
         void UpdateMenu(Menu menu);
         void DeleteMenu(Menu menu);
-        List<Menu> GetAllMenus();
-        Menu GetMenuById(int menuId);
-        List<Menu> GetMenuByUserId(int userId);
-        void AddRecipeToMenu(int menuId, int recipeId);
-        void RemoveRecipeFromMenu(int menuId, int recipeId);
+        Task<List<Menu>> GetAllMenus();
+        Task<Menu?> GetMenuById(int menuId);
+        Task<List<Menu>> GetMenuByUserId(int userId);
         void Save();
     }
 }

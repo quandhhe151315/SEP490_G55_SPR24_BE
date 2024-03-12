@@ -15,8 +15,8 @@ namespace Business.Managers
 {
     public class IngredientManager : IIngredientManager
     {
-        IIngredientRepository _ingredientRepository;
-        private IMapper _mapper;
+        private readonly IIngredientRepository _ingredientRepository;
+        private readonly IMapper _mapper;
 
         public IngredientManager(IIngredientRepository ingredientRepository, IMapper mapper)
         {

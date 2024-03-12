@@ -104,7 +104,7 @@ namespace KitchenDelights.Controllers
 
             try
             {
-                _categoryManager.CreateCategory(category);
+                await _categoryManager.CreateCategory(category);
             }
             catch (Exception ex)
             {

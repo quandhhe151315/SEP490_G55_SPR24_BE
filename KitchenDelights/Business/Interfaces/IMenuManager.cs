@@ -9,13 +9,13 @@ namespace Business.Interfaces
 {
     public interface IMenuManager
     {
-        void CreateMenu(MenuRequestDTO menuRequestDTO);
-        void UpdateMenu(MenuRequestDTO menuRequestDTO);
-        void DeleteMenu(int menuId);
-        List<MenuDTO> GetAllMenues();
-        MenuDTO GetMenuById(int menuId);
-        List<MenuDTO> GetMenuByUserId(int userId);
-        void AddRecipeToMenu(int menuId, int recipeId);
-        void RemoveRecipeFromMenu(int menuId, int recipeId);
+        Task CreateMenu(MenuRequestDTO menuRequestDTO);
+        Task<bool> UpdateMenu(MenuRequestDTO menuRequestDTO);
+        Task<bool> DeleteMenu(int menuId);
+        Task<List<MenuDTO>> GetAllMenues();
+        Task<MenuDTO> GetMenuById(int menuId);
+        Task<List<MenuDTO>> GetMenuByUserId(int userId);
+        Task<bool> AddRecipeToMenu(int menuId, int recipeId);
+        Task<bool> RemoveRecipeFromMenu(int menuId, int recipeId);
     }
 }
