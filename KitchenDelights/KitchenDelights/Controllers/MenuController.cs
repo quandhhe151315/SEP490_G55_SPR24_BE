@@ -59,6 +59,25 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetMenuByUserIdAndCheckExistRecipe(int userId, int recipeId)
+        {
+            List<MenuDTO> menus = [];
+            try
+            {
+                menus = await _menuManager.GetMenuByUserIdAndCheckExistRecipe(userId, recipeId);
+                if (menus.Count <= 0)
+                {
+                    return NotFound("There are not exist any menu in database");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(menus);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetMenuById(int menuId)
         {
             MenuDTO menu;

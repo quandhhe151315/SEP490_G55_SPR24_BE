@@ -92,6 +92,25 @@ namespace Business.Managers
             return menuDTOs;
         }
 
+        public async Task<List<MenuDTO>> GetMenuByUserIdAndCheckExistRecipe(int userId, int recipeId)
+        {
+            List<MenuDTO> menuDTOs = [];
+            List<Menu> menus = await _menuRepository.GetMenuByUserId(userId);
+            foreach(Menu menu in menus)
+            {
+                MenuDTO menuDTO = _mapper.Map<Menu, MenuDTO>(menu);
+                foreach (Recipe recipe in menu.Recipes)
+                {
+                    if (recipe.RecipeId == recipeId)
+                    {
+                        menuDTO.isExistRecipe = true;
+                    }
+                }
+                menuDTOs.Add(menuDTO);
+            }
+            return menuDTOs;
+        }
+
         public async Task<bool> RemoveRecipeFromMenu(int menuId, int recipeId)
         {
             try

@@ -18,6 +18,8 @@ namespace Business.DTO
 
         public int UserId { get; set; }
 
+        public bool isExistRecipe { get; set; }
+
         public virtual List<RecipeDTO> Recipes { get; set; } = [];
     }
 }
