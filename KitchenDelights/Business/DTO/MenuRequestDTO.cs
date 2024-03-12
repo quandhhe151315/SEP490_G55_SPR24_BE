@@ -8,7 +8,7 @@ namespace Business.DTO
 {
     public class MenuRequestDTO
     {
-        public int MenuId { get; set; }
+        public int? MenuId { get; set; }
 
         public string? FeaturedImage { get; set; }
 

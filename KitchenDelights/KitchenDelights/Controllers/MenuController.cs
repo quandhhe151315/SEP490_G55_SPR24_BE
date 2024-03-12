@@ -26,7 +26,7 @@ namespace KitchenDelights.Controllers
             List<MenuDTO> menus = [];
             try
             {
-                menus = _menuManager.GetAllMenues();
+                menus = await _menuManager.GetAllMenues();
                 if (menus.Count <= 0)
                 {
                     return NotFound("There are not exist any menu in database");
@@ -45,7 +45,7 @@ namespace KitchenDelights.Controllers
             List<MenuDTO> menus = [];
             try
             {
-                menus = _menuManager.GetMenuByUserId(userId);
+                menus = await _menuManager.GetMenuByUserId(userId);
                 if (menus.Count <= 0)
                 {
                     return NotFound("There are not exist any menu in database");
@@ -64,8 +64,8 @@ namespace KitchenDelights.Controllers
             MenuDTO menu;
             try
             {
-                menu = _menuManager.GetMenuById(menuId);
-                if (menu.MenuId == 0)
+                menu = await _menuManager.GetMenuById(menuId);
+                if (menu == null)
                 {
                     return NotFound("Menu not exist");
                 }
@@ -80,86 +80,55 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMenu(MenuRequestDTO menu)
         {
-            if (menu.UserId == null)
+            try
             {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter all require input");
+                await _menuManager.CreateMenu(menu);
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    _menuManager.CreateMenu(menu);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return Ok(menu);
+            return Ok("Create Sucessful");
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateMenu(MenuRequestDTO menu)
         {
-            try
-            {
-                if (_menuManager.GetMenuById(menu.MenuId) == null || _menuManager.GetMenuById(menu.MenuId).MenuId == 0)
-                {
-                    return NotFound("Menu not exist");
-                }
-                _menuManager.UpdateMenu(menu);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Update sucessfully");
+            MenuDTO? menuDTO = await _menuManager.GetMenuById(menu.MenuId.Value);
+            if (menuDTO == null) return NotFound("Menu not exist");
+
+            bool isUpdated = await _menuManager.UpdateMenu(menu);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucessful");
         }
 
         [HttpPut]
         public async Task<IActionResult> AddRecipeToMenu(int menuId, int recipeId)
         {
-            try
-            {
-                _menuManager.AddRecipeToMenu(menuId, recipeId);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Add recipe to menu sucessful");
+            MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
+            if (menuDTO == null) return NotFound("Menu not exist");
+
+            bool isUpdated = await _menuManager.AddRecipeToMenu(menuId, recipeId);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Add recipe failed!") : Ok("Add recipe sucessful");
         }
 
         [HttpPut]
         public async Task<IActionResult> RemoveRecipeFromMenu(int menuId, int recipeId)
         {
-            try
-            {
-                _menuManager.RemoveRecipeFromMenu(menuId, recipeId);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Remove recipe from menu sucessful");
+            MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
+            if (menuDTO == null) return NotFound("Menu not exist");
+
+            bool isUpdated = await _menuManager.RemoveRecipeFromMenu(menuId, recipeId);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Remove recipe failed!") : Ok("Remove recipe sucessful");
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteMenu(int menuId)
         {
-            try
-            {
-                if (_menuManager.GetMenuById(menuId) == null || _menuManager.GetMenuById(menuId).MenuId == 0)
-                {
-                    return NotFound("Menu not exist");
-                }
-                _menuManager.DeleteMenu(menuId);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Delete sucessfully");
+            MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
+            if (menuDTO == null) return NotFound("Menu not exist");
+
+            bool isDeleted = await _menuManager.DeleteMenu(menuId);
+            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucessful");
         }
     }
 }

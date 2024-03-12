@@ -18,28 +18,6 @@ namespace Data.Repositories
             _context = context;
         }
 
-        public void AddRecipeToMenu(int menuId, int recipeId)
-        {
-            try
-            {
-                Menu? menu = _context.Menus
-                    .Include(x => x.Recipes)
-                    .FirstOrDefault(x => x.MenuId == menuId);
-                Recipe? recipe = _context.Recipes
-                    .FirstOrDefault(x => x.RecipeId == recipeId);
-                if (recipe == null)
-                {
-                    throw new Exception();
-                }
-                menu.Recipes.Add(recipe);
-                _context.Menus.Update(menu);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
         public void CreateMenu(Menu menu)
         {
             try
@@ -67,12 +45,12 @@ namespace Data.Repositories
             }
         }
 
-        public List<Menu> GetAllMenus()
+        public async Task<List<Menu>> GetAllMenus()
         {
             List<Menu> menus = new List<Menu>();
             try
             {
-                menus = _context.Menus.Include(x => x.Recipes).ToList();
+                menus = await _context.Menus.Include(x => x.Recipes).ThenInclude(x => x.User).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -81,12 +59,12 @@ namespace Data.Repositories
             return menus;
         }
 
-        public Menu GetMenuById(int menuId)
+        public async Task<Menu?> GetMenuById(int menuId)
         {
             Menu? menu = new Menu();
             try
             {
-                menu = _context.Menus.Include(x => x.Recipes).FirstOrDefault(x => x.MenuId == menuId);
+                menu = await _context.Menus.Include(x => x.Recipes).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.MenuId == menuId);
             }
             catch (Exception ex)
             {
@@ -95,40 +73,18 @@ namespace Data.Repositories
             return menu;
         }
 
-        public List<Menu> GetMenuByUserId(int userId)
+        public async Task<List<Menu>> GetMenuByUserId(int userId)
         {
             List<Menu> menus = new List<Menu>();
             try
             {
-                menus = _context.Menus.Include(x => x.Recipes).Where(x => x.UserId == userId).ToList();
+                menus = await _context.Menus.Include(x => x.Recipes).ThenInclude(x => x.User).Where(x => x.UserId == userId).ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }
             return menus;
-        }
-
-        public void RemoveRecipeFromMenu(int menuId, int recipeId)
-        {
-            try
-            {
-                Menu? menu = _context.Menus
-                    .Include(x => x.Recipes)
-                    .FirstOrDefault(x => x.MenuId == menuId);
-                Recipe? recipe = _context.Recipes
-                    .FirstOrDefault(x => x.RecipeId == recipeId);
-                if (recipe == null)
-                {
-                    throw new Exception();
-                }
-                menu.Recipes.Remove(recipe);
-                _context.Menus.Update(menu);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
         }
 
         public void Save()

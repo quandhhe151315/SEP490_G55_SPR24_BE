@@ -4,6 +4,7 @@ using Business.Interfaces;
 using Data.Entity;
 using Data.Interfaces;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,40 +15,58 @@ namespace Business.Managers
 {
     public class MenuManager : IMenuManager
     {
-        IMenuRepository _menuRepository;
-        private IMapper _mapper;
+        private readonly IMenuRepository _menuRepository;
+        private readonly IRecipeRepository _recipeRepository;
+        private readonly IMapper _mapper;
 
-        public MenuManager(IMenuRepository menuRepository, IMapper mapper)
+        public MenuManager(IMenuRepository menuRepository, IRecipeRepository recipeRepository, IMapper mapper)
         {
             _menuRepository = menuRepository;
+            _recipeRepository = recipeRepository;
             _mapper = mapper;
         }
 
-        public void AddRecipeToMenu(int menuId, int recipeId)
+        public async Task<bool> AddRecipeToMenu(int menuId, int recipeId)
         {
-            _menuRepository.AddRecipeToMenu(menuId, recipeId);
-            _menuRepository.Save();
+            try
+            {
+                Menu? menu = await _menuRepository.GetMenuById(menuId);
+                Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
+
+                if (recipe == null || menu == null)
+                {
+                    throw new Exception();
+                }
+                menu.Recipes.Add(recipe);
+                _menuRepository.UpdateMenu(menu);
+                _menuRepository.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public void CreateMenu(MenuRequestDTO menuRequestDTO)
+        public async Task CreateMenu(MenuRequestDTO menuRequestDTO)
         {
             _menuRepository.CreateMenu(_mapper.Map<MenuRequestDTO, Menu>(menuRequestDTO));
             _menuRepository.Save();
         }
 
-        public void DeleteMenu(int menuId)
+        public async Task<bool> DeleteMenu(int menuId)
         {
-            Menu? menu = _menuRepository.GetMenuById(menuId);
-            if (menu != null)
-            {
-                _menuRepository.DeleteMenu(menu);
-                _menuRepository.Save();
-            }
+            Menu? menu = await _menuRepository.GetMenuById(menuId);
+            if (menu == null) return false;
+            menu.Recipes.Clear();
+            _menuRepository.DeleteMenu(menu);
+            _menuRepository.Save();
+            return true;
         }
 
-        public List<MenuDTO> GetAllMenues()
+        public async Task<List<MenuDTO>> GetAllMenues()
         {
-            List<Menu> menus = _menuRepository.GetAllMenus();
+            List<Menu> menus = await _menuRepository.GetAllMenus();
             List<MenuDTO> menuDTOs = [];
             foreach (Menu menu in menus)
             {
@@ -56,15 +75,15 @@ namespace Business.Managers
             return menuDTOs;
         }
 
-        public MenuDTO GetMenuById(int menuId)
+        public async Task<MenuDTO?> GetMenuById(int menuId)
         {
-            Menu? menu = _menuRepository.GetMenuById(menuId);
+            Menu? menu = await _menuRepository.GetMenuById(menuId);
             return menu is null ? null : _mapper.Map<Menu, MenuDTO>(menu);
         }
 
-        public List<MenuDTO> GetMenuByUserId(int userId)
+        public async Task<List<MenuDTO>> GetMenuByUserId(int userId)
         {
-            List<Menu> menus = _menuRepository.GetMenuByUserId(userId);
+            List<Menu> menus = await _menuRepository.GetMenuByUserId(userId);
             List<MenuDTO> menuDTOs = [];
             foreach (Menu menu in menus)
             {
@@ -73,26 +92,41 @@ namespace Business.Managers
             return menuDTOs;
         }
 
-        public void RemoveRecipeFromMenu(int menuId, int recipeId)
+        public async Task<bool> RemoveRecipeFromMenu(int menuId, int recipeId)
         {
-            _menuRepository.RemoveRecipeFromMenu(menuId, recipeId);
-            _menuRepository.Save();
-        }
-
-        public void UpdateMenu(MenuRequestDTO menuRequestDTO)
-        {
-            Menu? menu = _menuRepository.GetMenuById(menuRequestDTO.MenuId);
-            if (menu != null)
+            try
             {
-                //Update partially
-                menu.MenuId = menuRequestDTO.MenuId;
-                menu.FeaturedImage = menuRequestDTO.FeaturedImage;
-                menu.MenuName = menuRequestDTO.MenuName;
-                menu.MenuDescription = menuRequestDTO.MenuDescription;
+                Menu? menu = await _menuRepository.GetMenuById(menuId);
+                Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
 
+                if (recipe == null || menu == null)
+                {
+                    throw new Exception();
+                }
+                menu.Recipes.Remove(recipe);
                 _menuRepository.UpdateMenu(menu);
                 _menuRepository.Save();
+                return true;
             }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateMenu(MenuRequestDTO menuRequestDTO)
+        {
+            Menu? menu = await _menuRepository.GetMenuById(menuRequestDTO.MenuId.Value);
+            if (menu == null) return false;
+            //Update partially
+            menu.MenuId = menuRequestDTO.MenuId.Value;
+            menu.FeaturedImage = menuRequestDTO.FeaturedImage;
+            menu.MenuName = menuRequestDTO.MenuName;
+            menu.MenuDescription = menuRequestDTO.MenuDescription;
+
+            _menuRepository.UpdateMenu(menu);
+            _menuRepository.Save();
+            return true;
         }
     }
 }

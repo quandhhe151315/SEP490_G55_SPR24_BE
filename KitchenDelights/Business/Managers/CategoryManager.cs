@@ -14,8 +14,8 @@ namespace Business.Managers
 {
     public class CategoryManager : ICategoryManager
     {
-        ICategoryRepository _categoryRepository;
-        private IMapper _mapper;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
         public CategoryManager(ICategoryRepository categoryRepository, IMapper mapper)
         {
