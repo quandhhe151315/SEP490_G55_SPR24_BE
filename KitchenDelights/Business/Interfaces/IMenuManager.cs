@@ -15,6 +15,7 @@ namespace Business.Interfaces
         Task<List<MenuDTO>> GetAllMenues();
         Task<MenuDTO> GetMenuById(int menuId);
         Task<List<MenuDTO>> GetMenuByUserId(int userId);
+        Task<List<MenuDTO>> GetMenuByUserIdAndCheckExistRecipe(int userId, int recipeId);
         Task<bool> AddRecipeToMenu(int menuId, int recipeId);
         Task<bool> RemoveRecipeFromMenu(int menuId, int recipeId);
     }
