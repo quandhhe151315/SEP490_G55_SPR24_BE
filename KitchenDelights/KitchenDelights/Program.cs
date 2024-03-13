@@ -124,6 +124,8 @@ internal class Program
         builder.Services.AddScoped<IRoleManager, RoleManager>();
         builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
+        builder.Services.AddScoped<IRecipeIngredientRepository, RecipeIngredientRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")

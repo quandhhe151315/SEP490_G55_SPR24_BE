@@ -19,18 +19,21 @@ namespace Business.Managers
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICountryRepository _countryRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IRecipeIngredientRepository _recipeIngredientRepository;
         private readonly IMapper _mapper;
 
         public RecipeManager(IRecipeRepository recipeRepository, 
                             ICategoryRepository categoryRepository, 
                             ICountryRepository countryRepository,
                             IUserRepository userRepository,
+                            IRecipeIngredientRepository recipeIngredientRepository,
                             IMapper mapper)
         {
             _recipeRepository = recipeRepository;
             _categoryRepository = categoryRepository;
             _countryRepository = countryRepository;
             _userRepository = userRepository;
+            _recipeIngredientRepository = recipeIngredientRepository;
             _mapper = mapper;
         }
 
@@ -172,16 +175,49 @@ namespace Business.Managers
 
         public async Task<bool> UpdateRecipe(RecipeRequestDTO recipeDTO)
         {
-            Recipe? recipe = await _recipeRepository.GetRecipe(recipeDTO.RecipeId.Value);
-            if (recipe == null)
+            try
+            {
+                Recipe? recipe = await _recipeRepository.GetRecipe(recipeDTO.RecipeId.Value);
+
+                if (recipe == null)
+                {
+                    return false;
+                }
+
+                //recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
+
+                recipe.RecipeId = recipeDTO.RecipeId.Value;
+                recipe.FeaturedImage = recipeDTO.FeaturedImage;
+                recipe.RecipeDescription = recipeDTO?.RecipeDescription;
+                recipe.VideoLink = recipeDTO?.VideoLink;
+                recipe.RecipeTitle = recipeDTO?.RecipeTitle;
+                recipe.PreparationTime = recipeDTO.PreparationTime.Value;
+                recipe.CookTime = recipeDTO.CookTime.Value;
+                recipe.RecipeServe = recipeDTO?.RecipeServe.Value;
+                recipe.RecipeContent = recipeDTO?.RecipeContent;
+                recipe.IsFree = recipeDTO.IsFree;
+                recipe.RecipePrice = recipeDTO.RecipePrice.Value;
+                Country? country = await _countryRepository.GetCountry(recipeDTO.CountryId);
+                Country? countryRecipe = recipe.Countries.ElementAt(0);
+                recipe.Countries.Remove(countryRecipe);
+                recipe.Countries.Add(country);
+
+                List<RecipeIngredient> recipeIngredients = await _recipeIngredientRepository.GetRecipeIngredient(recipeDTO.RecipeId.Value);
+                _recipeIngredientRepository.RemoveRecipeIngredient(recipeIngredients);
+
+                foreach(RecipeIngredientRequestDTO recipeIngredient in recipeDTO.RecipeIngredients)
+                {
+                    recipe.RecipeIngredients.Add(_mapper.Map<RecipeIngredientRequestDTO, RecipeIngredient>(recipeIngredient));
+                }
+
+                _recipeRepository.UpdateRecipe(recipe);
+                _recipeRepository.Save();
+                return true;
+            }
+            catch (Exception ex)
             {
                 return false;
             }
-            recipe.RecipeIngredients.Clear();
-            recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
-            _recipeRepository.UpdateRecipe(recipe);
-            _recipeRepository.Save();
-            return true;
         }
 
         public async Task<bool> UpdateStatusRecipe(int recipeId, int status)
