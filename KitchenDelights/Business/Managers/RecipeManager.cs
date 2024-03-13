@@ -40,6 +40,8 @@ namespace Business.Managers
             Recipe recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
             recipe.Countries.Add(country);
             recipe.RecipeRating = 0;
+            recipe.RecipeStatus = 1;
+            recipe.CreateDate = DateTime.Now;
             _recipeRepository.CreateRecipe(recipe);
             _recipeRepository.Save();
         }
@@ -126,6 +128,28 @@ namespace Business.Managers
             return recipeDTOs;
         }
 
+        public async Task<List<RecipeDTO>> GetRecipesASC()
+        {
+            List<Recipe> recipes = await _recipeRepository.GetRecipesASC();
+            List<RecipeDTO> recipeDTOs = [];
+            foreach (Recipe recipe in recipes)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
+
+        public async Task<List<RecipeDTO>> GetRecipesDESC()
+        {
+            List<Recipe> recipes = await _recipeRepository.GetRecipesDESC();
+            List<RecipeDTO> recipeDTOs = [];
+            foreach (Recipe recipe in recipes)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
+
         public async Task<bool> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
@@ -154,7 +178,6 @@ namespace Business.Managers
                 return false;
             }
             recipe.RecipeIngredients.Clear();
-            _recipeRepository.Save();
             recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
             _recipeRepository.UpdateRecipe(recipe);
             _recipeRepository.Save();
