@@ -20,9 +20,9 @@ namespace Business.DTO
 
         public string? RecipeTitle { get; set; }
 
-        public int PreparationTime { get; set; }
+        public int? PreparationTime { get; set; }
 
-        public int CookTime { get; set; }
+        public int? CookTime { get; set; }
 
         public int? RecipeServe { get; set; }
 
