@@ -19,6 +19,8 @@ namespace Data.Interfaces
         Task<List<Recipe>> GetRecipeFree();
         Task<List<Recipe>> GetRecipePaid();
         Task<List<Recipe>> GetRecipes();
+        Task<List<Recipe>> GetRecipesDESC();
+        Task<List<Recipe>> GetRecipesASC();
         void Save();
     }
 }

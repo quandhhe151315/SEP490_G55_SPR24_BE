@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
+using Data.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +42,7 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVoucherByCode(string voucherCode)
         {
-            VoucherDTO voucher;
+            VoucherDTO? voucher;
             try
             {
                 voucher = await _voucherManager.GetVoucher(voucherCode);
@@ -74,37 +75,21 @@ namespace KitchenDelights.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateVoucher(VoucherDTO voucher)
         {
-            try
-            {
-                if (await _voucherManager.GetVoucher(voucher.VoucherCode) == null)
-                {
-                    return NotFound("Voucher not exist");
-                }
-                await _voucherManager.UpdateVoucher(voucher);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Update sucessfully");
+            VoucherDTO? voucherDTO = await _voucherManager.GetVoucher(voucher.VoucherCode);
+            if (voucherDTO == null) return NotFound("Voucher not exist");
+
+            bool isUpdated = await _voucherManager.UpdateVoucher(voucher);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucessful");
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteVoucher(string voucherCode)
         {
-            try
-            {
-                if (await _voucherManager.GetVoucher(voucherCode) == null)
-                {
-                    return NotFound("Voucher not exist");
-                }
-                await _voucherManager.RemoveVoucher(voucherCode);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Delete sucessfully");
+            VoucherDTO? voucherDTO = await _voucherManager.GetVoucher(voucherCode);
+            if (voucherDTO == null) return NotFound("Voucher not exist");
+
+            bool isUpdated = await _voucherManager.RemoveVoucher(voucherCode);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucessful");
         }
     }
 }

@@ -47,7 +47,8 @@ namespace Data.Repositories
         {
             return await _context.Recipes
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
-                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.RecipeId == id);
@@ -57,7 +58,8 @@ namespace Data.Repositories
         {
             return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
-                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.Categories.Any(x => x.CategoryId == categoryId))
@@ -68,7 +70,8 @@ namespace Data.Repositories
         {           
             return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
-                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.Countries.Any(x => x.CountryId == countryId))
@@ -79,7 +82,8 @@ namespace Data.Repositories
         {
             return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
-                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.RecipeTitle.Contains(title))
@@ -90,7 +94,8 @@ namespace Data.Repositories
         {
             return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
-                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.IsFree == true)
@@ -101,7 +106,8 @@ namespace Data.Repositories
         {
             return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
-                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .Where(x => x.IsFree == false)
@@ -112,10 +118,33 @@ namespace Data.Repositories
         {
             return await _context.Recipes.AsNoTracking()
                 .Include(x => x.CartItems).Include(x => x.PaymentHistories)
-                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient).Include(x => x.RecipeRatings)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
                 .ToListAsync();
+        }
+
+        public async Task<List<Recipe>> GetRecipesASC()
+        {
+            return await _context.Recipes.AsNoTracking()
+                .Include(x => x.CartItems).Include(x => x.PaymentHistories)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
+                .Include(x => x.Categories).Include(x => x.Countries)
+                .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
+                .OrderBy(x => x.RecipeRating).ToListAsync();
+        }
+
+        public async Task<List<Recipe>> GetRecipesDESC()
+        {
+            return await _context.Recipes.AsNoTracking()
+                .Include(x => x.CartItems).Include(x => x.PaymentHistories)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
+                .Include(x => x.Categories).Include(x => x.Countries)
+                .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
+                .OrderByDescending(x => x.RecipeRating).ToListAsync();
         }
 
         public void Save()

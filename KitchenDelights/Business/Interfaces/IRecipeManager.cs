@@ -32,5 +32,9 @@ namespace Business.Interfaces
         Task<List<RecipeDTO>> GetRecipePaid();
 
         Task<List<RecipeDTO>> GetRecipes();
+
+        Task<List<RecipeDTO>> GetRecipesDESC();
+
+        Task<List<RecipeDTO>> GetRecipesASC();
     }
 }

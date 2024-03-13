@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
+using Data.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,44 @@ namespace KitchenDelights.Controllers
             try
             {
                 recipes = await _recipeManager.GetRecipes();
+                if (recipes.Count <= 0)
+                {
+                    return NotFound("There are not exist any recipe in database");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(recipes);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllRecipeDESCbyRating()
+        {
+            List<RecipeDTO> recipes = [];
+            try
+            {
+                recipes = await _recipeManager.GetRecipesDESC();
+                if (recipes.Count <= 0)
+                {
+                    return NotFound("There are not exist any recipe in database");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(recipes);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllRecipeASCbyRating()
+        {
+            List<RecipeDTO> recipes = [];
+            try
+            {
+                recipes = await _recipeManager.GetRecipesASC();
                 if (recipes.Count <= 0)
                 {
                     return NotFound("There are not exist any recipe in database");
@@ -143,7 +182,7 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRecipeById(int recipeId)
         {
-            RecipeDTO recipe;
+            RecipeDTO? recipe;
             try
             {
                 recipe = await _recipeManager.GetRecipe(recipeId);
@@ -162,11 +201,9 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRecipe(RecipeRequestDTO recipe)
         {
-            recipe.RecipeStatus = 1;
-            recipe.CreateDate = DateTime.Now;
             try
             {
-                _recipeManager.CreateRecipe(recipe);
+                await _recipeManager.CreateRecipe(recipe);
                 return Ok(recipe);
             }
             catch (Exception ex)
@@ -178,73 +215,41 @@ namespace KitchenDelights.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateRecipe(RecipeRequestDTO recipe)
         {
-            try
-            {
-                if (await _recipeManager.GetRecipe(recipe.RecipeId.Value) == null)
-                {
-                    return NotFound("Recipe not exist");
-                }
-                await _recipeManager.UpdateRecipe(recipe);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Update sucessfully");
+            RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipe.RecipeId.Value);
+            if (recipeDTO == null) return NotFound("Recipe not exist");
+
+            bool isUpdated = await _recipeManager.UpdateRecipe(recipe);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucessful");
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateStatusRecipe(int recipeId, int status)
         {
-            try
-            {
-                if (await _recipeManager.GetRecipe(recipeId) == null)
-                {
-                    return NotFound("Recipe not exist");
-                }
-                await _recipeManager.UpdateStatusRecipe(recipeId, status);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Update sucessfully");
+            RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipeId);
+            if (recipeDTO == null) return NotFound("Recipe not exist");
+
+            bool isUpdated = await _recipeManager.UpdateStatusRecipe(recipeId, status);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update status failed!") : Ok("Update status sucessful");
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
         {
-            try
-            {
-                if (await _recipeManager.GetRecipe(recipeId) == null)
-                {
-                    return NotFound("Recipe not exist");
-                }
-                await _recipeManager.UpdateCategoryRecipe(recipeId, categoryId, type);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Update sucessfully");
+            RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipeId);
+            if (recipeDTO == null) return NotFound("Recipe not exist");
+
+            bool isUpdated = await _recipeManager.UpdateCategoryRecipe(recipeId, categoryId, type);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update category failed!") : Ok("Update category sucessful");
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteRecipe(int recipeId)
         {
-            try
-            {
-                if (await _recipeManager.GetRecipe(recipeId) == null)
-                {
-                    return NotFound("Recipe not exist");
-                }
-                await _recipeManager.DeleteRecipe(recipeId);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            return Ok("Delete sucessfully");
+            RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipeId);
+            if (recipeDTO == null) return NotFound("Recipe not exist");
+
+            bool isUpdated = await _recipeManager.UpdateStatusRecipe(recipeId, 0);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucessful");
         }
     }
 }
