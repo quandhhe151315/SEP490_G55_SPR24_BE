@@ -19,9 +19,17 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int? id)
         {
-            List<BlogCommentDTO> comments = await _commentManager.GetComments(id);
+            List<BlogCommentDTO> comments;
+            if(id == null)
+            {
+                comments = await _commentManager.GetComments();
+            } else
+            {
+                comments = await _commentManager.GetComments(id.Value);
+            }
+
             return Ok(comments);
         }
 
