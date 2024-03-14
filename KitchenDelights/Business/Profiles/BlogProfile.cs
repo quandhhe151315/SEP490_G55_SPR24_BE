@@ -14,7 +14,8 @@ namespace Business.Profiles
         public BlogProfile() {
             CreateMap<Blog, BlogDTO>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => $"{src.User.LastName} {src.User.MiddleName} {src.User.FirstName}".Replace("  ", " ").Trim()))
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
+                .ForMember(dest => dest.CommentCount, opt => opt.MapFrom(src => src.BlogComments.Count));
 
             CreateMap<BlogDTO, Blog>();
         }

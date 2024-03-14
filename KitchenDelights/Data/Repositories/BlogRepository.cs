@@ -62,7 +62,7 @@ namespace Data.Repositories
         public async Task<List<Blog>> GetBlogs()
         {
             return await _context.Blogs.AsNoTracking()
-                .Include(x => x.User).Include(x => x.Category)
+                .Include(x => x.User).Include(x => x.Category).Include(x => x.BlogComments)
                 .Where(x => x.BlogStatus != 0)
                 .ToListAsync();
         }
@@ -70,7 +70,7 @@ namespace Data.Repositories
         public async Task<List<Blog>> GetBlogs(int categoryId)
         {
             return await _context.Blogs.AsNoTracking()
-                .Include(x => x.User).Include(x => x.Category)
+                .Include(x => x.User).Include(x => x.Category).Include(x => x.BlogComments)
                 .Where(x => x.CategoryId == categoryId)
                 .Where(x => x.BlogStatus != 0)
                 .ToListAsync();
