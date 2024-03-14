@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Data.Entity;
+using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -41,7 +42,7 @@ namespace KitchenDelights.Controllers
                 newsDTOs = await _newsManager.GetNews();
             } else
             {
-                newsDTOs = await _newsManager.SearchNews(search);
+                newsDTOs = await _newsManager.SearchNews(StringHelper.Process(search));
             }
             return Ok(newsDTOs);
         }

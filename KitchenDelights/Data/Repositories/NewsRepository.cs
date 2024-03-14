@@ -74,7 +74,7 @@ namespace Data.Repositories
         public async Task<List<News>> SearchNews(string searchString)
         {
             return await _context.News.AsNoTracking().Include(news => news.User)
-                .Where(x => x.NewsStatus != 0 && x.NewsContent.ToLower().Contains(searchString.ToLower()))
+                .Where(x => x.NewsStatus != 0 && x.NewsContent.ToLower().Contains(searchString))
                 .OrderByDescending(x => x.CreateDate)
                 .ToListAsync();
         }

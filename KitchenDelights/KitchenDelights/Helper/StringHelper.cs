@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace KitchenDelights.Helper
 {
@@ -20,6 +21,14 @@ namespace KitchenDelights.Helper
             }
 
             return builder.ToString();
+        }
+
+        public static string Process(string originalString)
+        {
+            string newString = Regex.Replace(originalString, @"\s+", " ")
+                               .ToLower()
+                               .Trim();
+            return newString;
         }
     }
 }
