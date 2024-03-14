@@ -6,6 +6,7 @@ using Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -149,6 +150,41 @@ namespace Business.Managers
             _userRepository.UpdateUser(user);
             _userRepository.Save();
             return true;
+        }
+
+        public async Task<int> Interact(int userId, string type)
+        {
+            User? user = await _userRepository.GetUser(userId);
+            if (user == null) return 0;
+
+            switch (type)
+            {
+                case "comment":
+                    user.Interaction += 1;
+                    break;
+                case "blog":
+                    user.Interaction += 3;
+                    break;
+                case "purchase":
+                    user.Interaction += 10;
+                    break;
+                default:
+                    return 1;
+            }
+
+            if (user.Interaction < 30)
+            {
+                _userRepository.UpdateUser(user);
+                _userRepository.Save();
+                return 2;
+            }
+            else
+            {
+                user.Interaction -= 30;
+                _userRepository.UpdateUser(user);
+                _userRepository.Save();
+                return 3;
+            }
         }
     }
 }
