@@ -14,7 +14,7 @@ namespace Business.Interfaces
 
         Task<List<VoucherDTO>> GetVouchers(int userId);
 
-        void CreateVoucher(VoucherDTO voucher);
+        Task<bool> CreateVoucher(VoucherDTO voucher);
 
         Task<bool> UpdateVoucher(VoucherDTO VoucherDTO);
 
