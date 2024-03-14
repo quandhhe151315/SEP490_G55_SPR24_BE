@@ -20,5 +20,7 @@ namespace Business.Interfaces
         Task<NewsDTO?> GetNews(int id);
 
         Task<List<NewsDTO>> GetNews();
+
+        Task<List<NewsDTO>> SearchNews(string searchString);
     }
 }

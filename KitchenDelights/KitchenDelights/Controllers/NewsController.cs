@@ -2,6 +2,7 @@
 using Business.Interfaces;
 using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KitchenDelights.Controllers
 {
@@ -29,6 +30,20 @@ namespace KitchenDelights.Controllers
             }
             NewsDTO? news = await _newsManager.GetNews(id.Value);
             return news == null ? NotFound("News doesn't exist!") : Ok(news);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? search)
+        {
+            List<NewsDTO> newsDTOs;
+            if(search.IsNullOrEmpty())
+            {
+                newsDTOs = await _newsManager.GetNews();
+            } else
+            {
+                newsDTOs = await _newsManager.SearchNews(search);
+            }
+            return Ok(newsDTOs);
         }
 
         [HttpPost]

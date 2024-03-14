@@ -19,6 +19,8 @@ namespace Data.Interfaces
 
         Task<List<News>> GetNews();
 
+        Task<List<News>> SearchNews(string searchString);
+
         void Save();
     }
 }
