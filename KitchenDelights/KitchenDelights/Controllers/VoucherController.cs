@@ -2,6 +2,7 @@
 using Business.Interfaces;
 using Business.Managers;
 using Data.Entity;
+using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,17 +60,26 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateVoucher(VoucherDTO voucher)
+        public async Task<IActionResult> CreateVoucher(int id)
         {
-            try
+            bool flag = true;
+
+            Random randomizer = new();
+
+            VoucherDTO voucher = new()
             {
-                _voucherManager.CreateVoucher(voucher);
-            }
-            catch (Exception ex)
+                UserId = id,
+                DiscountPercentage = Convert.ToByte(randomizer.Next(5, 20))
+            };
+
+            //Run until successfully create new voucher
+            while(flag)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                voucher.VoucherCode = StringHelper.GenerateRandomString(10);
+                flag = await _voucherManager.CreateVoucher(voucher);
             }
-            return Ok(voucher);
+
+            return Ok();
         }
 
         [HttpPut]
