@@ -82,7 +82,7 @@ namespace Business.Managers
         public async Task<List<NewsDTO>> SearchNews(string searchString)
         {
             List<NewsDTO> newsDTO = [];
-            List<News> news = await _newsRepository.SearchNews(searchString.Trim());
+            List<News> news = await _newsRepository.SearchNews(searchString);
             foreach (News newsEntity in news)
             {
                 newsDTO.Add(_mapper.Map<News, NewsDTO>(newsEntity));

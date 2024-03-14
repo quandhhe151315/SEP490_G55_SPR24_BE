@@ -64,6 +64,7 @@ namespace Data.Repositories
             return await _context.Blogs.AsNoTracking()
                 .Include(x => x.User).Include(x => x.Category).Include(x => x.BlogComments)
                 .Where(x => x.BlogStatus != 0)
+                .OrderByDescending(x => x.CreateDate)
                 .ToListAsync();
         }
 
@@ -73,6 +74,16 @@ namespace Data.Repositories
                 .Include(x => x.User).Include(x => x.Category).Include(x => x.BlogComments)
                 .Where(x => x.CategoryId == categoryId)
                 .Where(x => x.BlogStatus != 0)
+                .OrderByDescending(x => x.CreateDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Blog>> SearchBlogs(string searchString)
+        {
+            return await _context.Blogs.AsNoTracking()
+                .Include(x => x.User).Include(x => x.Category).Include(x => x.BlogComments)
+                .Where(x => x.BlogStatus != 0 && x.BlogContent.ToLower().Contains(searchString))
+                .OrderByDescending(x => x.CreateDate)
                 .ToListAsync();
         }
 

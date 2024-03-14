@@ -15,6 +15,7 @@ namespace Data.Interfaces
         Task<Blog?> GetBlog(int id);
         Task<List<Blog>> GetBlogs();
         Task<List<Blog>> GetBlogs(int categoryId);
+        Task<List<Blog>> SearchBlogs(string searchString);
         void Save();
     }
 }
