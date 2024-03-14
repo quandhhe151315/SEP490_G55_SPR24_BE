@@ -30,5 +30,7 @@ namespace Business.Interfaces
         Task<bool> UpdateRole(int userId, int roleId);
 
         Task<bool> UpdateStatus(int userId, int statusId);
+
+        Task<int> Interact(int userId, string type);
     }
 }
