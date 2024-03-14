@@ -92,5 +92,18 @@ namespace Business.Managers
 
             return blogDTOs;
         }
+
+        public async Task<List<BlogDTO>> SearchBlogs(string searchString)
+        {
+            List<BlogDTO> blogDTOs = [];
+            List<Blog> blogs = await _blogRepository.SearchBlogs(searchString);
+
+            foreach(Blog blog in blogs)
+            {
+                blogDTOs.Add(_mapper.Map<Blog, BlogDTO>(blog));
+            }
+
+            return blogDTOs;
+        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KitchenDelights.Controllers
 {
@@ -30,6 +32,19 @@ namespace KitchenDelights.Controllers
             BlogDTO? blog = await _blogManager.GetBlog(id.Value);
             if (blog == null) return NotFound("Blog doesn't exist!");
             return Ok(blog);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? search)
+        {
+            List<BlogDTO> blogs;
+            if(search.IsNullOrEmpty()) {
+                blogs = await _blogManager.GetBlogs(null, null);
+            } else
+            {
+                blogs = await _blogManager.SearchBlogs(StringHelper.Process(search));
+            }
+            return Ok(blogs);
         }
 
         [HttpPost]

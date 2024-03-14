@@ -25,7 +25,9 @@ namespace Business.DTO
 
         public string? BlogImage { get; set; }
 
-        public int BlogStatus { get; set; } = 0;
+        public int CommentCount { get; set; } = 0;
+
+        public int BlogStatus { get; set; } = 1;
 
         public DateTime CreateDate { get; set; }
     }

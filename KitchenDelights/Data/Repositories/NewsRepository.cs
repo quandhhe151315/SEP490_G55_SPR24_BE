@@ -56,12 +56,27 @@ namespace Data.Repositories
 
         public async Task<News?> GetNews(int id)
         {
-            return await _context.News.AsNoTracking().Include(news => news.User).Where(x => x.NewsStatus != 0).FirstOrDefaultAsync(x => x.NewsId == id);
+            return await _context.News.AsNoTracking()
+                .Include(news => news.User)
+                .Where(x => x.NewsStatus != 0)
+                .FirstOrDefaultAsync(x => x.NewsId == id);
         }
 
         public async Task<List<News>> GetNews()
         {
-            return await _context.News.AsNoTracking().Include(news => news.User).Where(x => x.NewsStatus != 0).ToListAsync();
+            return await _context.News.AsNoTracking()
+                .Include(news => news.User)
+                .Where(x => x.NewsStatus != 0)
+                .OrderByDescending(x => x.CreateDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<News>> SearchNews(string searchString)
+        {
+            return await _context.News.AsNoTracking().Include(news => news.User)
+                .Where(x => x.NewsStatus != 0 && x.NewsContent.ToLower().Contains(searchString))
+                .OrderByDescending(x => x.CreateDate)
+                .ToListAsync();
         }
 
         public void Save()

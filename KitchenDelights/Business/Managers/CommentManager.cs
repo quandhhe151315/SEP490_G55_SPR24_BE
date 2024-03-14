@@ -22,6 +22,17 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
+        public async Task<List<BlogCommentDTO>> GetComments()
+        {
+            List<BlogComment> comments = await _commentRepository.GetComments();
+            List<BlogCommentDTO> commentDTOs = [];
+            foreach (BlogComment comment in comments)
+            {
+                commentDTOs.Add(_mapper.Map<BlogComment, BlogCommentDTO>(comment));
+            }
+            return commentDTOs;
+        }
+
         public async Task<List<BlogCommentDTO>> GetComments(int id)
         {
             List<BlogComment> comments = await _commentRepository.GetComments(id);

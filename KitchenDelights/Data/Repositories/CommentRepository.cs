@@ -17,9 +17,9 @@ namespace Data.Repositories
             _context = context;
         }
 
-        public Task<BlogComment?> GetComment(int id)
+        public async Task<BlogComment?> GetComment(int id)
         {
-            return _context.BlogComments.AsNoTracking()
+            return await _context.BlogComments.AsNoTracking()
                 .Include(x => x.User)
                 .Include(x => x.InverseParent)
                 .ThenInclude(x => x.InverseParent)
@@ -27,13 +27,21 @@ namespace Data.Repositories
                 .FirstOrDefaultAsync(x => x.CommentId == id);
         }
 
-        public Task<List<BlogComment>> GetComments(int id)
+        public async Task<List<BlogComment>> GetComments()
         {
-            return _context.BlogComments.AsNoTracking()
+            return await _context.BlogComments.AsNoTracking()
+                .Include(x => x.User)
+                .Where(x => x.CommentStatus != 0)
+                .ToListAsync();
+        }
+
+        public async Task<List<BlogComment>> GetComments(int id)
+        {
+            return await _context.BlogComments.AsNoTracking()
                 .Include(x => x.User)
                 .Include(x => x.InverseParent)
                 .ThenInclude(x => x.InverseParent)
-                .Where(x => x.BlogId == id && x.ParentId == null)
+                .Where(x => x.BlogId == id && x.ParentId == null && x.CommentStatus != 0)
                 .ToListAsync();
         }
 

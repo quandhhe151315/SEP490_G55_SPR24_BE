@@ -12,6 +12,7 @@ namespace Data.Interfaces
         void UpdateComment(BlogComment comment);
         void DeleteComment(BlogComment comment);
         Task<BlogComment?> GetComment(int id);
+        Task<List<BlogComment>> GetComments();
         Task<List<BlogComment>> GetComments(int id);
         void Save();
     }

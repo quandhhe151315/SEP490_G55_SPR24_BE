@@ -9,6 +9,7 @@ namespace Business.Interfaces
 {
     public interface ICommentManager
     {
+        Task<List<BlogCommentDTO>> GetComments();
         Task<List<BlogCommentDTO>> GetComments(int id);
         void CreateComment(BlogCommentDTO commentDTO);
         Task<bool> UpdateComment(BlogCommentDTO commentDTO);
