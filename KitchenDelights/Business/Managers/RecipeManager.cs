@@ -165,6 +165,37 @@ namespace Business.Managers
             return recipeDTOs;
         }
 
+        public async Task<List<RecipeDTO>> SearchRecipe(string searchString)
+        {
+            List<RecipeDTO> recipeDTOs = [];
+            List<Recipe> recipes = await _recipeRepository.GetRecipes();
+
+            foreach (Recipe recipe in recipes)
+            {
+                //Search in title
+                if (recipe.RecipeTitle!.Contains(searchString, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+                }
+
+                //Search in description && check for duplicate
+                if (recipe.RecipeDescription!.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+                    && recipeDTOs.Any(x => x.RecipeId != recipe.RecipeId))
+                {
+                    recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+                }
+
+                //Search in ingredient list && check for duplicate
+                if (recipe.RecipeIngredients.Any(x => x.Ingredient.IngredientName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase))
+                    && recipeDTOs.Any(x => x.RecipeId != recipe.RecipeId))
+                {
+                    recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+                }
+            }
+
+            return recipeDTOs;
+        }
+
         public async Task<bool> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
