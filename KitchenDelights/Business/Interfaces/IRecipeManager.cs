@@ -36,5 +36,7 @@ namespace Business.Interfaces
         Task<List<RecipeDTO>> GetRecipesDESC();
 
         Task<List<RecipeDTO>> GetRecipesASC();
+
+        Task<List<RecipeDTO>> GetRecipeHighRating(int count);
     }
 }

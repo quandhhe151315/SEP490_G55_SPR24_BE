@@ -198,6 +198,12 @@ namespace KitchenDelights.Controllers
             return Ok(recipe);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> HighRating(int count)
+        {
+            return Ok(await _recipeManager.GetRecipeHighRating(count));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateRecipe(RecipeRequestDTO recipe)
         {

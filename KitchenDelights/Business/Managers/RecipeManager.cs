@@ -153,6 +153,18 @@ namespace Business.Managers
             return recipeDTOs;
         }
 
+        public async Task<List<RecipeDTO>> GetRecipeHighRating(int count)
+        {
+            List<RecipeDTO> recipeDTOs = [];
+            List <Recipe> recipes = await _recipeRepository.GetRecipes();
+            recipes = recipes.OrderByDescending(x => x.RecipeRating)
+                             .Where(x => x.RecipeRatings.Count >= 10)
+                             .Take(count)
+                             .ToList();
+            recipeDTOs.AddRange(recipes.Select(_mapper.Map<Recipe, RecipeDTO>));
+            return recipeDTOs;
+        }
+
         public async Task<bool> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
