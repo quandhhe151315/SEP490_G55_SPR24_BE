@@ -9,7 +9,13 @@ public partial class Verification
 
     public int? UserId { get; set; }
 
-    public string? VerificationPath { get; set; }
+    public string? CardFront { get; set; }
+
+    public string? CardBack { get; set; }
+
+    public string? VerificationFront { get; set; }
+
+    public string? VerificationBack { get; set; }
 
     public int VerificationStatus { get; set; }
 

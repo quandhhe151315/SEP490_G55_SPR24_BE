@@ -270,7 +270,10 @@ CREATE TABLE [verification]
 (
 [verification_id] [int] IDENTITY(1,1) PRIMARY KEY,
 [user_id] [int] FOREIGN KEY REFERENCES [users]([user_id]),
-[verification_path] [nvarchar](MAX),
+[card_front] [nvarchar](MAX),
+[card_back] [nvarchar](MAX),
+[verification_front] [nvarchar](MAX),
+[verification_back] [nvarchar](MAX),
 [verification_status] [int] NOT NULL,
 [verification_date] [datetime] NOT NULL
 );
