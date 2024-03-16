@@ -22,5 +22,7 @@ namespace Business.Interfaces
         Task<List<NewsDTO>> GetNews();
 
         Task<List<NewsDTO>> SearchNews(string searchString);
+
+        Task<List<NewsDTO>> GetNewsLastest(int count);
     }
 }
