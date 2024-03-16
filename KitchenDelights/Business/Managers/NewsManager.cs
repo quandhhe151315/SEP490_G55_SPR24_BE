@@ -89,5 +89,14 @@ namespace Business.Managers
             }
             return newsDTO;
         }
+
+        public async Task<List<NewsDTO>> GetNewsLastest(int count)
+        {
+            List<NewsDTO> newsDTO = [];
+            List<News> news = await _newsRepository.GetNews();
+            news = news.OrderByDescending(x => x.CreateDate).Take(count).ToList();
+            newsDTO.AddRange(news.Select(_mapper.Map<News, NewsDTO>));
+            return newsDTO;
+        }
     }
 }
