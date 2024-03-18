@@ -105,5 +105,16 @@ namespace Business.Managers
 
             return blogDTOs;
         }
+
+        public async Task<List<BlogDTO>> GetBlogsLastest(int count)
+        {
+            List<BlogDTO> blogDTOs = [];
+            List<Blog> blogs = await _blogRepository.GetBlogs();
+            blogs = blogs.OrderByDescending(x => x.CreateDate)
+                         .Take(count)
+                         .ToList();
+            blogDTOs.AddRange(blogs.Select(_mapper.Map<Blog, BlogDTO>));
+            return blogDTOs;
+        }
     }
 }

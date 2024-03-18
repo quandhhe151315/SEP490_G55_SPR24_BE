@@ -2,8 +2,10 @@
 using Business.Interfaces;
 using Business.Managers;
 using Data.Entity;
+using KitchenDelights.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KitchenDelights.Controllers
 {
@@ -196,6 +198,21 @@ namespace KitchenDelights.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(recipe);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HighRating(int count)
+        {
+            return Ok(await _recipeManager.GetRecipeHighRating(count));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? searchString)
+        {
+            List<RecipeDTO> recipes = searchString.IsNullOrEmpty()
+                ? await _recipeManager.GetRecipes()
+                : await _recipeManager.SearchRecipe(StringHelper.Process(searchString));
+            return Ok(recipes);
         }
 
         [HttpPost]

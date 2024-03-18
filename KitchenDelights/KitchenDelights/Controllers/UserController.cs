@@ -213,6 +213,20 @@ namespace KitchenDelights.Controllers
             return isUpdated ? Ok() : BadRequest();
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> Interact(int id, string type)
+        {
+            int interactResult = await _userManager.Interact(id, type);
+            return interactResult switch
+            {
+                0 => NotFound("User doesn't exist!"),
+                1 => BadRequest("Wrong interaction type!"),
+                2 => Ok(false),//Interact successfully, not enough point for voucher
+                3 => Ok(true),//Interact successfully, enough point for voucher
+                _ => StatusCode(500, "Something wrong happened with the server!"),
+            };
+        }
+
         private string GenerateJwtToken(UserDTO account)
         {
             string name;

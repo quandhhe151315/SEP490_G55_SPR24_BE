@@ -47,6 +47,12 @@ namespace KitchenDelights.Controllers
             return Ok(newsDTOs);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Lastest(int count)
+        {
+            return Ok(await _newsManager.GetNewsLastest(count));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(NewsDTO news)
         {

@@ -23,11 +23,14 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public void CreateVoucher(VoucherDTO voucherDTO)
+        public async Task<bool> CreateVoucher(VoucherDTO voucherDTO)
         {
-            Voucher voucher = _mapper.Map<VoucherDTO, Voucher>(voucherDTO);
-            _voucherRepository.CreateVoucher(voucher);
+            Voucher? voucher = await _voucherRepository.GetVoucher(voucherDTO.VoucherCode);
+            if (voucher != null) return true;
+
+            _voucherRepository.CreateVoucher(_mapper.Map<VoucherDTO, Voucher>(voucherDTO));
             _voucherRepository.Save();
+            return false;
         }
 
         public async Task<VoucherDTO?> GetVoucher(string voucherCode)

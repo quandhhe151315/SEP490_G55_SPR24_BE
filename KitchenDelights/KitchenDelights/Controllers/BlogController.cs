@@ -47,6 +47,12 @@ namespace KitchenDelights.Controllers
             return Ok(blogs);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Lastest(int count)
+        {
+            return Ok(await _blogManager.GetBlogsLastest(count));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(BlogDTO blog)
         {
