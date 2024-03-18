@@ -75,7 +75,7 @@ namespace KitchenDelights.Controllers
                         if (count <= 0)
                             return StatusCode(StatusCodes.Status406NotAcceptable, "Please enter exist recipe in bookmark to delete");
                         else
-                            return Ok("Remove recipe to bookmark sucessful");
+                            return Ok("Remove recipe from bookmark sucessful");
                 }
             }
             catch (Exception ex)

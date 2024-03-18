@@ -120,7 +120,7 @@ namespace KitchenDelights.Controllers
             if (categoryDTO == null) return NotFound("Category not exist");
 
             bool isUpdated = await _categoryManager.UpdateCategory(category);
-            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok();
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucessful");
         }
 
         [HttpDelete]
@@ -130,7 +130,7 @@ namespace KitchenDelights.Controllers
             if (category == null) return NotFound("Category not exist");
 
             bool isDeleted = await _categoryManager.DeleteCategory(categoryId);
-            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
+            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucessful");
         }
     }
 }

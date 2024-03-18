@@ -71,15 +71,23 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetIngredientByName(string name)
+        public async Task<IActionResult> GetIngredientByName(string? name)
         {
             List<IngredientDTO> ingredients = [];
             try
             {
-                ingredients = await _ingredientManager.GetIngredientsByName(name);
-                if (ingredients.Count <= 0)
+                if (string.IsNullOrEmpty(name))
                 {
-                    return NotFound("There are not exist any ingredient in database");
+                    ingredients = await _ingredientManager.GetAllIngredients();
+                    return Ok(ingredients);
+                }
+                else
+                {
+                    ingredients = await _ingredientManager.GetIngredientsByName(name);
+                    if (ingredients.Count <= 0)
+                    {
+                        return NotFound("There are not exist any ingredient in database");
+                    }
                 }
             }
             catch (Exception ex)

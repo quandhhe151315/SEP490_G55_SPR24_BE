@@ -54,7 +54,7 @@ namespace KitchenDelights.Controllers
             if (AdvertisementDTO == null) return NotFound("Advertisement doesn't exist!");
 
             bool isUpdated = await _advertisementManager.UpdateAdvertisement(advertisementDTO);
-            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok();
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucess!");
         }
 
         [HttpDelete]
@@ -64,7 +64,7 @@ namespace KitchenDelights.Controllers
             if (AdvertisementDTO == null) return NotFound("Advertisement doesn't exist!");
 
             bool isDeleted = await _advertisementManager.DeleteAdvertisement(id);
-            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
+            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucess!");
         }
     }
 }
