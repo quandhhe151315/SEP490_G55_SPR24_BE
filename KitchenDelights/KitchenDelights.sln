@@ -3,16 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenDelights", "KitchenDelights\KitchenDelights.csproj", "{D72B55A9-7B5C-4F3C-99BC-E156BDBFC7D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KitchenDelights", "KitchenDelights\KitchenDelights.csproj", "{D72B55A9-7B5C-4F3C-99BC-E156BDBFC7D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{8E956689-793A-4045-BE69-C993DAA35C25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "Business\Business.csproj", "{8E956689-793A-4045-BE69-C993DAA35C25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{F9D87671-DD68-46BD-9E60-1D44B3C3E599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{F9D87671-DD68-46BD-9E60-1D44B3C3E599}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47FE4D6F-EF43-4D84-8F40-53BB8B32C400}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business.Test", "Business.Test\Business.Test.csproj", "{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{F9D87671-DD68-46BD-9E60-1D44B3C3E599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9D87671-DD68-46BD-9E60-1D44B3C3E599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9D87671-DD68-46BD-9E60-1D44B3C3E599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
