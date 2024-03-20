@@ -6,6 +6,8 @@ using Business.Profiles;
 using Data.Entity;
 using Data.Interfaces;
 using Moq;
+using FluentAssertions;
+
 
 namespace Business.Test
 {
@@ -27,6 +29,7 @@ namespace Business.Test
         }
 
         [Fact]
+        //Naming convention is MethodName_expectedBehavior_StateUnderTest
         public async void GetUser_GetUserById_UserExistInRepo()
         {
             //Arrange
@@ -39,10 +42,9 @@ namespace Business.Test
             IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
             var result = await _userManager.GetUser(1);
             var actual = userDTOs.Find(user => user.UserId == 1);
-
-            //Assert
-            Assert.NotNull(result);
-            Assert.Equal(result.UserId, actual!.UserId);
+            
+            //Assert (using FluentAssertions)
+            result.Should().NotBeNull().And.BeOfType<UserDTO>().And.BeEquivalentTo(actual!);
         }
 
         private static List<User> UsersSample()
