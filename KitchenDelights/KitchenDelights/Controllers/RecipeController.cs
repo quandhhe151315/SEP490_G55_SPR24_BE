@@ -207,11 +207,11 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Search(string? searchString)
+        public async Task<IActionResult> Search(string? search)
         {
-            List<RecipeDTO> recipes = searchString.IsNullOrEmpty()
+            List<RecipeDTO> recipes = search.IsNullOrEmpty()
                 ? await _recipeManager.GetRecipes()
-                : await _recipeManager.SearchRecipe(StringHelper.Process(searchString));
+                : await _recipeManager.SearchRecipe(StringHelper.Process(search));
             return Ok(recipes);
         }
 
