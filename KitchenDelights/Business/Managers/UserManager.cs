@@ -165,7 +165,7 @@ namespace Business.Managers
                 case "blog":
                     user.Interaction += 3;
                     break;
-                case "purchase":
+                case "purchase" || "recipe":
                     user.Interaction += 10;
                     break;
                 default:
