@@ -20,11 +20,11 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int? id, int? category, string? sort)
+        public async Task<IActionResult> Get(int? id, int? category, string? sort, string? search)
         {
             if (id == null)
             {
-                List<BlogDTO> blogs = await _blogManager.GetBlogs(category, sort);
+                List<BlogDTO> blogs = await _blogManager.GetBlogs(StringHelper.Process(search), category, sort);
                 if (blogs.Count == 0) return NotFound("There's no blog here!");
                 return Ok(blogs);
             }
@@ -34,18 +34,18 @@ namespace KitchenDelights.Controllers
             return Ok(blog);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Search(string? search)
-        {
-            List<BlogDTO> blogs;
-            if(search.IsNullOrEmpty()) {
-                blogs = await _blogManager.GetBlogs(null, null);
-            } else
-            {
-                blogs = await _blogManager.SearchBlogs(StringHelper.Process(search));
-            }
-            return Ok(blogs);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> Search(string? search)
+        //{
+        //    List<BlogDTO> blogs;
+        //    if(search.IsNullOrEmpty()) {
+        //        blogs = await _blogManager.GetBlogs(null, null);
+        //    } else
+        //    {
+        //        blogs = await _blogManager.SearchBlogs(StringHelper.Process(search));
+        //    }
+        //    return Ok(blogs);
+        //}
 
         [HttpGet]
         public async Task<IActionResult> Lastest(int count)
