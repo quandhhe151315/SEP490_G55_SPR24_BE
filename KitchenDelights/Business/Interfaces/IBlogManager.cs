@@ -17,9 +17,9 @@ namespace Business.Interfaces
 
         Task<BlogDTO?> GetBlog(int id);
 
-        Task<List<BlogDTO>> GetBlogs(int? category, string? sort);
+        Task<List<BlogDTO>> GetBlogs(string? search, int? category, string? sort);
 
-        Task<List<BlogDTO>> SearchBlogs(string searchString);
+        //Task<List<BlogDTO>> SearchBlogs(string searchString);
 
         Task<List<BlogDTO>> GetBlogsLastest(int count);
     }
