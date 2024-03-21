@@ -13,6 +13,7 @@ namespace Business.Profiles
     {
         public CartItemProfile() {
             CreateMap<CartItem, CartItemDTO>()
+                .ForMember(dest => dest.FeaturedImage, opt => opt.MapFrom(src => src.Recipe.FeaturedImage))
                 .ForMember(dest => dest.RecipeTitle, opt => opt.MapFrom(src => src.Recipe.RecipeTitle))
                 .ForMember(dest => dest.RecipePrice, opt => opt.MapFrom(src => src.Recipe.RecipePrice))
                 .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.VoucherCodeNavigation.DiscountPercentage));
