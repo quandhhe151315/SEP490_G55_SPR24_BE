@@ -57,7 +57,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Create(BlogDTO blog)
         {
             blog.CreateDate = DateTime.Now;
-            blog.BlogStatus = 2;           
+            blog.BlogStatus = 1;           
             try
             {
                 _blogManager.CreateBlog(blog);
@@ -66,6 +66,13 @@ namespace KitchenDelights.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(BlogDTO blog)
+        {
+            bool isUpdated = await _blogManager.UpdateBlog(blog);
+            return isUpdated ? Ok() : StatusCode(500, "Update blog failed!");
         }
 
         [HttpDelete]
