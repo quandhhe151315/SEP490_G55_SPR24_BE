@@ -22,5 +22,7 @@ namespace Business.Interfaces
         //Task<List<BlogDTO>> SearchBlogs(string searchString);
 
         Task<List<BlogDTO>> GetBlogsLastest(int count);
+
+        Task<bool> BlogStatus(int id, int status);
     }
 }

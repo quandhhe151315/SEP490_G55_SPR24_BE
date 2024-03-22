@@ -75,6 +75,12 @@ namespace KitchenDelights.Controllers
             return isUpdated ? Ok() : StatusCode(500, "Update blog failed!");
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> Status(int id, int status) {
+            bool isUpdated = await _blogManager.BlogStatus(id, status);
+            return isUpdated ? Ok() : StatusCode(500, "Update blog status failed!");
+        }
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
