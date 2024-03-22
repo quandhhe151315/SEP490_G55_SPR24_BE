@@ -118,5 +118,14 @@ namespace Business.Managers
             blogDTOs.AddRange(blogs.Select(_mapper.Map<Blog, BlogDTO>));
             return blogDTOs;
         }
+
+        public async Task<bool> BlogStatus(int id, int status) {
+            Blog? blog = await _blogRepository.GetBlog(id);
+            if (blog == null || status != 1 && status != 2) return false;
+            blog.BlogStatus = status;
+            _blogRepository.UpdateBlog(blog);
+            _blogRepository.Save();
+            return true;
+        }
     }
 }
