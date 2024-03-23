@@ -71,7 +71,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Login(LoginRequestDTO loginRequest)
         {
             UserDTO? account = await _userManager.GetUser(loginRequest.Email);
-            if(account == null) return NotFound("Account does not exist!");
+            if(account == null || account.Status.StatusId == 0) return NotFound("Account does not exist!");
             bool isCorrectPassword = PasswordHelper.Verify(loginRequest.Password, account.PasswordHash);
             if(isCorrectPassword)
             {
