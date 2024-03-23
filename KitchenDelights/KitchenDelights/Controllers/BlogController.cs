@@ -24,7 +24,7 @@ namespace KitchenDelights.Controllers
         {
             if (id == null)
             {
-                List<BlogDTO> blogs = await _blogManager.GetBlogs(StringHelper.Process(search), category, sort);
+                List<BlogDTO> blogs = await _blogManager.GetBlogs(search.IsNullOrEmpty() ? search : StringHelper.Process(search), category, sort);
                 if (blogs.Count == 0) return NotFound("There's no blog here!");
                 return Ok(blogs);
             }
