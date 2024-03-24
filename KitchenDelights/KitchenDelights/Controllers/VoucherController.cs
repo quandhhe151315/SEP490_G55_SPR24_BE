@@ -3,6 +3,7 @@ using Business.Interfaces;
 using Business.Managers;
 using Data.Entity;
 using KitchenDelights.Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> GetAllVouchers(int userId)
         {
             List<VoucherDTO> vouchers = [];
@@ -41,6 +43,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> GetVoucherByCode(string voucherCode)
         {
             VoucherDTO? voucher;
@@ -60,6 +63,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> CreateVoucher(int id)
         {
             bool flag = true;
@@ -83,6 +87,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> UpdateVoucher(VoucherDTO voucher)
         {
             VoucherDTO? voucherDTO = await _voucherManager.GetVoucher(voucher.VoucherCode);
@@ -93,6 +98,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> DeleteVoucher(string voucherCode)
         {
             VoucherDTO? voucherDTO = await _voucherManager.GetVoucher(voucherCode);

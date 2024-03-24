@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +34,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(AdvertisementDTO advertisementDTO)
         {
             advertisementDTO.AdvertisementStatus = 0;
@@ -48,23 +50,25 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Update(AdvertisementDTO advertisementDTO)
         {
             AdvertisementDTO? AdvertisementDTO = await _advertisementManager.GetAdvertisementById(advertisementDTO.AdvertisementId.Value);
             if (AdvertisementDTO == null) return NotFound("Advertisement doesn't exist!");
 
             bool isUpdated = await _advertisementManager.UpdateAdvertisement(advertisementDTO);
-            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok();
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucess!");
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             AdvertisementDTO? AdvertisementDTO = await _advertisementManager.GetAdvertisementById(id);
             if (AdvertisementDTO == null) return NotFound("Advertisement doesn't exist!");
 
             bool isDeleted = await _advertisementManager.DeleteAdvertisement(id);
-            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
+            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucess!");
         }
     }
 }

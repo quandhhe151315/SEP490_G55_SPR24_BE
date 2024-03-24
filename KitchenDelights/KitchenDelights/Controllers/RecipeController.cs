@@ -3,6 +3,7 @@ using Business.Interfaces;
 using Business.Managers;
 using Data.Entity;
 using KitchenDelights.Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -216,6 +217,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Moderator,Chef")]
         public async Task<IActionResult> CreateRecipe(RecipeRequestDTO recipe)
         {
             try
@@ -230,6 +232,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator,Chef")]
         public async Task<IActionResult> UpdateRecipe(RecipeRequestDTO recipe)
         {
             RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipe.RecipeId.Value);
@@ -240,6 +243,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> UpdateStatusRecipe(int recipeId, int status)
         {
             RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipeId);
@@ -250,6 +254,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
         {
             RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipeId);
@@ -260,6 +265,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Administrator,Moderator,Chef")]
         public async Task<IActionResult> DeleteRecipe(int recipeId)
         {
             RecipeDTO? recipeDTO = await _recipeManager.GetRecipe(recipeId);
