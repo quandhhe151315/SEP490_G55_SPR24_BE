@@ -2,6 +2,7 @@
 using Business.Interfaces;
 using Data.Entity;
 using KitchenDelights.Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> EmailVerify(EmailEncapsulation emailAddress)
         {
+            if (!StringHelper.IsEmail(emailAddress.Email)) return BadRequest("Please input a valid email address!");
             string verificationCode = StringHelper.GenerateRandomString(10);
             EmailHelper email = new(_configuration);
             EmailDetails details = new()
@@ -49,7 +51,9 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterRequestDTO user)
         {
-            if(user.Password.Length < 6)
+            if (user.Email.IsNullOrEmpty() || !StringHelper.IsEmail(user.Email!)) return BadRequest("Please input a valid email address!");
+
+            if(user.Password.IsNullOrEmpty() || user.Password!.Length < 6)
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable,"Password should not be shorter than 6 characters!");
             }
@@ -61,15 +65,17 @@ namespace KitchenDelights.Controllers
             {
                 _userManager.CreateUser(user);
                 return Ok();
-            } catch (Exception ex)
+            } catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(500, "Register failed!");
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestDTO loginRequest)
         {
+            if (!StringHelper.IsEmail(loginRequest.Email)) return BadRequest("Please input a valid email address!");
+            if(loginRequest.Password.IsNullOrEmpty()) return StatusCode(406, "Password should not be empty!");
             UserDTO? account = await _userManager.GetUser(loginRequest.Email);
             if(account == null || account.Status.StatusId == 0) return NotFound("Account does not exist!");
             bool isCorrectPassword = PasswordHelper.Verify(loginRequest.Password, account.PasswordHash);
@@ -79,13 +85,14 @@ namespace KitchenDelights.Controllers
                 return Ok(GenerateJwtToken(account));
             } else
             {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Wrong password!");
+                return StatusCode(400, "Wrong password!");
             }
         }
 
         [HttpPatch]
         public async Task<IActionResult> ResetToken(EmailEncapsulation mail)
         {
+            if (!StringHelper.IsEmail(mail.Email)) return BadRequest("Please input a valid email address!");
             string token = StringHelper.GenerateRandomString(10);
 
             ForgotPasswordDTO forgotPasswordDTO = new()
@@ -132,6 +139,7 @@ namespace KitchenDelights.Controllers
             };
         }
 
+        [Authorize]
         [HttpPatch]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
         {
@@ -153,6 +161,7 @@ namespace KitchenDelights.Controllers
             return profile == null ? NotFound("User profile doesn't exist!") : Ok(profile);
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
         [HttpGet]
         public async Task<IActionResult> List(int id)
         {
@@ -160,6 +169,7 @@ namespace KitchenDelights.Controllers
             return Ok(users);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UserDTO userDTO)
         {
@@ -167,6 +177,7 @@ namespace KitchenDelights.Controllers
             return isUpdated ? Ok() : StatusCode(StatusCodes.Status500InternalServerError, "Update profile failed!");
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDTO userDTO)
         {
@@ -185,6 +196,7 @@ namespace KitchenDelights.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPatch]
         public async Task<IActionResult> Role(ChangeRoleDTO changeRole)
         {
@@ -192,16 +204,20 @@ namespace KitchenDelights.Controllers
             return isUpdated ? Ok() : BadRequest();
         }
 
+        [Authorize]
         [HttpPatch]
         public async Task<IActionResult> Delete(int id)
         {
+            if(id < 0) return BadRequest();
             bool isUpdated = await _userManager.UpdateStatus(id, 3);
             return isUpdated ? Ok() : BadRequest();
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
         [HttpPatch]
         public async Task<IActionResult> Ban(int id)
         {
+            if(id < 0) return BadRequest();
             UserDTO? userDTO = await _userManager.GetUser(id);
             if(userDTO == null) return NotFound();
             bool isUpdated = userDTO.Status!.StatusId switch
@@ -213,9 +229,11 @@ namespace KitchenDelights.Controllers
             return isUpdated ? Ok() : BadRequest();
         }
 
+        [Authorize]
         [HttpPatch]
         public async Task<IActionResult> Interact(int id, string type)
         {
+            if(id < 0) return BadRequest();
             int interactResult = await _userManager.Interact(id, type);
             return interactResult switch
             {
@@ -245,7 +263,7 @@ namespace KitchenDelights.Controllers
 
             if(account.Avatar.IsNullOrEmpty())
             {
-                account.Avatar = "http://localhost:5050/images/avatar/default-avatar.png";
+                account.Avatar = $"{Request.Scheme}://{Request.Host.Value}/images/avatar/default-avatar.png";
             }
 
             var claims = new List<Claim>
