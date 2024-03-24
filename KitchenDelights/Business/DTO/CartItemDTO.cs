@@ -13,6 +13,8 @@ namespace Business.DTO
 
         public int RecipeId { get; set; }
 
+        public string? FeaturedImage { get; set; }
+
         public string? RecipeTitle { get; set; }
 
         public decimal? RecipePrice { get; set; }

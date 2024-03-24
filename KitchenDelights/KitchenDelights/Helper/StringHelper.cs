@@ -5,6 +5,7 @@ namespace KitchenDelights.Helper
 {
     public class StringHelper
     {
+        private readonly static string emailPattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
         public static string GenerateRandomString(int length)
         {
             StringBuilder builder = new();
@@ -21,6 +22,10 @@ namespace KitchenDelights.Helper
             }
 
             return builder.ToString();
+        }
+
+        public static bool IsEmail(string input) {
+            return Regex.Match(input, emailPattern).Success;
         }
 
         public static string Process(string originalString)

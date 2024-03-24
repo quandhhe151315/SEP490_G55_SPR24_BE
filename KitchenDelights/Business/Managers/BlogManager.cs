@@ -62,7 +62,7 @@ namespace Business.Managers
             return blog is null ? null : _mapper.Map<Blog, BlogDTO>(blog);
         }
 
-        public async Task<List<BlogDTO>> GetBlogs(int? category, string? sort)
+        public async Task<List<BlogDTO>> GetBlogs(string? search, int? category, string? sort)
         {
             List<BlogDTO> blogDTOs = [];
             List<Blog> blogs = [];
@@ -75,6 +75,8 @@ namespace Business.Managers
             {
                 blogs = await _blogRepository.GetBlogs();
             }
+
+            if (!search.IsNullOrEmpty()) blogs = blogs.Where(x => x.BlogContent.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             //Map to list of DTOs
             foreach (Blog blog in blogs)
@@ -93,18 +95,18 @@ namespace Business.Managers
             return blogDTOs;
         }
 
-        public async Task<List<BlogDTO>> SearchBlogs(string searchString)
-        {
-            List<BlogDTO> blogDTOs = [];
-            List<Blog> blogs = await _blogRepository.SearchBlogs(searchString);
+        //public async Task<List<BlogDTO>> SearchBlogs(string searchString)
+        //{
+        //    List<BlogDTO> blogDTOs = [];
+        //    List<Blog> blogs = await _blogRepository.SearchBlogs(searchString);
 
-            foreach(Blog blog in blogs)
-            {
-                blogDTOs.Add(_mapper.Map<Blog, BlogDTO>(blog));
-            }
+        //    foreach(Blog blog in blogs)
+        //    {
+        //        blogDTOs.Add(_mapper.Map<Blog, BlogDTO>(blog));
+        //    }
 
-            return blogDTOs;
-        }
+        //    return blogDTOs;
+        //}
 
         public async Task<List<BlogDTO>> GetBlogsLastest(int count)
         {
@@ -115,6 +117,15 @@ namespace Business.Managers
                          .ToList();
             blogDTOs.AddRange(blogs.Select(_mapper.Map<Blog, BlogDTO>));
             return blogDTOs;
+        }
+
+        public async Task<bool> BlogStatus(int id, int status) {
+            Blog? blog = await _blogRepository.GetBlog(id);
+            if (blog == null || status != 1 && status != 2) return false;
+            blog.BlogStatus = status;
+            _blogRepository.UpdateBlog(blog);
+            _blogRepository.Save();
+            return true;
         }
     }
 }
