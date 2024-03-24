@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +34,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(AdvertisementDTO advertisementDTO)
         {
             advertisementDTO.AdvertisementStatus = 0;
@@ -48,6 +50,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Update(AdvertisementDTO advertisementDTO)
         {
             AdvertisementDTO? AdvertisementDTO = await _advertisementManager.GetAdvertisementById(advertisementDTO.AdvertisementId.Value);
@@ -58,6 +61,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             AdvertisementDTO? AdvertisementDTO = await _advertisementManager.GetAdvertisementById(id);

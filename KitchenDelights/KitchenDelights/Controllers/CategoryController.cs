@@ -3,6 +3,7 @@ using Business.Interfaces;
 using Business.Managers;
 using Data.Entity;
 using KitchenDelights.Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -99,6 +100,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> CreateCategory(CategoryDTO category)
         {
 
@@ -114,6 +116,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> UpdateCategory(CategoryDTO category)
         {
             CategoryDTO? categoryDTO = await _categoryManager.GetCategoryById(category.CategoryId.Value);
@@ -124,6 +127,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {
             CategoryDTO? category = await _categoryManager.GetCategoryById(categoryId);

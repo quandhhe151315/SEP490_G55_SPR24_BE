@@ -2,6 +2,7 @@
 using Business.Interfaces;
 using Business.Managers;
 using Data.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> GetAllMenu()
         {
             List<MenuDTO> menus = [];
@@ -40,6 +42,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> GetMenuByUserId(int userId)
         {
             List<MenuDTO> menus = [];
@@ -59,6 +62,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> GetMenuByUserIdAndCheckExistRecipe(int userId, int recipeId)
         {
             List<MenuDTO> menus = [];
@@ -78,6 +82,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> GetMenuById(int menuId)
         {
             MenuDTO menu;
@@ -97,6 +102,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> CreateMenu(MenuRequestDTO menu)
         {
             try
@@ -111,6 +117,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> UpdateMenu(MenuRequestDTO menu)
         {
             MenuDTO? menuDTO = await _menuManager.GetMenuById(menu.MenuId.Value);
@@ -121,6 +128,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> AddRecipeToMenu(int menuId, int recipeId)
         {
             MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
@@ -131,6 +139,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> RemoveRecipeFromMenu(int menuId, int recipeId)
         {
             MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
@@ -141,6 +150,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> DeleteMenu(int menuId)
         {
             MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);

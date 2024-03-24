@@ -1,6 +1,7 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> GetBookmarkOfUser(int id)
         {
             BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(id);
@@ -36,6 +38,7 @@ namespace KitchenDelights.Controllers
 
         //type 1 to add, 2 to remove 
         [HttpPut]
+        [Authorize(Roles = "Administrator,Moderator,Writer,Chef,users")]
         public async Task<IActionResult> ModifyRecipeInBookMark(int userId, int recipeId, int type)
         {
             try
