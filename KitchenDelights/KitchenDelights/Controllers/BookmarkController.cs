@@ -27,7 +27,7 @@ namespace KitchenDelights.Controllers
             BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(id);
             if (bookmark.Recipes.Count == 0)
             {
-                return NotFound("There not have any recipe in bookmark!");
+                return Ok();
             }
             else
             {
