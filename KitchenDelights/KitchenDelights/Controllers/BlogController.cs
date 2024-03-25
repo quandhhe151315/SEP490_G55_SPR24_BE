@@ -31,6 +31,7 @@ namespace KitchenDelights.Controllers
                 return Ok(blogs);
             }
 
+            if(id != null && id < 0) return BadRequest("Id invalid!");
             BlogDTO? blog = await _blogManager.GetBlog(id.Value);
             if (blog == null) return NotFound("Blog doesn't exist!");
             return Ok(blog);
@@ -55,6 +56,7 @@ namespace KitchenDelights.Controllers
             return Ok(await _blogManager.GetBlogsLastest(count));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(BlogDTO blog)
         {
@@ -66,10 +68,11 @@ namespace KitchenDelights.Controllers
                 return Ok();
             } catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> Update(BlogDTO blog)
         {
@@ -77,15 +80,18 @@ namespace KitchenDelights.Controllers
             return isUpdated ? Ok() : StatusCode(500, "Update blog failed!");
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
         [HttpPatch]
         public async Task<IActionResult> Status(int id, int status) {
             bool isUpdated = await _blogManager.BlogStatus(id, status);
             return isUpdated ? Ok() : StatusCode(500, "Update blog status failed!");
         }
 
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
+            if(id < 0) return BadRequest("Invalid Id");
             bool isDeleted = await _blogManager.DeleteBlog(id);
             return isDeleted ? Ok() : StatusCode(500, "Delete blog failed!");
         }
