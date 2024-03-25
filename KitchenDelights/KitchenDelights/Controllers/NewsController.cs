@@ -2,6 +2,7 @@
 using Business.Interfaces;
 using Data.Entity;
 using KitchenDelights.Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -23,12 +24,13 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 List<NewsDTO> newsDTO = await _newsManager.GetNews();
                 if(newsDTO.Count == 0) return NotFound("There's no news here!");
                 return Ok(newsDTO);
             }
+            if (id != null && id < 0) return BadRequest("Invalid Id");
             NewsDTO? news = await _newsManager.GetNews(id.Value);
             return news == null ? NotFound("News doesn't exist!") : Ok(news);
         }
@@ -53,6 +55,7 @@ namespace KitchenDelights.Controllers
             return Ok(await _newsManager.GetNewsLastest(count));
         }
 
+        [Authorize(Roles = "Administrator,Writer")]
         [HttpPost]
         public async Task<IActionResult> Create(NewsDTO news)
         {
@@ -64,10 +67,11 @@ namespace KitchenDelights.Controllers
                 return Ok();
             } catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
+        [Authorize(Roles = "Administrator,Writer")]
         [HttpPut]
         public async Task<IActionResult> Update(NewsDTO news)
         {
@@ -78,19 +82,23 @@ namespace KitchenDelights.Controllers
             return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok();
         }
 
+        [Authorize(Roles = "Administrator,Moderator,Writer")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
+            if(id < 0) return BadRequest("Invalid Id");
             NewsDTO? newsDTO = await _newsManager.GetNews(id);
             if (newsDTO == null) return NotFound("News doesn't exist!");
 
             bool isDeleted = await _newsManager.DeleteNews(id);
-            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok();
+            return !isDeleted ? StatusCode(500, "Delete failed!") : Ok();
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
         [HttpPatch]
         public async Task<IActionResult> Accept(int id)
         {
+            if(id < 0) return BadRequest("Invalid Id");
             bool isAccepted = await _newsManager.Accept(id);
             return isAccepted ? Ok() : StatusCode(500, "Approve News failed!");
         }
