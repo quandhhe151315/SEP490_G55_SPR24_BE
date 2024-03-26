@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +20,12 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> History(int id)
+        public async Task<IActionResult> History(int? id)
         {
-            List<PaymentHistoryDTO> history = await _historyManager.GetPaymentHistory(id);
-            return Ok(history);
+            List<PaymentHistoryDTO> history;
+            if(id == null) history = await _historyManager.GetPaymentHistory();
+            history = await _historyManager.GetPaymentHistory(id.Value);
+            return Ok((List<PaymentHistoryDTO>)([]));
         }
 
         [HttpPost]
