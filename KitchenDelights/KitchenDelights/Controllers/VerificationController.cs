@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +19,14 @@ namespace KitchenDelights.Controllers
             _configuration = configuration;
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _verificationManager.GetVerifications());
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(VerificationDTO verification)
         {
@@ -31,10 +34,10 @@ namespace KitchenDelights.Controllers
             verification.VerificationDate = DateTime.Now;
 
             bool isCreated = await _verificationManager.CreateVerification(verification);
-
             return isCreated ? Ok() : BadRequest("Create Verification entry failed!");
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
         [HttpPatch]
         public async Task<IActionResult> Update(VerificationDTO verification)
         {
