@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,11 +22,13 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
+            if(id < 0) return BadRequest("Invalid Id");
             List<RecipeRatingDTO> ratings = await _ratingManager.GetRecipeRatings(id);
             if (ratings.Count == 0) return NotFound("There's no rating here!");
             return Ok(ratings);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(RecipeRatingDTO rating)
         {
@@ -33,6 +36,7 @@ namespace KitchenDelights.Controllers
             return isCreated ? Ok() : StatusCode(500, "Create Review Failed!");
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> Update(RecipeRatingDTO rating)
         {
