@@ -17,5 +17,7 @@ namespace Business.DTO
         public string? CategoryName { get; set; }
 
         public bool CategoryType { get; set; }
+
+        public bool isExistRecipe { get; set; }
     }
 }

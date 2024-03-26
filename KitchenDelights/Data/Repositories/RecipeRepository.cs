@@ -98,7 +98,7 @@ namespace Data.Repositories
                 .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
-                .Where(x => x.IsFree == true)
+                .Where(x => x.IsFree == true).OrderByDescending(x => x.RecipeId)
                 .ToListAsync();
         }
 
@@ -110,7 +110,7 @@ namespace Data.Repositories
                 .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
                 .Include(x => x.Categories).Include(x => x.Countries)
                 .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
-                .Where(x => x.IsFree == false)
+                .Where(x => x.IsFree == false).OrderByDescending(x => x.RecipeId)
                 .ToListAsync();
         }
 

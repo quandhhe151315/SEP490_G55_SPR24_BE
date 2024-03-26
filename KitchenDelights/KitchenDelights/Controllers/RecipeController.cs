@@ -91,6 +91,13 @@ namespace KitchenDelights.Controllers
                 {
                     return NotFound("There are not exist any recipe in database");
                 }
+                foreach (RecipeDTO recipe in recipes)
+                {
+                    if (recipe.IsFree)
+                    {
+                        recipe.RecipePrice = 0;
+                    }
+                }
             }
             catch (Exception ex)
             {
