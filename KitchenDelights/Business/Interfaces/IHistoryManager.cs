@@ -9,6 +9,7 @@ namespace Business.Interfaces
 {
     public interface IHistoryManager
     {
+        Task<List<PaymentHistoryDTO>> GetPaymentHistory();
         Task<List<PaymentHistoryDTO>> GetPaymentHistory(int id);
         Task<bool> CreatePaymentHistory(List<CartItemDTO> cart);
     }

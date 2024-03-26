@@ -9,6 +9,7 @@ namespace Data.Interfaces
 {
     public interface IHistoryRepository
     {
+        Task<List<PaymentHistory>> GetPaymentHistory();
         Task<List<PaymentHistory>> GetPaymentHistory(int id);
         void CreatePaymentHistory(List<PaymentHistory> paymentHistory);
         void Save();

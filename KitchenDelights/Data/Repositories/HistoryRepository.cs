@@ -18,6 +18,11 @@ namespace Data.Repositories
             _context = context;
         }
 
+        public async Task<List<PaymentHistory>> GetPaymentHistory()
+        {
+            return await _context.PaymentHistories.AsNoTracking().Include(x => x.User).Include(x => x.Recipe).ToListAsync();
+        }
+
         public async Task<List<PaymentHistory>> GetPaymentHistory(int id)
         {
             return await _context.PaymentHistories.AsNoTracking().Include(x => x.User).Include(x => x.Recipe).Where(x => x.UserId == id).ToListAsync();
