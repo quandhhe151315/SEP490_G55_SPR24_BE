@@ -19,15 +19,22 @@ namespace KitchenDelights.Controllers
             _configuration = configuration;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> History(int? id)
         {
             List<PaymentHistoryDTO> history;
-            if(id == null) history = await _historyManager.GetPaymentHistory();
-            history = await _historyManager.GetPaymentHistory(id.Value);
-            return Ok((List<PaymentHistoryDTO>)([]));
+            if(id == null && (User.IsInRole("Administrator") || User.IsInRole("Moderator")))
+            {
+                history = await _historyManager.GetPaymentHistory();
+            } else {
+                if(id != null && id < 0) return BadRequest("Invalid Id");
+                history = await _historyManager.GetPaymentHistory(id.Value);
+            }
+            return Ok(history);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Checkout(List<CartItemDTO> cart)
         {
