@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +19,22 @@ namespace KitchenDelights.Controllers
             _configuration = configuration;
         }
 
+        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> History(int id)
+        public async Task<IActionResult> History(int? id)
         {
-            List<PaymentHistoryDTO> history = await _historyManager.GetPaymentHistory(id);
+            List<PaymentHistoryDTO> history;
+            if(id == null && (User.IsInRole("Administrator") || User.IsInRole("Moderator")))
+            {
+                history = await _historyManager.GetPaymentHistory();
+            } else {
+                if(id != null && id < 0) return BadRequest("Invalid Id");
+                history = await _historyManager.GetPaymentHistory(id.Value);
+            }
             return Ok(history);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Checkout(List<CartItemDTO> cart)
         {

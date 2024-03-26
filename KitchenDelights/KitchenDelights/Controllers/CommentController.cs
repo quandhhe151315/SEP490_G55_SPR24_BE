@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,17 +23,19 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Get(int? id)
         {
             List<BlogCommentDTO> comments;
-            if(id == null)
+            if (id == null)
             {
                 comments = await _commentManager.GetComments();
             } else
             {
+                if (id < 0) return BadRequest("Invalid Id");
                 comments = await _commentManager.GetComments(id.Value);
             }
 
             return Ok(comments);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(BlogCommentDTO comment)
         {
@@ -48,6 +51,7 @@ namespace KitchenDelights.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> Update(BlogCommentDTO comment)
         {
@@ -56,9 +60,11 @@ namespace KitchenDelights.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
+            if(id < 0) return BadRequest("Invalid Id");
             bool isDeleted = await _commentManager.DeleteComment(id);
             if (!isDeleted) return StatusCode(500, "Delete comment failed!");
             return Ok();

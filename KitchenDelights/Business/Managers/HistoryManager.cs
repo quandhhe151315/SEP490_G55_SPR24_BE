@@ -26,6 +26,17 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
+        public async Task<List<PaymentHistoryDTO>> GetPaymentHistory()
+        {
+            List<PaymentHistoryDTO> historyDTO = [];
+            List<PaymentHistory> history = await _historyRepository.GetPaymentHistory();
+            foreach(PaymentHistory historyItem in history)
+            {
+                historyDTO.Add(_mapper.Map<PaymentHistory, PaymentHistoryDTO>(historyItem));
+            }
+            return historyDTO;
+        }
+
         public async Task<List<PaymentHistoryDTO>> GetPaymentHistory(int id)
         {
             List<PaymentHistoryDTO> historyDTO = [];
