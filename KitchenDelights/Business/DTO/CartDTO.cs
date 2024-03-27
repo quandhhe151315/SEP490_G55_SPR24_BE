@@ -12,4 +12,8 @@ public class CartDTO
     public List<CartItemDTO> Items { get; set; } = [];
 
     public int Count { get; set; } = 0;
+
+    public decimal TotalPricePreVoucher = 0;
+
+    public decimal TotalPricePostVoucher = 0;
 }
