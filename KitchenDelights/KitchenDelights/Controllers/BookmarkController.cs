@@ -25,14 +25,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> GetBookmarkOfUser(int id)
         {
             BookmarkDTO? bookmark = await _bookmarkManager.GetBookmarkOfUser(id);
-            if (bookmark.Recipes.Count == 0)
-            {
-                return Ok();
-            }
-            else
-            {
-                return Ok(bookmark);
-            }
+            return Ok(bookmark);
         }
 
 
