@@ -11,14 +11,16 @@ namespace KitchenDelights.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class CartController : ControllerBase
+    public class CartController : Controller
     {
         private readonly ICartManager _cartManager;
+        private readonly IUserManager _userManager;
         private readonly IConfiguration _configuration;
 
-        public CartController(ICartManager cartManager, IConfiguration configuration)
+        public CartController(ICartManager cartManager, IUserManager userManager, IConfiguration configuration)
         {
             _cartManager = cartManager;
+            _userManager = userManager;
             _configuration = configuration;
         }
 
@@ -26,7 +28,13 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> Get(int id)
         {
             if(id < 0) return BadRequest("Invalid Id!");
-            List<CartItemDTO> cart = await _cartManager.GetCart(id);
+            CartDTO cart = new();
+            List<CartItemDTO> cartItems = await _cartManager.GetCart(id);
+            UserDTO? user = await _userManager.GetUser(id);
+            if(user == null) return NotFound("User not available");
+            cart.UserName = user.FirstName.IsNullOrEmpty() ? user.Username : user.FirstName;
+            cart.Items = cartItems;
+            cart.Count = cartItems.Count;
             return Ok(cart);
         }
 
