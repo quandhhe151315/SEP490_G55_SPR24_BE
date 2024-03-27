@@ -35,6 +35,10 @@ namespace KitchenDelights.Controllers
             cart.UserName = user.FirstName.IsNullOrEmpty() ? user.Username : user.FirstName;
             cart.Items = cartItems;
             cart.Count = cartItems.Count;
+            foreach(CartItemDTO item in cartItems) {
+                cart.TotalPricePreVoucher += item.RecipePrice.Value;
+            }
+            cart.TotalPricePostVoucher += (cart.TotalPricePreVoucher * (1m - (cartItems[0].DiscountPercentage/ 100m))).Value; 
             return Ok(cart);
         }
 
