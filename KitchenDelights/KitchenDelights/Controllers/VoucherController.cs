@@ -63,7 +63,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator,Moderator")]
+        [Authorize]
         public async Task<IActionResult> CreateVoucher(int id)
         {
             bool flag = true;
@@ -98,7 +98,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Administrator,Moderator")]
+        [Authorize]
         public async Task<IActionResult> DeleteVoucher(string voucherCode)
         {
             VoucherDTO? voucherDTO = await _voucherManager.GetVoucher(voucherCode);
