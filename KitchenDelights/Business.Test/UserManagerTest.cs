@@ -103,7 +103,7 @@ namespace Business.Test
         }
 
         [Fact]
-        public async void CreateUser_NotCreateWithCreateUserDTO_UserNotExistInRepo()
+        public async void CreateUser_NotCreateWithCreateUserDTO_UserExistInRepo()
         {
             var users = UsersSample();
             CreateUserDTO register = new()
@@ -131,6 +131,48 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void CreateResetToken_CreateToken_UserExistInRepo()
+        {
+            var users = UsersSample();
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "mock3@mail.com",
+                ResetToken = "mockToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("mock3@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("mock3@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.CreateResetToken(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("mock3@mail.com"));
+
+            boolResult.Should().BeTrue();
+            updatedUser.Should().NotBeNull();
+            updatedUser!.ResetToken.Should().BeSameAs(forgot.ResetToken);
+            updatedUser!.ResetExpire.Should().BeAfter(DateTime.Now);
+        }
+
+        [Fact]
+        public async void CreateResetToken_NotCreateToken_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "notExist@mail.com",
+                ResetToken = "mockToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("notExist@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("notExist@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.CreateResetToken(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("notExist@mail.com"));
+
+            boolResult.Should().BeFalse();
+            updatedUser.Should().BeNull();
+        }
+
+        [Fact]
         //Naming convention is MethodName_expectedBehavior_StateUnderTest
         public async void GetUser_GetUserById_UserExistInRepo()
         {
@@ -148,7 +190,6 @@ namespace Business.Test
             //Assert (using FluentAssertions)
             result.Should().NotBeNull().And.BeOfType<UserDTO>().And.BeEquivalentTo(actual!);
         }
-
 
         private static List<User> UsersSample()
         {
