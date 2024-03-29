@@ -23,16 +23,22 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public void CreateUser(RegisterRequestDTO user)
+        public async Task<bool> CreateUser(RegisterRequestDTO user)
         {
+            User? existed = await _userRepository.GetUser(user.Email);
+            if (existed != null) return false;
             _userRepository.CreateUser(_mapper.Map<RegisterRequestDTO, User>(user));
             _userRepository.Save();
+            return true;
         }
 
-        public void CreateUser(CreateUserDTO user)
+        public async Task<bool> CreateUser(CreateUserDTO user)
         {
+            User? existed = await _userRepository.GetUser(user.Email);
+            if (existed != null) return false;
             _userRepository.CreateUser(_mapper.Map<CreateUserDTO,  User>(user));
             _userRepository.Save();
+            return true;
         }
 
         public async Task<bool> CreateResetToken(ForgotPasswordDTO forgotDetail)

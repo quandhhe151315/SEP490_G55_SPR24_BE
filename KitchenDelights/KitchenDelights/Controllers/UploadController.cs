@@ -78,7 +78,8 @@ namespace KitchenDelights.Controllers
             recipe,
             news,
             blog,
-            advertisement
+            advertisement,
+            verification
         }
     }
 }
