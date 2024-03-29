@@ -9,9 +9,9 @@ namespace Business.Interfaces
 {
     public interface IUserManager
     {
-        void CreateUser(RegisterRequestDTO user);
+        Task<bool> CreateUser(RegisterRequestDTO user);
 
-        void CreateUser(CreateUserDTO user);
+        Task<bool> CreateUser(CreateUserDTO user);
 
         Task<bool> CreateResetToken(ForgotPasswordDTO forgotDetail);
 

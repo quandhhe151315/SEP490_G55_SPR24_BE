@@ -55,20 +55,15 @@ namespace KitchenDelights.Controllers
 
             if(user.Password.IsNullOrEmpty() || user.Password!.Length < 6)
             {
-                return StatusCode(StatusCodes.Status406NotAcceptable,"Password should not be shorter than 6 characters!");
+                return StatusCode(406,"Password should not be shorter than 6 characters!");
             }
 
             user.Password = PasswordHelper.Hash(user.Password);
             user.RoleId = 5; //Default "User" Role
             user.StatusId = 1; // Default "Active" status
-            try
-            {
-                _userManager.CreateUser(user);
-                return Ok();
-            } catch (Exception)
-            {
-                return StatusCode(500, "Register failed!");
-            }
+            
+            bool isCreated = await _userManager.CreateUser(user);
+            return isCreated ? Ok() : StatusCode(500, "Register failed!");
         }
 
         [HttpPost]
@@ -185,15 +180,8 @@ namespace KitchenDelights.Controllers
 
             userDTO.Password = PasswordHelper.Hash(userDTO.Password);
 
-            try
-            {
-                _userManager.CreateUser(userDTO);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            bool isCreated = await _userManager.CreateUser(userDTO);
+            return isCreated ? Ok() : StatusCode(500, "Create new user failed!");
         }
 
         [Authorize(Roles = "Administrator")]
