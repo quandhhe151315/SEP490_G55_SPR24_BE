@@ -233,14 +233,14 @@ namespace KitchenDelights.Controllers
             return Ok(await _recipeManager.GetRecipeHighRating(count));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Search(string? search)
-        {
-            List<RecipeDTO> recipes = search.IsNullOrEmpty()
-                ? await _recipeManager.GetRecipes()
-                : await _recipeManager.SearchRecipe(StringHelper.Process(search));
-            return Ok(recipes);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> Search(string? search)
+        //{
+        //    List<RecipeDTO> recipes = search.IsNullOrEmpty()
+        //        ? await _recipeManager.GetRecipes()
+        //        : await _recipeManager.SearchRecipe(StringHelper.Process(search));
+        //    return Ok(recipes);
+        //}
 
         [HttpPost]
         [Authorize(Roles = "Administrator,Moderator,Chef")]
