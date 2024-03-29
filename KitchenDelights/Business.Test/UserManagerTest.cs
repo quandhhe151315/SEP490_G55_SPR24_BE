@@ -3,6 +3,7 @@ using Business.DTO;
 using Business.Interfaces;
 using Business.Managers;
 using Business.Profiles;
+using Castle.Components.DictionaryAdapter.Xml;
 using Data.Entity;
 using Data.Interfaces;
 using FluentAssertions;
@@ -103,7 +104,7 @@ namespace Business.Test
         }
 
         [Fact]
-        public async void CreateUser_NotCreateWithCreateUserDTO_UserNotExistInRepo()
+        public async void CreateUser_NotCreateWithCreateUserDTO_UserExistInRepo()
         {
             var users = UsersSample();
             CreateUserDTO register = new()
@@ -131,6 +132,143 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void CreateResetToken_CreateToken_UserExistInRepo()
+        {
+            var users = UsersSample();
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "mock3@mail.com",
+                ResetToken = "mockToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("mock3@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("mock3@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.CreateResetToken(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("mock3@mail.com"));
+
+            boolResult.Should().BeTrue();
+            updatedUser.Should().NotBeNull();
+            updatedUser!.ResetToken.Should().BeSameAs(forgot.ResetToken);
+            updatedUser!.ResetExpire.Should().BeAfter(DateTime.Now);
+        }
+
+        [Fact]
+        public async void CreateResetToken_NotCreateToken_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "notExist@mail.com",
+                ResetToken = "mockToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("notExist@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("notExist@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.CreateResetToken(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("notExist@mail.com"));
+
+            boolResult.Should().BeFalse();
+            updatedUser.Should().BeNull();
+        }
+
+        [Fact]
+        public async void ForgetPassword_PasswordChange_UserExistInRepo()
+        {
+            var users = UsersSample();
+            users[2].ResetToken = "mockToken";
+            users[2].ResetExpire = DateTime.Now.AddHours(1);
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "mock3@mail.com",
+                Password = "newPassword",
+                ResetToken = "mockToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("mock3@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("mock3@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.ForgetPassword(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("mock3@mail.com"));
+
+            intResult.Should().Be(3);
+            updatedUser.Should().NotBeNull();
+            updatedUser!.ResetToken.Should().BeNull();
+            updatedUser!.ResetExpire.Should().BeNull();
+            updatedUser!.PasswordHash.Should().BeSameAs("newPassword");
+        }
+
+        [Fact]
+        public async void ForgetPassword_PasswordNotChange_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            users[2].ResetToken = "mockToken";
+            users[2].ResetExpire = DateTime.Now.AddHours(1);
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "notExist@mail.com",
+                Password = "newPassword",
+                ResetToken = "mockToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("notExist@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("notExist@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.ForgetPassword(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("notExist@mail.com"));
+
+            intResult.Should().Be(0);
+            updatedUser.Should().BeNull();
+        }
+
+        [Fact]
+        public async void ForgetPassword_PasswordNotChange_WrongToken()
+        {
+            var users = UsersSample();
+            users[2].ResetToken = "mockToken";
+            users[2].ResetExpire = DateTime.Now.AddHours(1);
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "mock3@mail.com",
+                Password = "newPassword",
+                ResetToken = "wrongToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("mock3@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("mock3@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.ForgetPassword(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("mock3@mail.com"));
+
+            intResult.Should().Be(1);
+            updatedUser.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async void ForgetPassword_PasswordChange_ExpireToken()
+        {
+            var users = UsersSample();
+            users[2].ResetToken = "mockToken";
+            users[2].ResetExpire = DateTime.Now.AddHours(-1);
+            ForgotPasswordDTO forgot = new()
+            {
+                Email = "mock3@mail.com",
+                Password = "newPassword",
+                ResetToken = "mockToken"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser("mock3@mail.com")).ReturnsAsync(users.FirstOrDefault(user => user.Email.Equals("mock3@mail.com")));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[2] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.ForgetPassword(forgot);
+            var updatedUser = users.FirstOrDefault(x => x.Email.Equals("mock3@mail.com"));
+
+            intResult.Should().Be(2);
+            updatedUser.Should().NotBeNull();
+        }
+
+        [Fact]
         //Naming convention is MethodName_expectedBehavior_StateUnderTest
         public async void GetUser_GetUserById_UserExistInRepo()
         {
@@ -148,7 +286,6 @@ namespace Business.Test
             //Assert (using FluentAssertions)
             result.Should().NotBeNull().And.BeOfType<UserDTO>().And.BeEquivalentTo(actual!);
         }
-
 
         private static List<User> UsersSample()
         {
