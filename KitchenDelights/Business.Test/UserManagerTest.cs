@@ -269,6 +269,47 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void ChangePassword_PasswordChange_UserExistInRepo()
+        {
+            var users = UsersSample();
+            ChangePasswordDTO change = new()
+            {
+                UserId = 1,
+                Password = "newPassword" 
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.ChangePassword(change);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 1);
+
+            boolResult.Should().BeTrue();
+            updatedUser.Should().NotBeNull();
+            updatedUser!.PasswordHash.Should().BeSameAs("newPassword");
+        }
+
+        [Fact]
+        public async void ChangePassword_PasswordNotChange_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            ChangePasswordDTO change = new()
+            {
+                UserId = 4,
+                Password = "newPassword" 
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(4)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 4));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[3] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.ChangePassword(change);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 4);
+
+            boolResult.Should().BeFalse();
+            updatedUser.Should().BeNull();
+        }
+
+        [Fact]
         //Naming convention is MethodName_expectedBehavior_StateUnderTest
         public async void GetUser_GetUserById_UserExistInRepo()
         {
