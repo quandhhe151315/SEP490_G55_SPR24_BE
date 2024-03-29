@@ -279,11 +279,35 @@ namespace Business.Managers
         public async Task<List<RecipeDTO>> FilterRecipe(string? searchName, int? category, int? country, int? ingredient, int? isfree, string? orderby, string? sort)
         {
             List<Recipe> recipes = [];
+            List<Recipe> recipeTemps = [];
             List<RecipeDTO> recipeDTOs = [];
 
             if (!string.IsNullOrEmpty(searchName))
             {
-                recipes = await _recipeRepository.GetRecipeByTitle(searchName);
+                recipeTemps = await _recipeRepository.GetRecipes();
+                foreach (Recipe recipeTemp in recipeTemps)
+                {
+                    //Search in title
+                    if (recipeTemp.RecipeTitle!.Contains(searchName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        recipes.Add(recipeTemp);
+                        continue;
+                    }
+
+                    //Search in description && check for duplicate
+                    if (recipeTemp.RecipeDescription!.Contains(searchName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        recipes.Add(recipeTemp);
+                        continue;
+                    }
+
+                    //Search in ingredient list && check for duplicate
+                    if (recipeTemp.RecipeIngredients.Any(x => x.Ingredient.IngredientName.Contains(searchName, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        recipes.Add(recipeTemp);
+                        continue;
+                    }
+                }
             }
             else
             {
