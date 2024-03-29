@@ -275,5 +275,94 @@ namespace Business.Managers
             _recipeRepository.Save();
             return true;
         }
+
+        public async Task<List<RecipeDTO>> FilterRecipe(string? searchName, int? category, int? country, int? ingredient, int? isfree, string? orderby, string? sort)
+        {
+            List<Recipe> recipes = [];
+            List<RecipeDTO> recipeDTOs = [];
+
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                recipes = await _recipeRepository.GetRecipeByTitle(searchName);
+            }
+            else
+            {
+                recipes = await _recipeRepository.GetRecipes();
+            }
+
+            if(category != null)
+            {
+                recipes = recipes.Where(x => x.Categories.Any(x => x.CategoryId == category)).ToList();
+            }
+            if (country != null)
+            {
+                recipes = recipes.Where(x => x.Countries.Any(x => x.CountryId == country)).ToList();
+            }
+            if (ingredient != null)
+            {
+                recipes = recipes.Where(x => x.RecipeIngredients.Any(x => x.IngredientId == ingredient)).ToList();
+            }
+            if (isfree != null)
+            {
+                switch (isfree)
+                {
+                    case 1:
+                        recipes = recipes.Where(x => x.IsFree == true).ToList();
+                        break;
+                    case 2:
+                        recipes = recipes.Where(x => x.IsFree == false).ToList(); 
+                        break;
+                }
+            }
+            if (!string.IsNullOrEmpty(orderby))
+            {
+                if (sort == "ASC")
+                {
+                    switch (orderby)
+                    {
+                        case "CreateDate":
+                            recipes = recipes.OrderBy(x => x.CreateDate).ToList();
+                            break;
+                        case "Title":
+                            recipes = recipes.OrderBy(x => x.RecipeTitle).ToList();
+                            break;
+                        case "Price":
+                            recipes = recipes.OrderBy(x => x.RecipePrice).ToList();
+                            break;
+                        case "Rating":
+                            recipes = recipes.OrderBy(x => x.RecipeRating).ToList();
+                            break;
+                    }
+                }
+                else if (sort == "DESC" || string.IsNullOrEmpty(sort))
+                {
+                    switch (orderby)
+                    {
+                        case "CreateDate":
+                            recipes = recipes.OrderByDescending(x => x.CreateDate).ToList();
+                            break;
+                        case "Title":
+                            recipes = recipes.OrderByDescending(x => x.RecipeTitle).ToList();
+                            break;
+                        case "Price":
+                            recipes = recipes.OrderByDescending(x => x.RecipePrice).ToList();
+                            break;
+                        case "Rating":
+                            recipes = recipes.OrderByDescending(x => x.RecipeRating).ToList();
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                if (sort == "ASC") recipes = recipes.OrderBy(x => x.CreateDate).ToList();
+                else recipes = recipes.OrderByDescending(x => x.CreateDate).ToList();
+            }
+            foreach(var recipe in recipes)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
     }
 }

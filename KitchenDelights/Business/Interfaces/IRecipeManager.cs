@@ -1,4 +1,5 @@
 ﻿using Business.DTO;
+using Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,5 +41,7 @@ namespace Business.Interfaces
         Task<List<RecipeDTO>> GetRecipeHighRating(int count);
 
         Task<List<RecipeDTO>> SearchRecipe(string searchString);
+
+        Task<List<RecipeDTO>> FilterRecipe(string? searchName, int? category, int? country, int? ingredient, int? isfree, string? orderby, string? sort);
     }
 }

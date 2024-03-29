@@ -43,6 +43,25 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> FilterRecipe(string? searchName, int? category, int? country, int? ingredient, int? isfree, string? orderby, string? sort)
+        {
+            List<RecipeDTO> recipes = [];
+            try
+            {
+                recipes = await _recipeManager.FilterRecipe(searchName, category, country, ingredient, isfree, orderby, sort);
+                if (recipes.Count <= 0)
+                {
+                    return NotFound("There are not exist any recipe in database");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(recipes);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetAllRecipeDESCbyRating()
         {
             List<RecipeDTO> recipes = [];
