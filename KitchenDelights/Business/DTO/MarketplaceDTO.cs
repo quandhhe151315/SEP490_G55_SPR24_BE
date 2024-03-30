@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace Business.DTO
 {
-    public class IngredientMarketplaceDTO
+    public class MarketplaceDTO
     {
-        public int? IngredientId { get; set; }
-        public string? IngredientName { get; set; }
         public int? MarketplaceId { get; set; }
+
+        public string? MarketplaceName { get; set; }
+
         public string? MarketplaceLogo { get; set; }
-        public string? MarketplaceLink { get; set; }
+
+        public int MarketplaceStatus { get; set; }
     }
 }
