@@ -534,6 +534,70 @@ namespace Business.Test
             actual.Should().BeNull();
         }
 
+        [Fact]
+        public async void Interact_InteractionPointIncrease_UserExistInRepo() 
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(1, "blog");
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            intResult.Should().Be(2);
+            actual.Should().NotBeNull();
+            actual!.Interaction.Should().Be(3);
+        }
+
+        [Fact]
+        public async void Interact_InteractionPointDecrease_UserExistInRepo() 
+        {
+            var users = UsersSample();
+            users[0].Interaction = 29;
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(1, "blog");
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            intResult.Should().Be(3);
+            actual.Should().NotBeNull();
+            actual!.Interaction.Should().Be(2);
+        }
+
+        [Fact]
+        public async void Interact_Return0_UserNotExistInRepo() 
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(-1)).ReturnsAsync(users.Find(user => user.UserId == -1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[-1] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(-1, "blog");
+            var actual = users.FirstOrDefault(user => user.UserId == -1);
+
+            intResult.Should().Be(0);
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public async void Interact_Return1_WrongInteractionType() 
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(1, "wrongType");
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            intResult.Should().Be(1);
+            actual.Should().NotBeNull();
+            actual!.Interaction.Should().Be(0);
+        }
+
         private static List<User> UsersSample()
         {
             List<User> output = [
