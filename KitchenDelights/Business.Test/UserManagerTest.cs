@@ -388,6 +388,56 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void GetUser_GetUserByEmail_UserExistInRepo()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser("mock1@mail.com")).ReturnsAsync(users.FirstOrDefault(x => x.Email.Equals("mock1@mail.com")));
+            
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser("mock1@mail.com");
+            var actual = userDTOs.FirstOrDefault(x => x.Email.Equals("mock1@mail.com"));
+
+            result.Should()
+                  .NotBeNull().And
+                  .BeOfType<UserDTO>().And
+                  .BeEquivalentTo(actual!);
+        }
+
+        [Fact]
+        public async void GetUser_ReturnNull_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser("notExist@mail.com")).ReturnsAsync(users.FirstOrDefault(x => x.Email.Equals("notExist@mail.com")));
+            
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser("notExist@mail.com");
+            var actual = userDTOs.FirstOrDefault(x => x.Email.Equals("notExist@mail.com"));
+
+            result.Should().BeNull();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public async void GetUser_ReturnNull_EmptyEmailString()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser("")).ReturnsAsync(users.FirstOrDefault(x => x.Email.Equals("")));
+            
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser("");
+            var actual = userDTOs.FirstOrDefault(x => x.Email.Equals(""));
+
+            result.Should().BeNull();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
         //Naming convention is MethodName_expectedBehavior_StateUnderTest
         public async void GetUser_GetUserById_UserExistInRepo()
         {
