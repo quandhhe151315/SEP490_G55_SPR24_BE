@@ -26,6 +26,7 @@ namespace Business.Test
                 options.AddProfile<UserProfile>();
                 options.AddProfile<StatusProfile>();
                 options.AddProfile<RoleProfile>();
+                options.AddProfile<AddressProfile>();
             }));
         }
 
@@ -303,6 +304,83 @@ namespace Business.Test
 
             IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
             var boolResult = await _userManager.ChangePassword(change);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 4);
+
+            boolResult.Should().BeFalse();
+            updatedUser.Should().BeNull();
+        }
+
+        [Fact]
+        public async void UpdateProfile_ProfileChange_UserExistInRepo()
+        {
+            var users = UsersSample();
+            UserDTO profile = new()
+            {
+                UserId = 1,
+                FirstName = "newFirstName",
+                MiddleName = "newMiddleName",
+                LastName = "newLastName",
+                Email = "newMail@mail.com",
+                Phone = "0000000000",
+                Addresses = [
+                    new AddressDTO() {
+                        AddressId = 1,
+                        AddressDetails = "mock address 1"
+                    },
+                    new AddressDTO() {
+                        AddressId = 2,
+                        AddressDetails = "mock address 2"
+                    }
+                ],
+                Avatar = "newAvatarLink"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateProfile(profile);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 1);
+
+            boolResult.Should().BeTrue();
+            updatedUser.Should().NotBeNull();
+            updatedUser!.FirstName.Should().BeSameAs(profile.FirstName);
+            updatedUser!.MiddleName.Should().BeSameAs(profile.MiddleName);
+            updatedUser!.LastName.Should().BeSameAs(profile.LastName);
+            updatedUser!.Email.Should().BeSameAs(profile.Email);
+            updatedUser!.Phone.Should().BeSameAs(profile.Phone);
+            updatedUser!.Addresses.Should().BeEquivalentTo(profile.Addresses);
+            updatedUser!.Avatar.Should().BeSameAs(profile.Avatar);
+        }
+
+        [Fact]
+        public async void UpdateProfile_ProfileNotChange_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            UserDTO profile = new()
+            {
+                UserId = 4,
+                FirstName = "newFirstName",
+                MiddleName = "newMiddleName",
+                LastName = "newLastName",
+                Email = "newMail@mail.com",
+                Phone = "0000000000",
+                Addresses = [
+                    new AddressDTO() {
+                        AddressId = 1,
+                        AddressDetails = "mock address 1"
+                    },
+                    new AddressDTO() {
+                        AddressId = 2,
+                        AddressDetails = "mock address 2"
+                    }
+                ],
+                Avatar = "newAvatarLink"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(4)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 4));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[3] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateProfile(profile);
             var updatedUser = users.FirstOrDefault(x => x.UserId == 4);
 
             boolResult.Should().BeFalse();
