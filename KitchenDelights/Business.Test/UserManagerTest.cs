@@ -472,6 +472,37 @@ namespace Business.Test
             actual.Should().BeNull();
         }
 
+        [Fact]
+        public async void UpdateRole_RoleChanged_UserExistInRepo()
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateRole(1, 5);
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            boolResult.Should().BeTrue();
+            actual.Should().NotBeNull();
+            actual!.RoleId.Should().Be(5);
+        }
+
+        [Fact]
+        public async void UpdateRole_RoleNotChanged_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(-1)).ReturnsAsync(users.Find(user => user.UserId == -1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[-1] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateRole(-1, 5);
+            var actual = users.FirstOrDefault(user => user.UserId == -1);
+
+            boolResult.Should().BeFalse();
+            actual.Should().BeNull();
+        }
+
         private static List<User> UsersSample()
         {
             List<User> output = [
