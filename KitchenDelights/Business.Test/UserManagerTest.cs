@@ -26,6 +26,7 @@ namespace Business.Test
                 options.AddProfile<UserProfile>();
                 options.AddProfile<StatusProfile>();
                 options.AddProfile<RoleProfile>();
+                options.AddProfile<AddressProfile>();
             }));
         }
 
@@ -269,6 +270,174 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void ChangePassword_PasswordChange_UserExistInRepo()
+        {
+            var users = UsersSample();
+            ChangePasswordDTO change = new()
+            {
+                UserId = 1,
+                Password = "newPassword" 
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.ChangePassword(change);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 1);
+
+            boolResult.Should().BeTrue();
+            updatedUser.Should().NotBeNull();
+            updatedUser!.PasswordHash.Should().BeSameAs("newPassword");
+        }
+
+        [Fact]
+        public async void ChangePassword_PasswordNotChange_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            ChangePasswordDTO change = new()
+            {
+                UserId = 4,
+                Password = "newPassword" 
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(4)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 4));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[3] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.ChangePassword(change);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 4);
+
+            boolResult.Should().BeFalse();
+            updatedUser.Should().BeNull();
+        }
+
+        [Fact]
+        public async void UpdateProfile_ProfileChange_UserExistInRepo()
+        {
+            var users = UsersSample();
+            UserDTO profile = new()
+            {
+                UserId = 1,
+                FirstName = "newFirstName",
+                MiddleName = "newMiddleName",
+                LastName = "newLastName",
+                Email = "newMail@mail.com",
+                Phone = "0000000000",
+                Addresses = [
+                    new AddressDTO() {
+                        AddressId = 1,
+                        AddressDetails = "mock address 1"
+                    },
+                    new AddressDTO() {
+                        AddressId = 2,
+                        AddressDetails = "mock address 2"
+                    }
+                ],
+                Avatar = "newAvatarLink"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateProfile(profile);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 1);
+
+            boolResult.Should().BeTrue();
+            updatedUser.Should().NotBeNull();
+            updatedUser!.FirstName.Should().BeSameAs(profile.FirstName);
+            updatedUser!.MiddleName.Should().BeSameAs(profile.MiddleName);
+            updatedUser!.LastName.Should().BeSameAs(profile.LastName);
+            updatedUser!.Email.Should().BeSameAs(profile.Email);
+            updatedUser!.Phone.Should().BeSameAs(profile.Phone);
+            updatedUser!.Addresses.Should().BeEquivalentTo(profile.Addresses);
+            updatedUser!.Avatar.Should().BeSameAs(profile.Avatar);
+        }
+
+        [Fact]
+        public async void UpdateProfile_ProfileNotChange_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            UserDTO profile = new()
+            {
+                UserId = 4,
+                FirstName = "newFirstName",
+                MiddleName = "newMiddleName",
+                LastName = "newLastName",
+                Email = "newMail@mail.com",
+                Phone = "0000000000",
+                Addresses = [
+                    new AddressDTO() {
+                        AddressId = 1,
+                        AddressDetails = "mock address 1"
+                    },
+                    new AddressDTO() {
+                        AddressId = 2,
+                        AddressDetails = "mock address 2"
+                    }
+                ],
+                Avatar = "newAvatarLink"
+            };
+            _userRepositoryMock.Setup(x => x.GetUser(4)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 4));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[3] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateProfile(profile);
+            var updatedUser = users.FirstOrDefault(x => x.UserId == 4);
+
+            boolResult.Should().BeFalse();
+            updatedUser.Should().BeNull();
+        }
+
+        [Fact]
+        public async void GetUser_GetUserByEmail_UserExistInRepo()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser("mock1@mail.com")).ReturnsAsync(users.FirstOrDefault(x => x.Email.Equals("mock1@mail.com")));
+            
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser("mock1@mail.com");
+            var actual = userDTOs.FirstOrDefault(x => x.Email.Equals("mock1@mail.com"));
+
+            result.Should()
+                  .NotBeNull().And
+                  .BeOfType<UserDTO>().And
+                  .BeEquivalentTo(actual!);
+        }
+
+        [Fact]
+        public async void GetUser_ReturnNull_UserNotExistInRepoEmail()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser("notExist@mail.com")).ReturnsAsync(users.FirstOrDefault(x => x.Email.Equals("notExist@mail.com")));
+            
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser("notExist@mail.com");
+            var actual = userDTOs.FirstOrDefault(x => x.Email.Equals("notExist@mail.com"));
+
+            result.Should().BeNull();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public async void GetUser_ReturnNull_EmptyEmailString()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser("")).ReturnsAsync(users.FirstOrDefault(x => x.Email.Equals("")));
+            
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser("");
+            var actual = userDTOs.FirstOrDefault(x => x.Email.Equals(""));
+
+            result.Should().BeNull();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
         //Naming convention is MethodName_expectedBehavior_StateUnderTest
         public async void GetUser_GetUserById_UserExistInRepo()
         {
@@ -285,6 +454,148 @@ namespace Business.Test
 
             //Assert (using FluentAssertions)
             result.Should().NotBeNull().And.BeOfType<UserDTO>().And.BeEquivalentTo(actual!);
+        }
+
+        [Fact]
+        public async void GetUser_ReturnNull_UserNotExistInRepoId()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser(-1)).ReturnsAsync(users.Find(user => user.UserId == -1)); //Mock User repository GetUser(int id) method
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser(-1);
+            var actual = userDTOs.FirstOrDefault(user => user.UserId == -1);
+
+            result.Should().BeNull();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public async void UpdateRole_RoleChanged_UserExistInRepo()
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateRole(1, 5);
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            boolResult.Should().BeTrue();
+            actual.Should().NotBeNull();
+            actual!.RoleId.Should().Be(5);
+        }
+
+        [Fact]
+        public async void UpdateRole_RoleNotChanged_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(-1)).ReturnsAsync(users.Find(user => user.UserId == -1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[-1] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateRole(-1, 5);
+            var actual = users.FirstOrDefault(user => user.UserId == -1);
+
+            boolResult.Should().BeFalse();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public async void UpdateStatus_StatusChanged_UserExistInRepo()
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateStatus(1, 2);
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            boolResult.Should().BeTrue();
+            actual.Should().NotBeNull();
+            actual!.StatusId.Should().Be(2);
+        }
+
+        [Fact]
+        public async void UpdateStatus_StatusNotChanged_UserNotExistInRepo()
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(-1)).ReturnsAsync(users.Find(user => user.UserId == -1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[-1] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var boolResult = await _userManager.UpdateStatus(-1, 2);
+            var actual = users.FirstOrDefault(user => user.UserId == -1);
+
+            boolResult.Should().BeFalse();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public async void Interact_InteractionPointIncrease_UserExistInRepo() 
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(1, "blog");
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            intResult.Should().Be(2);
+            actual.Should().NotBeNull();
+            actual!.Interaction.Should().Be(3);
+        }
+
+        [Fact]
+        public async void Interact_InteractionPointDecrease_UserExistInRepo() 
+        {
+            var users = UsersSample();
+            users[0].Interaction = 29;
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(1, "blog");
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            intResult.Should().Be(3);
+            actual.Should().NotBeNull();
+            actual!.Interaction.Should().Be(2);
+        }
+
+        [Fact]
+        public async void Interact_Return0_UserNotExistInRepo() 
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(-1)).ReturnsAsync(users.Find(user => user.UserId == -1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[-1] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(-1, "blog");
+            var actual = users.FirstOrDefault(user => user.UserId == -1);
+
+            intResult.Should().Be(0);
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public async void Interact_Return1_WrongInteractionType() 
+        {
+            var users = UsersSample();
+            _userRepositoryMock.Setup(x => x.GetUser(1)).ReturnsAsync(users.Find(user => user.UserId == 1));
+            _userRepositoryMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Callback<User>((user) => users[0] = user);
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var intResult = await _userManager.Interact(1, "wrongType");
+            var actual = users.FirstOrDefault(user => user.UserId == 1);
+
+            intResult.Should().Be(1);
+            actual.Should().NotBeNull();
+            actual!.Interaction.Should().Be(0);
         }
 
         private static List<User> UsersSample()
