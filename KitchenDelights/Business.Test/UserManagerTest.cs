@@ -406,7 +406,7 @@ namespace Business.Test
         }
 
         [Fact]
-        public async void GetUser_ReturnNull_UserNotExistInRepo()
+        public async void GetUser_ReturnNull_UserNotExistInRepoEmail()
         {
             var users = UsersSample();
             List<UserDTO> userDTOs = [];
@@ -454,6 +454,22 @@ namespace Business.Test
 
             //Assert (using FluentAssertions)
             result.Should().NotBeNull().And.BeOfType<UserDTO>().And.BeEquivalentTo(actual!);
+        }
+
+        [Fact]
+        public async void GetUser_ReturnNull_UserNotExistInRepoId()
+        {
+            var users = UsersSample();
+            List<UserDTO> userDTOs = [];
+            userDTOs.AddRange(users.Select(_mapper.Map<User, UserDTO>));
+            _userRepositoryMock.Setup(x => x.GetUser(-1)).ReturnsAsync(users.Find(user => user.UserId == -1)); //Mock User repository GetUser(int id) method
+
+            IUserManager _userManager = new UserManager(_userRepositoryMock.Object, _mapper);
+            var result = await _userManager.GetUser(-1);
+            var actual = userDTOs.FirstOrDefault(user => user.UserId == -1);
+
+            result.Should().BeNull();
+            actual.Should().BeNull();
         }
 
         private static List<User> UsersSample()
