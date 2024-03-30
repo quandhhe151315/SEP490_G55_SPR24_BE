@@ -26,7 +26,7 @@ namespace Business.Managers
         {
             List<IngredientMarketplaceDTO> dtos = [];
             List<IngredientMarketplace> list = await _repostitory.GetIngredientMarketplaces();
-            foreach(var ingMarketplace in list)
+            foreach(IngredientMarketplace ingMarketplace in list)
             {
                 dtos.Add(_mapper.Map<IngredientMarketplace, IngredientMarketplaceDTO>(ingMarketplace));
             }

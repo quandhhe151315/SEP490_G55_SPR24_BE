@@ -129,6 +129,9 @@ internal class Program
         builder.Services.AddScoped<IMarketplaceManager, MarketplaceManager>();
         builder.Services.AddScoped<IMarketplaceRepository, MarketplaceRepository>();
 
+        builder.Services.AddScoped<IIngredientMarketplaceManager, IngredientMarketplaceManager>();
+        builder.Services.AddScoped<IIngredientMarketplaceRepository, IngredientMarketplaceRepository>();
+
         builder.Services.AddDbContext<KitchenDelightsContext>(
                     option => option.UseSqlServer(
                         builder.Configuration.GetConnectionString("KitchenDelights")

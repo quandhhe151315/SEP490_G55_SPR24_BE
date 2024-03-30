@@ -31,6 +31,7 @@ namespace KitchenDelights.Controllers
         {
             try
             {
+                marketplace.MarketplaceStatus = 1;
                 _marketplaceManager.CreateMarketplace(marketplace);
                 return Ok();
             }
