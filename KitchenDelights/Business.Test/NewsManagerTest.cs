@@ -98,6 +98,20 @@ public class NewsManagerTest
     }
 
     [Fact]
+    public async void SearchNews_GetNewsList_EmptyString() {
+        var news = GetNews();
+        _mockNewsRepository.Setup(x => x.GetNews()).ReturnsAsync(news.OrderByDescending(x => x.CreateDate).ToList());
+
+        INewsManager _newsManager = new NewsManager(_mockNewsRepository.Object, _mapper);
+        var result = await _newsManager.SearchNews(string.Empty);
+
+        result.Should().BeOfType<List<NewsDTO>>()
+        .And.NotBeNullOrEmpty()
+        .And.BeInDescendingOrder(x => x.CreateDate);
+        result.Count.Should().Be(4);
+    }
+
+    [Fact]
     public async void GetNewsLastest_GetNewsList_NormalCount() {
         var news = GetNews();
         _mockNewsRepository.Setup(x => x.GetNews()).ReturnsAsync(news.OrderByDescending(x => x.CreateDate).ToList());
