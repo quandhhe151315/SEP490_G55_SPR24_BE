@@ -33,7 +33,10 @@ namespace Business.Managers
         {
             News? news = await _newsRepository.GetNews(newsDTO.NewsId.Value);
             if (news == null) return false;
-            news = _mapper.Map<NewsDTO, News>(newsDTO);
+            news.FeaturedImage = newsDTO.FeaturedImage;
+            news.NewsTitle = newsDTO.NewsTitle;
+            news.NewsContent = newsDTO.NewsContent;
+            news.NewsStatus = 2;
 
             _newsRepository.UpdateNews(news);
             _newsRepository.Save();
