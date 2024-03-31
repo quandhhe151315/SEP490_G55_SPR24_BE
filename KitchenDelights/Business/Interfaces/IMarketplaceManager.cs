@@ -12,6 +12,7 @@ namespace Business.Interfaces
         Task<List<MarketplaceDTO>> GetMarketplaces();
         void CreateMarketplace(MarketplaceDTO marketplace);
         Task<bool> UpdateMarketplace(MarketplaceDTO marketplace);
+        Task<bool> UpdateStatus(int id);
         Task<bool> DeleteMarketplace(int id);
     }
 }
