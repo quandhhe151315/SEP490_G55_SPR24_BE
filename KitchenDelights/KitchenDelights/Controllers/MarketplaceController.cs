@@ -55,5 +55,12 @@ namespace KitchenDelights.Controllers
             bool isDeleted = await _marketplaceManager.DeleteMarketplace(id);
             return isDeleted ? Ok() : NotFound("Marketplace doesn't exist!");
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> Status(int id)
+        {
+            bool isUpdated = await _marketplaceManager.UpdateStatus(id);
+            return isUpdated ? Ok() : NotFound("Marketplace doesn't exist!");
+        }
     }
 }

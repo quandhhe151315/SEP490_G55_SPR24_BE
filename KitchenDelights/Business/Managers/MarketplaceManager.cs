@@ -52,6 +52,24 @@ namespace Business.Managers
             return true;
         }
 
+        public async Task<bool> UpdateStatus(int id) {
+            Marketplace? toUpdate = await _marketplaceRepository.GetMarketplace(id);
+            if (toUpdate is null) return false;
+            switch(toUpdate.MarketplaceStatus) {
+                case 1:
+                    toUpdate.MarketplaceStatus = 2;
+                    break;
+                case 2:
+                    toUpdate.MarketplaceStatus = 1;
+                    break;
+                default:
+                    return false;
+            }
+            _marketplaceRepository.UpdateMarketplace(toUpdate);
+            _marketplaceRepository.Save();
+            return true;
+        }
+
         public async Task<bool> DeleteMarketplace(int id)
         {
             Marketplace? toDelete = await _marketplaceRepository.GetMarketplace(id);
