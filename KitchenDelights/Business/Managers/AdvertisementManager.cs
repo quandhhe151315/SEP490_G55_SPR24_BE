@@ -23,10 +23,18 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public void CreateAdvertisement(AdvertisementDTO advertisement)
+        public async Task<bool> CreateAdvertisement(AdvertisementDTO advertisement)
         {
-            _advertisementRepository.CreateAdvertisement(_mapper.Map<AdvertisementDTO, Advertisement>(advertisement));
-            _advertisementRepository.Save();
+            try
+            {
+                _advertisementRepository.CreateAdvertisement(_mapper.Map<AdvertisementDTO, Advertisement>(advertisement));
+                _advertisementRepository.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> DeleteAdvertisement(int id)
@@ -62,10 +70,8 @@ namespace Business.Managers
             Advertisement? advertisement = await _advertisementRepository.GetAdvertisementById(advertisementDTO.AdvertisementId.Value);
             if (advertisement == null) return false;
 
-            advertisement.AdvertisementId = advertisementDTO.AdvertisementId.Value;
             advertisement.AdvertisementImage = advertisementDTO.AdvertisementImage;
             advertisement.AdvertisementLink = advertisementDTO.AdvertisementLink;
-            advertisement.AdvertisementStatus = advertisementDTO.AdvertisementStatus;
             _advertisementRepository.UpdateAdvertisement(advertisement);
             _advertisementRepository.Save();
             return true;

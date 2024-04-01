@@ -2,6 +2,7 @@
 using Business.Interfaces;
 using Business.Managers;
 using Data.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -95,6 +96,36 @@ namespace KitchenDelights.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(ingredients);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Create(IngredientRequestDTO ingredientDTO)
+        {
+            bool isCreated = await _ingredientManager.CreateIngredient(ingredientDTO);
+            return !isCreated ? StatusCode(StatusCodes.Status500InternalServerError, "Create failed!") : Ok("Create sucess!");
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Update(IngredientRequestDTO ingredientDTO)
+        {
+            IngredientDTO? IngredientDTO = await _ingredientManager.GetIngredientById(ingredientDTO.IngredientId);
+            if (IngredientDTO == null) return NotFound("Ingredient doesn't exist!");
+
+            bool isUpdated = await _ingredientManager.UpdateIngredient(ingredientDTO);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucess!");
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            IngredientDTO? IngredientDTO = await _ingredientManager.GetIngredientById(id);
+            if (IngredientDTO == null) return NotFound("Ingredient doesn't exist!");
+
+            bool isDeleted = await _ingredientManager.DeleteIngredient(id);
+            return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucess!");
         }
     }
 }

@@ -37,16 +37,9 @@ namespace KitchenDelights.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(AdvertisementDTO advertisementDTO)
         {
-            advertisementDTO.AdvertisementStatus = 0;
-            try
-            {
-                _advertisementManager.CreateAdvertisement(advertisementDTO);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            advertisementDTO.AdvertisementStatus = 1;
+            bool isCreated = await _advertisementManager.CreateAdvertisement(advertisementDTO);
+            return !isCreated ? StatusCode(StatusCodes.Status500InternalServerError, "Create failed!") : Ok("Create sucess!");
         }
 
         [HttpPut]

@@ -24,6 +24,31 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
+        public async Task<bool> CreateIngredient(IngredientRequestDTO ingredient)
+        {
+            try
+            {
+                _ingredientRepository.CreateIngredient(_mapper.Map<IngredientRequestDTO, Ingredient>(ingredient));
+                _ingredientRepository.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteIngredient(int id)
+        {
+            Ingredient? ingredient = await _ingredientRepository.GetIngredientById(id);
+            if (ingredient == null) return false;
+
+            ingredient.IngredientStatus = 0;
+            _ingredientRepository.UpdateIngredient(ingredient);
+            _ingredientRepository.Save();
+            return true;
+        }
+
         public async Task<List<IngredientDTO>> GetAllIngredients()
         {
             List<Ingredient> ingredients = await _ingredientRepository.GetAllIngredients();
@@ -50,6 +75,18 @@ namespace Business.Managers
                 ingredientDTOs.Add(_mapper.Map<Ingredient, IngredientDTO>(ingredient));
             }
             return ingredientDTOs;
+        }
+
+        public async Task<bool> UpdateIngredient(IngredientRequestDTO ingredientDTO)
+        {
+            Ingredient? ingredient = await _ingredientRepository.GetIngredientById(ingredientDTO.IngredientId);
+            if (ingredient == null) return false;
+
+            ingredient.IngredientName = ingredientDTO.IngredientName;
+            ingredient.IngredientUnit = ingredientDTO.IngredientUnit;
+            _ingredientRepository.UpdateIngredient(ingredient);
+            _ingredientRepository.Save();
+            return true;
         }
     }
 }
