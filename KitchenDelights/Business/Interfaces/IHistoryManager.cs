@@ -11,6 +11,7 @@ namespace Business.Interfaces
     {
         Task<List<PaymentHistoryDTO>> GetPaymentHistory();
         Task<List<PaymentHistoryDTO>> GetPaymentHistory(int id);
+        Task<Revenue> GetNumberRevenueInThisMonth();
         Task<bool> CreatePaymentHistory(List<CartItemDTO> cart);
     }
 }
