@@ -18,6 +18,30 @@ namespace Data.Repositories
             _context = context;
         }
 
+        public void CreateIngredient(Ingredient ingredient)
+        {
+            try
+            {
+                _context.Ingredients.Add(ingredient);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        public void DeleteIngredient(Ingredient ingredient)
+        {
+            try
+            {
+                _context.Ingredients.Remove(ingredient);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
         public async Task<List<Ingredient>> GetAllIngredients()
         {
             return await _context.Ingredients.Include(x => x.IngredientMarketplaces).ToListAsync();
@@ -37,6 +61,18 @@ namespace Data.Repositories
         public void Save()
         {
             _context.SaveChanges();
-        }  
+        }
+
+        public void UpdateIngredient(Ingredient ingredient)
+        {
+            try
+            {
+                _context.Ingredients.Update(ingredient);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
     }
 }

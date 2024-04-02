@@ -10,7 +10,7 @@ namespace Business.Interfaces
 {
     public interface IAdvertisementManager
     {
-        void CreateAdvertisement(AdvertisementDTO advertisement);
+        Task<bool> CreateAdvertisement(AdvertisementDTO advertisement);
 
         Task<bool> UpdateAdvertisement(AdvertisementDTO advertisement);
 

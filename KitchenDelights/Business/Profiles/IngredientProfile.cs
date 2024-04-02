@@ -19,6 +19,9 @@ namespace Business.Profiles
             CreateMap<Ingredient, IngredientDTO>()
                 .ForMember(dest => dest.IngredientMarketplaces, opt => opt.MapFrom(src => src.IngredientMarketplaces));
             CreateMap<IngredientDTO, Ingredient>();
+
+            CreateMap<Ingredient, IngredientRequestDTO>();
+            CreateMap<IngredientRequestDTO, Ingredient>();
         }
     }
 }
