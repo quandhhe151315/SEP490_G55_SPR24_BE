@@ -28,7 +28,7 @@ namespace Business.Managers
             List<IngredientMarketplace> list = await _repostitory.GetIngredientMarketplaces();
             foreach(IngredientMarketplace ingMarketplace in list)
             {
-                if(ingMarketplace.Marketplace.MarketplaceStatus != 0) {
+                if(ingMarketplace.Marketplace.MarketplaceStatus == 1) {
                     dtos.Add(_mapper.Map<IngredientMarketplace, IngredientMarketplaceDTO>(ingMarketplace));
                 }
             }
@@ -41,7 +41,7 @@ namespace Business.Managers
             List<IngredientMarketplace> list = await _repostitory.GetIngredientMarketplaces();
             foreach(IngredientMarketplace ingMarketplace in list)
             {
-                if(ingMarketplace.MarketplaceId == id && ingMarketplace.Marketplace.MarketplaceStatus != 0) {
+                if(ingMarketplace.MarketplaceId == id && ingMarketplace.Marketplace.MarketplaceStatus == 1) {
                     dtos.Add(_mapper.Map<IngredientMarketplace, IngredientMarketplaceDTO>(ingMarketplace));
                 }
             }
