@@ -113,19 +113,19 @@ namespace Business.Managers
             revenue.revenue = revenueNow;
             if (revenueNow == 0 || revenueLast == 0)
             {
-                revenue.percent = 0;
+                revenue.percent = "0.0";
                 revenue.increase = true;
             }
             else
             {
                 if (revenueNow > revenueLast)
                 {
-                    revenue.percent = (float)((revenueNow - revenueLast) / revenueLast * 100);
+                    revenue.percent = ((float)((revenueNow - revenueLast) / revenueLast * 100)).ToString("0.0"); ;
                     revenue.increase = true;
                 }
                 else
                 {
-                    revenue.percent = (float)((revenueLast - revenueNow) / revenueNow * 100);
+                    revenue.percent = ((float)((revenueLast - revenueNow) / revenueNow * 100)).ToString("0.0"); ;
                     revenue.increase = false;
                 }
             }
