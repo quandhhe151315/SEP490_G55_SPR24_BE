@@ -11,7 +11,7 @@ namespace Business.Interfaces
     {
         Task<List<IngredientMarketplaceDTO>> GetIngredientMarketplaces();
         Task<List<IngredientMarketplaceDTO>> GetIngredientMarketplaces(int id);
-        void CreateIngredientMarketplace(IngredientMarketplaceDTO dto);
+        Task<bool> CreateIngredientMarketplace(IngredientMarketplaceDTO dto);
         Task<bool> UpdateIngredientMarketplace(IngredientMarketplaceDTO dto);
         Task<bool> DeleteIngredientMarketplace(int ingredientId, int marketplaceId);
     }

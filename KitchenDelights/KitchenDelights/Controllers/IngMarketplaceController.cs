@@ -36,15 +36,8 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(IngredientMarketplaceDTO dto)
         {
-            try
-            {
-                _manager.CreateIngredientMarketplace(dto);
-                return Ok();
-            }
-            catch
-            {
-                return StatusCode(500, "Create ingredient-marketplace failed!");
-            }
+            bool isCreated = await _manager.CreateIngredientMarketplace(dto);
+            return isCreated ? Ok("Create sucessful") : StatusCode(500, "Create ingredient-marketplace failed!");
         }
 
         [HttpPatch]

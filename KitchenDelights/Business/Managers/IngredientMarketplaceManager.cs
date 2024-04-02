@@ -48,10 +48,18 @@ namespace Business.Managers
             return dtos;
         }
 
-        public void CreateIngredientMarketplace(IngredientMarketplaceDTO dto)
+        public async Task<bool> CreateIngredientMarketplace(IngredientMarketplaceDTO dto)
         {
-            _repostitory.CreateIngredientMarketplace(_mapper.Map<IngredientMarketplaceDTO, IngredientMarketplace>(dto));
-            _repostitory.Save();
+            try
+            {
+                _repostitory.CreateIngredientMarketplace(_mapper.Map<IngredientMarketplaceDTO, IngredientMarketplace>(dto));
+                _repostitory.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> UpdateIngredientMarketplace(IngredientMarketplaceDTO dto)
