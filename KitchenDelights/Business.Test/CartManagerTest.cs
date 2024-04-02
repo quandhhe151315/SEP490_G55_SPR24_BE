@@ -43,7 +43,7 @@ public class CartManagerTest
         result.Should().BeOfType<List<CartItemDTO>>()
         .And.NotBeNullOrEmpty();
         actual.Should().NotBeNullOrEmpty();
-        result.Count().Should().Be(actual.Count);
+        result.Count.Should().Be(actual.Count);
     }
 
     [Fact]
@@ -183,7 +183,7 @@ public class CartManagerTest
         var actual = cartItems.Where(x => x.UserId == 1).ToList();
 
         boolResult.Should().BeTrue();
-        actual.Count().Should().Be(3);
+        actual.Count.Should().Be(3);
     }
 
     [Fact]
@@ -202,7 +202,43 @@ public class CartManagerTest
         var actual = cartItems.Where(x => x.UserId == 1).ToList();
 
         boolResult.Should().BeFalse();
-        actual.Count().Should().Be(4);
+        actual.Count.Should().Be(4);
+    }
+
+    [Fact]
+    public async void DeleteCartItem_NotDeleteExistingCartItem_InvalidUserId()
+    {
+        List<CartItem> cartItems = GetCartItems();
+        CartItemDTO toDelete = new() {
+            UserId = -1,
+            RecipeId = 1
+        };
+        _mockCartRepository.Setup(x => x.GetCartItem(-1, 1)).ReturnsAsync(cartItems.FirstOrDefault(x => x.UserId == -1 && x.RecipeId == 1));
+        _mockCartRepository.Setup(x => x.DeleteCartItem(It.IsAny<CartItem>())).Callback<CartItem>(item => cartItems.Remove(item));
+
+        ICartManager _cartManager = new CartManager(_mockCartRepository.Object, _mockRecipeRepository.Object, _mapper);
+        var boolResult = await _cartManager.DeleteCartItem(toDelete);
+
+        boolResult.Should().BeFalse();
+    }
+
+    [Fact]
+    public async void DeleteCartItem_NotDeleteExistingCartItem_InvalidRecipeId()
+    {
+        List<CartItem> cartItems = GetCartItems();
+        CartItemDTO toDelete = new() {
+            UserId = 1,
+            RecipeId = -1
+        };
+        _mockCartRepository.Setup(x => x.GetCartItem(1, -1)).ReturnsAsync(cartItems.FirstOrDefault(x => x.UserId == 1 && x.RecipeId == -1));
+        _mockCartRepository.Setup(x => x.DeleteCartItem(It.IsAny<CartItem>())).Callback<CartItem>(item => cartItems.Remove(item));
+
+        ICartManager _cartManager = new CartManager(_mockCartRepository.Object, _mockRecipeRepository.Object, _mapper);
+        var boolResult = await _cartManager.DeleteCartItem(toDelete);
+        var actual = cartItems.Where(x => x.UserId == 1).ToList();
+
+        boolResult.Should().BeFalse();
+        actual.Count.Should().Be(4);
     }
 
     private List<CartItem> GetCartItems()

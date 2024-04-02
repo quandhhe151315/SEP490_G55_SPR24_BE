@@ -10,6 +10,7 @@ namespace Business.Interfaces
     public interface IIngredientMarketplaceManager
     {
         Task<List<IngredientMarketplaceDTO>> GetIngredientMarketplaces();
+        Task<List<IngredientMarketplaceDTO>> GetIngredientMarketplaces(int id);
         Task<bool> CreateIngredientMarketplace(IngredientMarketplaceDTO dto);
         Task<bool> UpdateIngredientMarketplace(IngredientMarketplaceDTO dto);
         Task<bool> DeleteIngredientMarketplace(int ingredientId, int marketplaceId);

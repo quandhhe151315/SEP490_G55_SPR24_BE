@@ -21,9 +21,16 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int? id)
         {
-            return Ok(await _manager.GetIngredientMarketplaces());
+            List<IngredientMarketplaceDTO> output = [];
+            if(id < 0) return BadRequest("Invalid Id!");
+            if(id is null) {
+                output = await _manager.GetIngredientMarketplaces();
+            } else {
+                output = await _manager.GetIngredientMarketplaces(id.Value);
+            }
+            return Ok(output);
         }
 
         [HttpPost]
