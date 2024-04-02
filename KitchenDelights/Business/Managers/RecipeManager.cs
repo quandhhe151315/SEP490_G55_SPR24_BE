@@ -393,7 +393,7 @@ namespace Business.Managers
         {
             List<Recipe> recipes = await _recipeRepository.GetRecipes();
             DateTime now = DateTime.Now;
-            recipes = recipes.Where(x => x.CreateDate.Month == now.Month).ToList();
+            recipes = recipes.Where(x => x.CreateDate.Month == now.Month).ToList();  
             return recipes.Count();
         }
     }

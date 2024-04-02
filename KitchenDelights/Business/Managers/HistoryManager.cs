@@ -87,5 +87,49 @@ namespace Business.Managers
             _historyRepository.Save();
             return true;
         }
+
+        public async Task<Revenue> GetNumberRevenueInThisMonth()
+        {
+            List<PaymentHistory> paymentHistoriesNow = await _historyRepository.GetPaymentHistory();
+            DateTime now = DateTime.Now;
+            paymentHistoriesNow = paymentHistoriesNow.Where(x => x.PurchaseDate.Month == now.Month).ToList();
+
+            decimal revenueNow = 0;
+            foreach (PaymentHistory paymentHistory in paymentHistoriesNow)
+            {
+                revenueNow = revenueNow + paymentHistory.ActualPrice;
+            }
+
+            List<PaymentHistory> paymentHistoriesLast = await _historyRepository.GetPaymentHistory();
+            paymentHistoriesLast = paymentHistoriesLast.Where(x => x.PurchaseDate.Month == now.AddMonths(-1).Month).ToList();
+
+            decimal revenueLast = 0;
+            foreach (PaymentHistory paymentHistory in paymentHistoriesLast)
+            {
+                revenueLast = revenueLast + paymentHistory.ActualPrice;
+            }
+
+            Revenue revenue = new Revenue();
+            revenue.revenue = revenueNow;
+            if (revenueNow == 0 || revenueLast == 0)
+            {
+                revenue.percent = 0;
+                revenue.increase = true;
+            }
+            else
+            {
+                if (revenueNow > revenueLast)
+                {
+                    revenue.percent = (float)((revenueNow - revenueLast) / revenueLast * 100);
+                    revenue.increase = true;
+                }
+                else
+                {
+                    revenue.percent = (float)((revenueLast - revenueNow) / revenueNow * 100);
+                    revenue.increase = false;
+                }
+            }
+            return revenue;
+        }
     }
 }

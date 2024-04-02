@@ -34,6 +34,13 @@ namespace KitchenDelights.Controllers
             return Ok(history);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetNumberRevenueInThisMonth()
+        {
+            Revenue revenue = await _historyManager.GetNumberRevenueInThisMonth();
+            return Ok(revenue);
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Checkout(List<CartItemDTO> cart)
