@@ -9,7 +9,7 @@ namespace Business.DTO
     public class Revenue
     {
         public decimal revenue {  get; set; }
-        public float percent { get; set; }
+        public string percent { get; set; }
         public bool increase { get; set; }
     }
 }
