@@ -27,6 +27,7 @@ namespace Business.Managers
         {
             User? existed = await _userRepository.GetUser(user.Email);
             if (existed != null) return false;
+            user.CreateDate = DateTime.Now;
             _userRepository.CreateUser(_mapper.Map<RegisterRequestDTO, User>(user));
             _userRepository.Save();
             return true;
@@ -36,6 +37,7 @@ namespace Business.Managers
         {
             User? existed = await _userRepository.GetUser(user.Email);
             if (existed != null) return false;
+            user.CreateDate = DateTime.Now;
             _userRepository.CreateUser(_mapper.Map<CreateUserDTO,  User>(user));
             _userRepository.Save();
             return true;

@@ -33,6 +33,8 @@ public partial class User
 
     public int Interaction { get; set; }
 
+    public DateTime CreateDate { get; set; }
+
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     public virtual ICollection<BlogComment> BlogComments { get; set; } = new List<BlogComment>();

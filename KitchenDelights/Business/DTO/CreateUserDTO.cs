@@ -27,5 +27,7 @@ namespace Business.DTO
         public int StatusId { get; set; }
 
         public int RoleId { get; set; }
+
+        public DateTime CreateDate { get; set; }
     }
 }
