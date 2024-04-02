@@ -388,5 +388,13 @@ namespace Business.Managers
             }
             return recipeDTOs;
         }
+
+        public async Task<int> GetNumberRecipeCreatedInThisMonth()
+        {
+            List<Recipe> recipes = await _recipeRepository.GetRecipes();
+            DateTime now = DateTime.Now;
+            recipes = recipes.Where(x => x.CreateDate.Month == now.Month).ToList();
+            return recipes.Count();
+        }
     }
 }
