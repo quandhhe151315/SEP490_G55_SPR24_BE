@@ -242,6 +242,13 @@ namespace KitchenDelights.Controllers
         //    return Ok(recipes);
         //}
 
+        [HttpGet]
+        public async Task<IActionResult> GetNumberRecipeCreatedInThisMonth()
+        {
+            int count = await _recipeManager.GetNumberRecipeCreatedInThisMonth();
+            return Ok(count);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Administrator,Moderator,Chef")]
         public async Task<IActionResult> CreateRecipe(RecipeRequestDTO recipe)

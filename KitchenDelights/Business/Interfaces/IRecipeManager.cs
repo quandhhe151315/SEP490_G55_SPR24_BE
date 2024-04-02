@@ -40,6 +40,8 @@ namespace Business.Interfaces
 
         Task<List<RecipeDTO>> GetRecipeHighRating(int count);
 
+        Task<int> GetNumberRecipeCreatedInThisMonth();
+
         Task<List<RecipeDTO>> SearchRecipe(string searchString);
 
         Task<List<RecipeDTO>> FilterRecipe(string? searchName, int? category, int? country, int? ingredient, int? isfree, string? orderby, string? sort);
