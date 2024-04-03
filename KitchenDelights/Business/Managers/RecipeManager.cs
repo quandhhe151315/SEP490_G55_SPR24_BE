@@ -43,7 +43,7 @@ namespace Business.Managers
             Recipe recipe = _mapper.Map<RecipeRequestDTO, Recipe>(recipeDTO);
             recipe.Countries.Add(country);
             recipe.RecipeRating = 0;
-            recipe.RecipeStatus = 1;
+            recipe.RecipeStatus = 2;
             recipe.CreateDate = DateTime.Now;
             _recipeRepository.CreateRecipe(recipe);
             _recipeRepository.Save();
@@ -53,8 +53,8 @@ namespace Business.Managers
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(id);
             if (recipe == null) return false;
-
-            _recipeRepository.DeleteRecipe(recipe);
+            recipe.RecipeStatus = 0;
+            _recipeRepository.UpdateRecipe(recipe);
             _recipeRepository.Save();
             return true;
         }

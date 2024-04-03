@@ -3,6 +3,7 @@ using Business.DTO;
 using Business.Interfaces;
 using Data.Entity;
 using Data.Interfaces;
+using Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -196,6 +197,14 @@ namespace Business.Managers
                 _userRepository.Save();
                 return 3;
             }
+        }
+
+        public async Task<int> GetNumberUserCreatedInThisMonth(int id)
+        {
+            List<User> users = await _userRepository.GetUsers(id);
+            DateTime now = DateTime.Now;
+            users = users.Where(x => x.CreateDate.Month == now.Month).ToList();
+            return users.Count();
         }
     }
 }

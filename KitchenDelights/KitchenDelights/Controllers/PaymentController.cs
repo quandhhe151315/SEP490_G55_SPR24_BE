@@ -35,10 +35,19 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> GetNumberRevenueInThisMonth()
         {
             Revenue revenue = await _historyManager.GetNumberRevenueInThisMonth();
             return Ok(revenue);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator")]
+        public async Task<IActionResult> GetNumberRevenueInNumberMonth(int numMonth)
+        {
+            List<RevenueInNumberMonth> revenues = await _historyManager.GetNumberRevenueInNumberOfMonth(numMonth);
+            return Ok(revenues);
         }
 
         [Authorize]

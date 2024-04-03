@@ -30,7 +30,7 @@ namespace Business.Managers
         {
             List<PaymentHistoryDTO> historyDTO = [];
             List<PaymentHistory> history = await _historyRepository.GetPaymentHistory();
-            foreach(PaymentHistory historyItem in history)
+            foreach (PaymentHistory historyItem in history)
             {
                 historyDTO.Add(_mapper.Map<PaymentHistory, PaymentHistoryDTO>(historyItem));
             }
@@ -41,7 +41,7 @@ namespace Business.Managers
         {
             List<PaymentHistoryDTO> historyDTO = [];
             List<PaymentHistory> history = await _historyRepository.GetPaymentHistory(id);
-            foreach(PaymentHistory historyItem in history)
+            foreach (PaymentHistory historyItem in history)
             {
                 historyDTO.Add(_mapper.Map<PaymentHistory, PaymentHistoryDTO>(historyItem));
             }
@@ -52,10 +52,10 @@ namespace Business.Managers
         {
             List<PaymentHistoryDTO> historyDTO = [];
             string? usedVoucher = cart[0].VoucherCode;
-            
+
             //Remove all checkout cart item from cart
             //Then add to temp list of payment history
-            foreach(CartItemDTO cartItem in cart)
+            foreach (CartItemDTO cartItem in cart)
             {
                 _cartRepository.DeleteCartItem(_mapper.Map<CartItemDTO, CartItem>(cartItem));
                 historyDTO.Add(_mapper.Map<CartItemDTO, PaymentHistoryDTO>(cartItem));
@@ -130,6 +130,68 @@ namespace Business.Managers
                 }
             }
             return revenue;
+        }
+
+        public async Task<List<RevenueInNumberMonth>> GetNumberRevenueInNumberOfMonth(int numMonth)
+        {
+            List<RevenueInNumberMonth> revenueInNumberMonths = [];
+            List<PaymentHistory> Histories = await _historyRepository.GetPaymentHistory();
+            DateTime now = DateTime.Now;
+            if (Histories.Count() > 0)
+            {
+                for (int i = 0; i < numMonth; i++)
+                {
+                    decimal revenue = 0;
+                    RevenueInNumberMonth revenueInNumberMonth = new RevenueInNumberMonth();
+                    List<PaymentHistory> paymentHistories = Histories.Where(x => x.PurchaseDate.Month == now.AddMonths(0-i).Month).ToList();
+                    foreach (PaymentHistory paymentHistory in paymentHistories)
+                    {
+                        revenue = revenue + paymentHistory.ActualPrice;
+                    }
+                    switch (now.AddMonths(0-i).Month)
+                    {
+                        case 1:
+                            revenueInNumberMonth.month = "Tháng 1";
+                            break;
+                        case 2:
+                            revenueInNumberMonth.month = "Tháng 2";
+                            break;
+                        case 3:
+                            revenueInNumberMonth.month = "Tháng 3";
+                            break;
+                        case 4:
+                            revenueInNumberMonth.month = "Tháng 4";
+                            break;
+                        case 5:
+                            revenueInNumberMonth.month = "Tháng 5";
+                            break;
+                        case 6:
+                            revenueInNumberMonth.month = "Tháng 6";
+                            break;
+                        case 7:
+                            revenueInNumberMonth.month = "Tháng 7";
+                            break;
+                        case 8:
+                            revenueInNumberMonth.month = "Tháng 8";
+                            break;
+                        case 9:
+                            revenueInNumberMonth.month = "Tháng 9";
+                            break;
+                        case 10:
+                            revenueInNumberMonth.month = "Tháng 10";
+                            break;
+                        case 11:
+                            revenueInNumberMonth.month = "Tháng 11";
+                            break;
+                        case 12:
+                            revenueInNumberMonth.month = "Tháng 12";
+                            break;
+                    }
+                    revenueInNumberMonth.revenue = revenue.ToString("0.0");
+                    revenueInNumberMonths.Add(revenueInNumberMonth);
+                }
+            }
+            return revenueInNumberMonths;
         }
     }
 }
