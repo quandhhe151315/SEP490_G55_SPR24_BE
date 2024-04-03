@@ -26,11 +26,11 @@ namespace Business.Managers
         public async Task<bool> CreateVoucher(VoucherDTO voucherDTO)
         {
             Voucher? voucher = await _voucherRepository.GetVoucher(voucherDTO.VoucherCode);
-            if (voucher != null) return true;
+            if (voucher != null) return false;
 
             _voucherRepository.CreateVoucher(_mapper.Map<VoucherDTO, Voucher>(voucherDTO));
             _voucherRepository.Save();
-            return false;
+            return true;
         }
 
         public async Task<VoucherDTO?> GetVoucher(string voucherCode)
