@@ -243,6 +243,7 @@ namespace KitchenDelights.Controllers
         //}
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> GetNumberRecipeCreatedInThisMonth()
         {
             int count = await _recipeManager.GetNumberRecipeCreatedInThisMonth();

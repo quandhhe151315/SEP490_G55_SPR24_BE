@@ -164,6 +164,14 @@ namespace KitchenDelights.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
+        [HttpGet]
+        public async Task<IActionResult> GetNumberUserCreatedInThisMonth(int id)
+        {
+            int count = await _userManager.GetNumberUserCreatedInThisMonth(id);
+            return Ok(count);
+        }
+
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UserDTO userDTO)

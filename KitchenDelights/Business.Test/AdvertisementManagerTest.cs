@@ -51,6 +51,21 @@ namespace Business.Test
         }
 
         [Fact]
+        //Naming convention is MethodName_expectedBehavior_StateUnderTest
+        public async void GetAdvertisement_GetAdvertisementById_AdvertisementNotExistInRepo()
+        {
+            var advertisements = AdvertisementsSample();
+            _advertisementRepositoryMock.Setup(x => x.GetAdvertisementById(-1)).ReturnsAsync(advertisements.FirstOrDefault(x => x.AdvertisementId == -1));
+
+            IAdvertisementManager _advertisementManager = new AdvertisementManager(_advertisementRepositoryMock.Object, _mapper);
+            var result = await _advertisementManager.GetAdvertisementById(-1);
+            var actual = advertisements.FirstOrDefault(x => x.AdvertisementId == -1);
+
+            result.Should().BeNull();
+            actual.Should().BeNull();
+        }
+
+        [Fact]
         public async void CreateAdvertisement_CreateWithAdvertisementDTO_AdvertisementNotExistInRepo()
         {
             var advertisements = AdvertisementsSample();
@@ -106,6 +121,47 @@ namespace Business.Test
                 AdvertisementImage = "mock-image-link-update",
                 AdvertisementLink = "mock-advertisement-link-update",
                 AdvertisementStatus = 1
+            };
+            _advertisementRepositoryMock.Setup(x => x.GetAdvertisementById(4)).ReturnsAsync(advertisements.FirstOrDefault(advertisement => advertisement.AdvertisementId == 4));
+            _advertisementRepositoryMock.Setup(x => x.UpdateAdvertisement(It.IsAny<Advertisement>())).Callback<Advertisement>((advertisement) => advertisements[3] = advertisement);
+
+            IAdvertisementManager _advertisementManager = new AdvertisementManager(_advertisementRepositoryMock.Object, _mapper);
+            var boolResult = await _advertisementManager.UpdateAdvertisement(advertisementDTO);
+            var updatedAdvertisement = advertisements.FirstOrDefault(x => x.AdvertisementId == 4);
+
+            boolResult.Should().BeFalse();
+            updatedAdvertisement.Should().BeNull();
+        }
+
+        [Fact]
+        public async void DeleteAdvertisement_DeleteAdvertisement_AdvertisementExistInRepo()
+        {
+            var advertisements = AdvertisementsSample();
+            AdvertisementDTO advertisementDTO = new()
+            {
+                AdvertisementId = 2,
+                AdvertisementStatus = 0
+            };
+            _advertisementRepositoryMock.Setup(x => x.GetAdvertisementById(2)).ReturnsAsync(advertisements.FirstOrDefault(advertisement => advertisement.AdvertisementId == 2));
+            _advertisementRepositoryMock.Setup(x => x.UpdateAdvertisement(It.IsAny<Advertisement>())).Callback<Advertisement>((advertisement) => advertisements[0] = advertisement);
+
+            IAdvertisementManager _advertisementManager = new AdvertisementManager(_advertisementRepositoryMock.Object, _mapper);
+            var boolResult = await _advertisementManager.DeleteAdvertisement(advertisementDTO.AdvertisementId.Value);
+            var updatedAdvertisement = advertisements.FirstOrDefault(x => x.AdvertisementId == 2);
+
+            boolResult.Should().BeTrue();
+            updatedAdvertisement.Should().NotBeNull();
+            updatedAdvertisement!.AdvertisementStatus.ToString().Should().BeSameAs(advertisementDTO.AdvertisementStatus.ToString());
+        }
+
+        [Fact]
+        public async void DeleteAdvertisement_DeleteAdvertisement_AdvertisementNotExistInRepo()
+        {
+            var advertisements = AdvertisementsSample();
+            AdvertisementDTO advertisementDTO = new()
+            {
+                AdvertisementId = 4,
+                AdvertisementStatus = 0
             };
             _advertisementRepositoryMock.Setup(x => x.GetAdvertisementById(4)).ReturnsAsync(advertisements.FirstOrDefault(advertisement => advertisement.AdvertisementId == 4));
             _advertisementRepositoryMock.Setup(x => x.UpdateAdvertisement(It.IsAny<Advertisement>())).Callback<Advertisement>((advertisement) => advertisements[3] = advertisement);
