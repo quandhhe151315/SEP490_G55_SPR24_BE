@@ -80,7 +80,7 @@ namespace KitchenDelights.Controllers
             while(flag)
             {
                 voucher.VoucherCode = StringHelper.GenerateRandomString(10);
-                flag = await _voucherManager.CreateVoucher(voucher);
+                flag = !await _voucherManager.CreateVoucher(voucher);
             }
 
             return Ok();

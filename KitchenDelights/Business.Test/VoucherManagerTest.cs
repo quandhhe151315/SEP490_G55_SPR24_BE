@@ -97,12 +97,12 @@ namespace Business.Test
             var vouchers = VouchersSample();
             VoucherDTO voucherDTO = new()
             {
-                VoucherCode = "GIAM20",
+                VoucherCode = "GIAM18",
                 UserId = 1,
-                DiscountPercentage = 20
+                DiscountPercentage = 18
             };
             _voucherRepositoryMock.Setup(x => x.CreateVoucher(It.IsAny<Voucher>())).Callback<Voucher>(vouchers.Add);
-            _voucherRepositoryMock.Setup(x => x.GetVoucher("GIAM20")).ReturnsAsync(vouchers.FirstOrDefault(x => x.VoucherCode == "GIAM20"));
+            _voucherRepositoryMock.Setup(x => x.GetVoucher("GIAM18")).ReturnsAsync(vouchers.FirstOrDefault(x => x.VoucherCode == "GIAM18"));
 
             IVoucherManager _voucherManager = new VoucherManager(_voucherRepositoryMock.Object, _mapper);
             var boolResult = await _voucherManager.CreateVoucher(voucherDTO);
