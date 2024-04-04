@@ -41,6 +41,46 @@ public class VerificationManagerTest
     }
 
     [Fact]
+    public async void GetVerification_GetVerificationById_VerificationExistInRepo() {
+        var verifications = GetVerifications();
+        _mockVerificationRepository.Setup(x => x.GetVerification(1)).ReturnsAsync(verifications.FirstOrDefault(x => x.VerificationId == 1));
+
+        VerificationManager _verificationManager = new VerificationManager(_mockVerificationRepository.Object, _mapper);
+        var result = await _verificationManager.GetVerification(1);
+        var actual = verifications.FirstOrDefault(x => x.VerificationId == 1);
+
+        result.Should().NotBeNull();
+        actual.Should().NotBeNull();
+        result.Should().BeEquivalentTo(_mapper.Map<Verification, VerificationDTO>(actual!));
+    }
+
+    [Fact]
+    public async void GetVerification_NotGetVerificationById_VerificationNotExistInRepo() {
+        var verifications = GetVerifications();
+        _mockVerificationRepository.Setup(x => x.GetVerification(0)).ReturnsAsync(verifications.FirstOrDefault(x => x.VerificationId == 0));
+
+        VerificationManager _verificationManager = new VerificationManager(_mockVerificationRepository.Object, _mapper);
+        var result = await _verificationManager.GetVerification(0);
+        var actual = verifications.FirstOrDefault(x => x.VerificationId == 0);
+
+        result.Should().BeNull();
+        actual.Should().BeNull();
+    }
+
+    [Fact]
+    public async void GetVerification_NotGetVerificationById_AbnormalVerificationId() {
+        var verifications = GetVerifications();
+        _mockVerificationRepository.Setup(x => x.GetVerification(-1)).ReturnsAsync(verifications.FirstOrDefault(x => x.VerificationId == -1));
+
+        VerificationManager _verificationManager = new VerificationManager(_mockVerificationRepository.Object, _mapper);
+        var result = await _verificationManager.GetVerification(-1);
+        var actual = verifications.FirstOrDefault(x => x.VerificationId == -1);
+
+        result.Should().BeNull();
+        actual.Should().BeNull();
+    }
+
+    [Fact]
     public async void CreateVerification_CreateNewVerification_ValidUser() {
         var verifications = GetVerifications();
         VerificationDTO toAdd = new() {
