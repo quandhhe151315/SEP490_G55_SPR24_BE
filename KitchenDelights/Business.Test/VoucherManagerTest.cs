@@ -123,7 +123,7 @@ namespace Business.Test
                 DiscountPercentage = 15
             };
             _voucherRepositoryMock.Setup(x => x.CreateVoucher(It.IsAny<Voucher>())).Callback<Voucher>(vouchers.Add);
-            _voucherRepositoryMock.Setup(x => x.GetVoucher("GIAM25")).ReturnsAsync(vouchers.FirstOrDefault(x => x.VoucherCode == "GIAM25"));
+            _voucherRepositoryMock.Setup(x => x.GetVoucher("GIAM15")).ReturnsAsync(vouchers.FirstOrDefault(x => x.VoucherCode == "GIAM15"));
 
             IVoucherManager _voucherManager = new VoucherManager(_voucherRepositoryMock.Object, _mapper);
             var boolResult = await _voucherManager.CreateVoucher(voucherDTO);

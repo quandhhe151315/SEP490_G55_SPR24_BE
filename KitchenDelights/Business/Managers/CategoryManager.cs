@@ -23,26 +23,36 @@ namespace Business.Managers
             _mapper = mapper;
         }
 
-        public async Task CreateCategory(CategoryDTO categoryDTO)
+        public async Task<bool> CreateCategory(CategoryDTO categoryDTO)
         {
-            Category category = new Category();
-            if (categoryDTO.ParentId == 0 || categoryDTO.ParentId == null)
+            try
             {
-                category.ParentId = null;
+                Category category = new Category();
+
+                if (categoryDTO.ParentId == 0 || categoryDTO.ParentId == null)
+                {
+                    category.ParentId = null;
+                }
+                else
+                {
+                    category.ParentId = categoryDTO.ParentId;
+                }
+                category.CategoryName = categoryDTO.CategoryName;
+                category.CategoryType = categoryDTO.CategoryType;
+                category.CategoryStatus = 1;
+                _categoryRepository.CreateCategory(category);
+                _categoryRepository.Save();
+                return true;
             }
-            else
+            catch (Exception ex)
             {
-                category.ParentId = categoryDTO.ParentId;   
+                return false;
             }
-            category.CategoryName = categoryDTO.CategoryName;
-            category.CategoryType = categoryDTO.CategoryType;
-            _categoryRepository.CreateCategory(category);
-            _categoryRepository.Save();
         }
 
         public async Task<bool> UpdateCategory(CategoryDTO categoryDTO)
         {
-            Category? category = await _categoryRepository.GetCategoryById(categoryDTO.CategoryId.Value);
+            Category? category = await _categoryRepository.GetCategoryById(categoryDTO.CategoryId.Value);           
             if (category == null) return false;
 
             if (categoryDTO.ParentId == 0 || categoryDTO.ParentId == null)
@@ -81,7 +91,7 @@ namespace Business.Managers
                     CategoryDTO categoryDTO = new CategoryDTO();
                     categoryDTO.CategoryId = category.CategoryId;
                     categoryDTO.ParentId = category.ParentId;
-                    if(categoryDTO.ParentId != null)
+                    if (categoryDTO.ParentId != null)
                     {
                         categoryDTO.ParentName = category.Parent.CategoryName;
                     }

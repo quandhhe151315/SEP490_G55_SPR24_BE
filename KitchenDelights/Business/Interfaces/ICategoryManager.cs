@@ -9,7 +9,7 @@ namespace Business.Interfaces
 {
     public interface ICategoryManager
     {
-        Task CreateCategory(CategoryDTO categoryDTO);
+        Task<bool> CreateCategory(CategoryDTO categoryDTO);
         Task<bool> UpdateCategory(CategoryDTO categoryDTO);
         Task<bool> DeleteCategory(int categoryId);
         Task<List<CategoryDTO>> GetAllCategories();
