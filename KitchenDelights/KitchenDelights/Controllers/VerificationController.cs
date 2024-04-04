@@ -21,9 +21,12 @@ namespace KitchenDelights.Controllers
 
         [Authorize(Roles = "Administrator,Moderator")]
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int? id)
         {
-            return Ok(await _verificationManager.GetVerifications());
+            if(id == null) return Ok(await _verificationManager.GetVerifications());
+            if (id < 0) return BadRequest();
+            var result = await _verificationManager.GetVerification(id.Value);
+            return result is not null ? Ok(result) : NotFound();
         }
 
         [Authorize]
