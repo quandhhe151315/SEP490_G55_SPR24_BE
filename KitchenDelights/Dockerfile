@@ -1,8 +1,7 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
-WORKDIR /app
+WORKDIR /home/kitchendelights
 EXPOSE 5050
 EXPOSE 5051
 
@@ -22,6 +21,6 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./KitchenDelights.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
-WORKDIR /app
+WORKDIR /home/kitchendelights
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "KitchenDelights.dll"]
