@@ -45,5 +45,6 @@ namespace Business.Interfaces
         Task<List<RecipeDTO>> SearchRecipe(string searchString);
 
         Task<List<RecipeDTO>> FilterRecipe(string? searchName, int? category, int? country, int? ingredient, int? isfree, string? orderby, string? sort);
+        Task<List<RecipeDTO>> GetRecipeByUserId(int userId);
     }
 }

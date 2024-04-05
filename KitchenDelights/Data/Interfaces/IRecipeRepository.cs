@@ -21,6 +21,7 @@ namespace Data.Interfaces
         Task<List<Recipe>> GetRecipes();
         Task<List<Recipe>> GetRecipesDESC();
         Task<List<Recipe>> GetRecipesASC();
+        Task<List<Recipe>> GetRecipeByUserId(int userId);
         void Save();
     }
 }
