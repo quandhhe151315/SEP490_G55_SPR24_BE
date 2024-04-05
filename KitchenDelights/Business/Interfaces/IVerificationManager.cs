@@ -10,6 +10,7 @@ namespace Business.Interfaces
     public interface IVerificationManager
     {
         Task<List<VerificationDTO>> GetVerifications();
+        Task<VerificationDTO?> GetVerification(int id);
         Task<bool> CreateVerification(VerificationDTO verification);
         Task<bool> UpdateVerification(VerificationDTO verification);
     }

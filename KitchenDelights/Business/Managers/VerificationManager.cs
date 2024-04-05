@@ -33,6 +33,11 @@ namespace Business.Managers
             return verificationDTOs;
         }
 
+        public async Task<VerificationDTO?> GetVerification(int id) {
+            Verification? verification = await _verificationRepository.GetVerification(id);
+            return verification is null ? null : _mapper.Map<Verification, VerificationDTO>(verification);
+        }
+
         public async Task<bool> CreateVerification(VerificationDTO verification)
         {
             try

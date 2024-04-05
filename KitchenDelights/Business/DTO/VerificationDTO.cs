@@ -25,7 +25,5 @@ namespace Business.DTO
         public int VerificationStatus { get; set; }
 
         public DateTime VerificationDate { get; set; }
-
-        public DateTime CreateDate { get; set; }
     }
 }
