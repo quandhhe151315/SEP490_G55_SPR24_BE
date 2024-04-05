@@ -80,10 +80,18 @@ namespace Business.Managers
             return true;
         }
 
-        public async Task<List<CategoryDTO>> GetAllCategories()
+        public async Task<List<CategoryDTO>> GetAllCategories(bool categoryType)
         {
             List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
             List<Category> categories = await _categoryRepository.GetAllCategories();
+            if (categoryType)
+            {
+                categories = categories.Where(x => x.CategoryType == true).ToList();
+            }
+            else
+            {
+                categories = categories.Where(x => x.CategoryType == false).ToList();
+            }
             if (categories.Count > 0)
             {
                 foreach (Category category in categories)
@@ -122,33 +130,18 @@ namespace Business.Managers
             else return null;
         }
 
-        public async Task<List<CategoryDTO>> GetCategoryByParentId(int? parentId)
+        public async Task<List<CategoryDTO>> GetCategoryByParentId(int? parentId, bool categoryType)
         {
             List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
             List<Category> categories = await _categoryRepository.GetCategoryByParentId(parentId);
-            if (categories.Count > 0)
+            if (categoryType)
             {
-                foreach (Category category in categories)
-                {
-                    CategoryDTO categoryDTO = new CategoryDTO();
-                    categoryDTO.CategoryId = category.CategoryId;
-                    categoryDTO.ParentId = category.ParentId;
-                    if (categoryDTO.ParentId != null)
-                    {
-                        categoryDTO.ParentName = category.Parent.CategoryName;
-                    }
-                    categoryDTO.CategoryName = category.CategoryName;
-                    categoryDTO.CategoryType = category.CategoryType;
-                    categoryDTOs.Add(categoryDTO);
-                }
+                categories = categories.Where(x => x.CategoryType == true).ToList();
             }
-            return categoryDTOs;
-        }
-
-        public async Task<List<CategoryDTO>> GetCategoryByCategoryType(bool categoryType)
-        {
-            List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
-            List<Category> categories = await _categoryRepository.GetCategoryByCategoryType(categoryType);
+            else
+            {
+                categories = categories.Where(x => x.CategoryType == false).ToList();
+            }
             if (categories.Count > 0)
             {
                 foreach (Category category in categories)
