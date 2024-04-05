@@ -80,17 +80,20 @@ namespace Business.Managers
             return true;
         }
 
-        public async Task<List<CategoryDTO>> GetAllCategories(bool categoryType)
+        public async Task<List<CategoryDTO>> GetAllCategories(int? categoryType)
         {
             List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
             List<Category> categories = await _categoryRepository.GetAllCategories();
-            if (categoryType)
+            if (categoryType != null)
             {
-                categories = categories.Where(x => x.CategoryType == true).ToList();
-            }
-            else
-            {
-                categories = categories.Where(x => x.CategoryType == false).ToList();
+                if (categoryType == 1)
+                {
+                    categories = categories.Where(x => x.CategoryType == true).ToList();
+                }
+                else if (categoryType == 2)
+                {
+                    categories = categories.Where(x => x.CategoryType == false).ToList();
+                }
             }
             if (categories.Count > 0)
             {
