@@ -396,5 +396,16 @@ namespace Business.Managers
             recipes = recipes.Where(x => x.CreateDate.Month == now.Month).ToList();  
             return recipes.Count();
         }
+
+        public async Task<List<RecipeDTO>> GetRecipeByUserId(int userId)
+        {
+            List<Recipe> recipes = await _recipeRepository.GetRecipeByUserId(userId);
+            List<RecipeDTO> recipeDTOs = [];
+            foreach (Recipe recipe in recipes)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
     }
 }

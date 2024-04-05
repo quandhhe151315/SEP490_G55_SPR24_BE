@@ -189,24 +189,22 @@ namespace KitchenDelights.Controllers
         //    return Ok(recipes);
         //}
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllRecipeByCountry(int country)
-        //{
-        //    List<RecipeDTO> recipes = [];
-        //    try
-        //    {
-        //        recipes = await _recipeManager.GetRecipeByCountry(country);
-        //        if (recipes.Count <= 0)
-        //        {
-        //            return NotFound("Recipe not exist");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //    return Ok(recipes);
-        //}
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator,Chef")]
+        public async Task<IActionResult> GetAllRecipeByUserId(int userId)
+        {
+            List<RecipeDTO> recipes = [];
+            try
+            {
+                recipes = await _recipeManager.GetRecipeByUserId(userId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(recipes);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetRecipeById(int recipeId)
