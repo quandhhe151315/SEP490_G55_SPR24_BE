@@ -15,5 +15,6 @@ namespace Business.Interfaces
         Task<List<CategoryDTO>> GetAllCategories();
         Task<CategoryDTO?> GetCategoryById(int categoryId);
         Task<List<CategoryDTO>> GetCategoryByParentId(int? parentId);
+        Task<List<CategoryDTO>> GetCategoryByCategoryType(bool categoryType);
     }
 }

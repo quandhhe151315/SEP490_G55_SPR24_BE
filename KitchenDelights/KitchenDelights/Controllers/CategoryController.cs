@@ -99,6 +99,25 @@ namespace KitchenDelights.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCategoryByCategoryType(bool categoryType)
+        {
+            List<CategoryDTO> categoryDTOs;
+            try
+            {
+                    categoryDTOs = await _categoryManager.GetCategoryByCategoryType(categoryType);
+                    if (categoryDTOs.Count <= 0)
+                    {
+                        return NotFound("Category not exist");
+                    }
+                    return Ok(categoryDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "Administrator,Moderator")]
         public async Task<IActionResult> CreateCategory(CategoryDTO category)
