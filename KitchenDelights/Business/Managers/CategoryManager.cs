@@ -144,5 +144,28 @@ namespace Business.Managers
             }
             return categoryDTOs;
         }
+
+        public async Task<List<CategoryDTO>> GetCategoryByCategoryType(bool categoryType)
+        {
+            List<CategoryDTO> categoryDTOs = new List<CategoryDTO>();
+            List<Category> categories = await _categoryRepository.GetCategoryByCategoryType(categoryType);
+            if (categories.Count > 0)
+            {
+                foreach (Category category in categories)
+                {
+                    CategoryDTO categoryDTO = new CategoryDTO();
+                    categoryDTO.CategoryId = category.CategoryId;
+                    categoryDTO.ParentId = category.ParentId;
+                    if (categoryDTO.ParentId != null)
+                    {
+                        categoryDTO.ParentName = category.Parent.CategoryName;
+                    }
+                    categoryDTO.CategoryName = category.CategoryName;
+                    categoryDTO.CategoryType = category.CategoryType;
+                    categoryDTOs.Add(categoryDTO);
+                }
+            }
+            return categoryDTOs;
+        }
     }
 }
