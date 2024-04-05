@@ -37,7 +37,7 @@ namespace Business.Test
             _categoryRepositoryMock.Setup(x => x.GetAllCategories()).ReturnsAsync(categories.ToList());
 
             ICategoryManager _categoryManager = new CategoryManager(_categoryRepositoryMock.Object, _mapper);
-            var result = await _categoryManager.GetAllCategories();
+            var result = await _categoryManager.GetAllCategories(true);
 
             result.Should().BeOfType<List<CategoryDTO>>()
             .And.NotBeNullOrEmpty();
@@ -54,7 +54,7 @@ namespace Business.Test
             _categoryRepositoryMock.Setup(x => x.GetCategoryByParentId(1)).ReturnsAsync(categories.Where(x => x.ParentId == 1).ToList()); //Mock Advertisement repository GetAdvertisementById(int id) method
 
             ICategoryManager _categoryManager = new CategoryManager(_categoryRepositoryMock.Object, _mapper);
-            var result = await _categoryManager.GetCategoryByParentId(1);
+            var result = await _categoryManager.GetCategoryByParentId(1, true);
 
             result.Should().BeOfType<List<CategoryDTO>>()
             .And.NotBeNullOrEmpty();

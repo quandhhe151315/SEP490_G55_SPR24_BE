@@ -15,7 +15,6 @@ namespace Data.Interfaces
         Task<List<Category>> GetAllCategories();
         Task<Category?> GetCategoryById(int categoryId);
         Task<List<Category>> GetCategoryByParentId(int? parentId);
-        Task<List<Category>> GetCategoryByCategoryType(bool categoryType); 
         void Save();
     }
 }

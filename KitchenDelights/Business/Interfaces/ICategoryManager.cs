@@ -12,9 +12,8 @@ namespace Business.Interfaces
         Task<bool> CreateCategory(CategoryDTO categoryDTO);
         Task<bool> UpdateCategory(CategoryDTO categoryDTO);
         Task<bool> DeleteCategory(int categoryId);
-        Task<List<CategoryDTO>> GetAllCategories();
+        Task<List<CategoryDTO>> GetAllCategories(bool categoryType);
         Task<CategoryDTO?> GetCategoryById(int categoryId);
-        Task<List<CategoryDTO>> GetCategoryByParentId(int? parentId);
-        Task<List<CategoryDTO>> GetCategoryByCategoryType(bool categoryType);
+        Task<List<CategoryDTO>> GetCategoryByParentId(int? parentId, bool categoryType);
     }
 }

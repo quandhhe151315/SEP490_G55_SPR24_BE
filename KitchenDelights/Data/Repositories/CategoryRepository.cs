@@ -75,10 +75,5 @@ namespace Data.Repositories
         {
             return await _context.Categories.Include(x => x.Parent).Where(category => category.ParentId == parentId).ToListAsync();
         }
-
-        public async Task<List<Category>> GetCategoryByCategoryType(bool categoryType)
-        {
-            return await _context.Categories.Include(x => x.Parent).Where(x => x.CategoryType == categoryType).ToListAsync();
-        }
     }
 }

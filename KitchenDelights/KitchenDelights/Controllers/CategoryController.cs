@@ -24,12 +24,12 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategoy()
+        public async Task<IActionResult> GetAllCategoy(bool categoryType)
         {
             List<CategoryDTO> categories = [];
             try
             {
-                categories = await _categoryManager.GetAllCategories();
+                categories = await _categoryManager.GetAllCategories(categoryType);
                 if (categories.Count <= 0)
                 {
                     return NotFound("There are not exist any category in database");
@@ -47,24 +47,12 @@ namespace KitchenDelights.Controllers
         {
             try
             {
-                if (categoryId != 0)
-                {
                     CategoryDTO? category = await _categoryManager.GetCategoryById(categoryId);
                     if (category == null)
                     {
                         return NotFound("Category not exist");
                     }
                     return Ok(category);
-                }
-                else
-                {
-                    List<CategoryDTO> categories = await _categoryManager.GetAllCategories();
-                    if (categories.Count <= 0)
-                    {
-                        return NotFound("There are not exist any category in database");
-                    }
-                    return Ok(categories);
-                }
             }
             catch (Exception ex)
             {
@@ -73,14 +61,14 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategoryByParentId(int? parentId)
+        public async Task<IActionResult> GetCategoryByParentId(int? parentId, bool categoryType)
         {
             List<CategoryDTO> categoryDTOs;
             try
             {
                 if (parentId != null)
                 {
-                    categoryDTOs = await _categoryManager.GetCategoryByParentId(parentId);
+                    categoryDTOs = await _categoryManager.GetCategoryByParentId(parentId, categoryType);
                     if (categoryDTOs.Count <= 0)
                     {
                         return NotFound("Category with parentId = " + parentId + " not exist");
@@ -89,28 +77,9 @@ namespace KitchenDelights.Controllers
                 }
                 else
                 {
-                    categoryDTOs = await _categoryManager.GetCategoryByParentId(parentId);
+                    categoryDTOs = await _categoryManager.GetCategoryByParentId(parentId, categoryType);
                     return Ok(categoryDTOs);
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetCategoryByCategoryType(bool categoryType)
-        {
-            List<CategoryDTO> categoryDTOs;
-            try
-            {
-                    categoryDTOs = await _categoryManager.GetCategoryByCategoryType(categoryType);
-                    if (categoryDTOs.Count <= 0)
-                    {
-                        return NotFound("Category not exist");
-                    }
-                    return Ok(categoryDTOs);
             }
             catch (Exception ex)
             {
