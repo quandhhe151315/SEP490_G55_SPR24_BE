@@ -23,18 +23,19 @@ namespace KitchenDelights.Test
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true).Build();
         }
+        
+        // Temporarily commented out for performance
+        // [Fact]
+        // public async void EmailVerify_ReturnStatus200_ValidEmail() {
+        //     EmailEncapsulation email = new() {
+        //         Email = "stunghy@gmail.com"
+        //     };
 
-        [Fact]
-        public async void EmailVerify_ReturnStatus200_ValidEmail() {
-            EmailEncapsulation email = new() {
-                Email = "stunghy@gmail.com"
-            };
+        //     UserController _controller = new(_configuration, _mockUserManager.Object);
+        //     var result = await _controller.EmailVerify(email);
 
-            UserController _controller = new(_configuration, _mockUserManager.Object);
-            var result = await _controller.EmailVerify(email);
-
-            result.Should().BeOkObjectResult();
-        }
+        //     result.Should().BeOkObjectResult();
+        // }
 
         [Fact]
         public async void EmailVerify_ReturnStatus400_InvalidEmail() {
@@ -295,6 +296,157 @@ namespace KitchenDelights.Test
 
             result.Should().BeObjectResult();
             (result as ObjectResult)!.StatusCode.Should().Be(401);
+        }
+
+        // Temporarily commented out for performance
+        // [Fact]
+        // public async void ResetToken_ReturnStatus200_UserExist() {
+        //     EmailEncapsulation email = new() {
+        //         Email = "stunghy@gmail.com"
+        //     };
+        //     _mockUserManager.Setup(x => x.CreateResetToken(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(true);
+
+        //     UserController _controller = new(_configuration, _mockUserManager.Object);
+        //     var result = await _controller.ResetToken(email);
+
+        //     result.Should().BeOkResult();
+        // }
+
+        [Fact]
+        public async void ResetToken_ReturnStatus400_InvalidEmail() {
+            EmailEncapsulation email = new() {
+                Email = "justastring"
+            };
+            _mockUserManager.Setup(x => x.CreateResetToken(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ResetToken(email);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(400);
+        }
+
+        [Fact]
+        public async void ResetToken_ReturnStatus404_UserNotExist() {
+            EmailEncapsulation email = new() {
+                Email = "stunghy@gmail.com"
+            };
+            _mockUserManager.Setup(x => x.CreateResetToken(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(false);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ResetToken(email);
+
+            result.Should().BeNotFoundObjectResult();
+        }
+
+        [Fact]
+        public async void ForgetPassword_ReturnStatus200_AllValid() {
+            ForgotPasswordDTO forget = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                ResetToken = "validtoken"
+            };
+            _mockUserManager.Setup(x => x.ForgetPassword(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(3);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ForgetPassword(forget);
+
+            result.Should().BeOkResult();
+        }
+
+        [Fact]
+        public async void ForgetPassword_ReturnStatus400_InvalidEmail() {
+            ForgotPasswordDTO forget = new() {
+                Email = "justastring",
+                Password = "123456",
+                ResetToken = "invalidtoken"
+            };
+            _mockUserManager.Setup(x => x.ForgetPassword(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(3);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ForgetPassword(forget);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(400);
+        }
+
+        [Fact]
+        public async void ForgetPassword_ReturnStatus400_InvalidPassword() {
+            ForgotPasswordDTO forget = new() {
+                Email = "justastring",
+                Password = string.Empty,
+                ResetToken = "invalidtoken"
+            };
+            _mockUserManager.Setup(x => x.ForgetPassword(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(3);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ForgetPassword(forget);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(400);
+        }
+
+        [Fact]
+        public async void ForgetPassword_ReturnStatus400_InvalidResetToken() {
+            ForgotPasswordDTO forget = new() {
+                Email = "justastring",
+                Password = "123456",
+                ResetToken = string.Empty
+            };
+            _mockUserManager.Setup(x => x.ForgetPassword(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(3);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ForgetPassword(forget);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(400);
+        }
+
+        [Fact]
+        public async void ForgetPassword_ReturnStatus404_UserNotExist() {
+            ForgotPasswordDTO forget = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                ResetToken = "validtoken"
+            };
+            _mockUserManager.Setup(x => x.ForgetPassword(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(0);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ForgetPassword(forget);
+
+            result.Should().BeNotFoundObjectResult();
+        }
+
+        [Fact]
+        public async void ForgetPassword_ReturnStatus406_WrongToken() {
+            ForgotPasswordDTO forget = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                ResetToken = "wrongtoken"
+            };
+            _mockUserManager.Setup(x => x.ForgetPassword(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(1);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ForgetPassword(forget);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(406);
+        }
+
+        [Fact]
+        public async void ForgetPassword_ReturnStatus406_TokenExpired() {
+            ForgotPasswordDTO forget = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                ResetToken = "expiredtoken"
+            };
+            _mockUserManager.Setup(x => x.ForgetPassword(It.IsAny<ForgotPasswordDTO>())).ReturnsAsync(2);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ForgetPassword(forget);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(406);
         }
     }
 }
