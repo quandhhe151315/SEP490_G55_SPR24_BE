@@ -76,5 +76,16 @@ namespace Business.Managers
             _advertisementRepository.Save();
             return true;
         }
+
+        public async Task<bool> UpdateAdvertisementStatus(int id, int status)
+        {
+            Advertisement? advertisement = await _advertisementRepository.GetAdvertisementById(id);
+            if (advertisement == null) return false;
+
+            advertisement.AdvertisementStatus = status;
+            _advertisementRepository.UpdateAdvertisement(advertisement);
+            _advertisementRepository.Save();
+            return true;
+        }
     }
 }

@@ -53,6 +53,17 @@ namespace KitchenDelights.Controllers
             return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucess!");
         }
 
+        [HttpPut]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> UpdateAdvertisementStatus(int id, int status)
+        {
+            AdvertisementDTO? AdvertisementDTO = await _advertisementManager.GetAdvertisementById(id);
+            if (AdvertisementDTO == null) return NotFound("Advertisement doesn't exist!");
+
+            bool isUpdated = await _advertisementManager.UpdateAdvertisementStatus(id, status);
+            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok("Update sucess!");
+        }
+
         [HttpDelete]
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
