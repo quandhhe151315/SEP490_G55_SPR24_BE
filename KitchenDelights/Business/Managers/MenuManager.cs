@@ -48,10 +48,18 @@ namespace Business.Managers
             }
         }
 
-        public async Task CreateMenu(MenuRequestDTO menuRequestDTO)
+        public async Task<bool> CreateMenu(MenuRequestDTO menuRequestDTO)
         {
-            _menuRepository.CreateMenu(_mapper.Map<MenuRequestDTO, Menu>(menuRequestDTO));
-            _menuRepository.Save();
+            try
+            {
+                _menuRepository.CreateMenu(_mapper.Map<MenuRequestDTO, Menu>(menuRequestDTO));
+                _menuRepository.Save();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }       
         }
 
         public async Task<bool> DeleteMenu(int menuId)
