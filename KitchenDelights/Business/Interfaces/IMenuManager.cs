@@ -9,7 +9,7 @@ namespace Business.Interfaces
 {
     public interface IMenuManager
     {
-        Task CreateMenu(MenuRequestDTO menuRequestDTO);
+        Task<bool> CreateMenu(MenuRequestDTO menuRequestDTO);
         Task<bool> UpdateMenu(MenuRequestDTO menuRequestDTO);
         Task<bool> DeleteMenu(int menuId);
         Task<List<MenuDTO>> GetAllMenues();

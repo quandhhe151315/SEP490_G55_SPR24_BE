@@ -101,9 +101,29 @@ namespace Business.Test
             var result = await _menuManager.GetMenuByUserId(2);
 
             result.Should().BeOfType<List<MenuDTO>>()
-            .And.BeNullOrEmpty();
+            .And.NotBeNullOrEmpty();
             result.Count.Should().Be(1);
         }
+
+        [Fact]
+        //Naming convention is MethodName_expectedBehavior_StateUnderTest
+        public async void GetMenuByUserIdAndCheckExistRecipe_GetMenuByUserIdAndCheckExistRecipe_RecipeExistInMenu()
+        {
+            //Arrange
+            var menus = MenusSample();
+            var recipes = RecipesSample();
+            _menuRepositoryMock.Setup(x => x.GetMenuByUserId(1)).ReturnsAsync(menus.Where(x => x.UserId == 1).ToList);
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(2)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == 2));
+
+            //Act
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var result = await _menuManager.GetMenuByUserIdAndCheckExistRecipe(1, 2);
+
+            result.Should().BeOfType<List<MenuDTO>>()
+            .And.NotBeNullOrEmpty();
+            result.Count.Should().Be(1);
+        }
+
 
         [Fact]
         //Naming convention is MethodName_expectedBehavior_StateUnderTest
@@ -122,6 +142,91 @@ namespace Business.Test
             result.Should().BeOfType<List<MenuDTO>>()
             .And.BeNullOrEmpty();
             result.Count.Should().Be(0);
+        }
+
+        [Fact]
+        public async void CreateMenu_CreateWithMenuDTO_MenuNotExistInRepo()
+        {
+            var menus = MenusSample();
+            MenuRequestDTO menuDTO = new()
+            {
+                MenuId = 3,
+                FeaturedImage = "mock-image-link",
+                MenuName = "mock-name",
+                MenuDescription = "mock-description",
+                UserId = 1,
+            };
+            _menuRepositoryMock.Setup(x => x.CreateMenu(It.IsAny<Menu>())).Callback<Menu>(menus.Add);
+            _menuRepositoryMock.Setup(x => x.GetMenuById(3)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == 3));
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.CreateMenu(menuDTO);
+            var countResult = menus.Count;
+
+            boolResult.Should().BeTrue();
+            countResult.Should().Be(3);
+        }
+
+        [Fact]
+        public async void UpdateMenu_UpdateMenu_MenuExistInRepo()
+        {
+            var menus = MenusSample();
+            MenuRequestDTO menuDTO = new()
+            {
+                MenuId = 1,
+                FeaturedImage = "mock-image-link-update",
+                MenuName = "mock-name-update",
+                MenuDescription = "mock-description-update",
+            };
+            _menuRepositoryMock.Setup(x => x.GetMenuById(1)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == 1));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[0] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.UpdateMenu(menuDTO);
+            var updatedAdvertisement = menus.FirstOrDefault(x => x.MenuId == 1);
+
+            boolResult.Should().BeTrue();
+            updatedAdvertisement.Should().NotBeNull();
+            updatedAdvertisement!.FeaturedImage.Should().BeSameAs(menuDTO.FeaturedImage);
+            updatedAdvertisement!.MenuName.Should().BeSameAs(menuDTO.MenuName);
+            updatedAdvertisement!.MenuDescription.Should().BeSameAs(menuDTO.MenuDescription);
+        }
+
+        [Fact]
+        public async void UpdateMenu_UpdateMenu_NotExistInRepo()
+        {
+            var menus = MenusSample();
+            MenuRequestDTO menuDTO = new()
+            {
+                MenuId = 3,
+                FeaturedImage = "mock-image-link-update",
+                MenuName = "mock-name-update",
+                MenuDescription = "mock-description-update",
+            };
+            _menuRepositoryMock.Setup(x => x.GetMenuById(3)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == 3));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[2] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.UpdateMenu(menuDTO);
+            var updatedMenu = menus.FirstOrDefault(x => x.MenuId == 3);
+
+            boolResult.Should().BeFalse();
+            updatedMenu.Should().BeNull();
+        }
+
+        [Fact]
+        public async void DeleteAdvertisement_DeleteAdvertisement_AdvertisementExistInRepo()
+        {
+            var menus = MenusSample();
+            _menuRepositoryMock.Setup(x => x.GetMenuById(1)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == 1));
+            _menuRepositoryMock.Setup(x => x.DeleteMenu(It.IsAny<Menu>())).Callback<Menu>(item => menus.Remove(item));
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.DeleteMenu(1);
+            var actual = menus.ToList();
+
+            boolResult.Should().BeTrue();
+            actual.Count.Should().Be(1);
         }
 
         private static List<Menu> MenusSample()
