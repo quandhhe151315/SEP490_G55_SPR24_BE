@@ -14,7 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business.Test", "Business.Test\Business.Test.csproj", "{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business.Test", "Business.Test\Business.Test.csproj", "{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenDelights.Test", "KitchenDelights.Test\KitchenDelights.Test.csproj", "{65F53FB1-0B0B-4459-9F6E-203E382E4FA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2576A8E7-7742-4F85-A9EF-0CAF24C8783E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65F53FB1-0B0B-4459-9F6E-203E382E4FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65F53FB1-0B0B-4459-9F6E-203E382E4FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65F53FB1-0B0B-4459-9F6E-203E382E4FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65F53FB1-0B0B-4459-9F6E-203E382E4FA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

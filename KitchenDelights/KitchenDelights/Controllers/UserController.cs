@@ -115,22 +115,25 @@ namespace KitchenDelights.Controllers
             }
             else
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Forget password code has not been sent.");
+                return StatusCode(500, "Forget password code has not been sent.");
             }
         }
 
         [HttpPatch]
         public async Task<IActionResult> ForgetPassword(ForgotPasswordDTO forgotPasswordDTO)
         {
+            if (!StringHelper.IsEmail(forgotPasswordDTO.Email)) return BadRequest("Please input a valid email address!");
+            if (forgotPasswordDTO.Password.IsNullOrEmpty() || forgotPasswordDTO.Password.Length < 6) return BadRequest("Invalid Password!");
+            if (forgotPasswordDTO.ResetToken.IsNullOrEmpty()) return BadRequest("Please input your reset password token!");
             forgotPasswordDTO.Password = PasswordHelper.Hash(forgotPasswordDTO.Password);
             int status = await _userManager.ForgetPassword(forgotPasswordDTO);
             return status switch
             {
                 0 => NotFound("User with this email doesn't exist!"),
-                1 => StatusCode(StatusCodes.Status406NotAcceptable, "Wrong forget password code!"),
-                2 => StatusCode(StatusCodes.Status406NotAcceptable, "Forget password code expired!"),
+                1 => StatusCode(406, "Wrong forget password code!"),
+                2 => StatusCode(406, "Forget password code expired!"),
                 3 => Ok(),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, "Something wrong happened, please contact administrator!"),
+                _ => StatusCode(500, "Something wrong happened, please contact administrator!"),
             };
         }
 
@@ -140,8 +143,10 @@ namespace KitchenDelights.Controllers
         {
             UserDTO? account = await _userManager.GetUser(changePasswordDTO.UserId);
             if (account == null) return NotFound("Account does not exist!");
+            if (changePasswordDTO.OldPassword.IsNullOrEmpty() || changePasswordDTO.OldPassword.Length < 6) return BadRequest("Invalid Password!");
+            if (changePasswordDTO.Password.IsNullOrEmpty() || changePasswordDTO.Password.Length < 6) return BadRequest("Invalid Password!");
             bool isCorrectPassword = PasswordHelper.Verify(changePasswordDTO.OldPassword, account.PasswordHash);
-            if (!isCorrectPassword) return StatusCode(StatusCodes.Status406NotAcceptable, "Wrong password!");
+            if (!isCorrectPassword) return StatusCode(406, "Wrong password!");
 
             changePasswordDTO.Password = PasswordHelper.Hash(changePasswordDTO.Password);
             bool isSuccess = await _userManager.ChangePassword(changePasswordDTO);
@@ -152,6 +157,7 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile(int id)
         {
+            if(id < 0) return BadRequest();
             UserDTO? profile = await _userManager.GetUser(id);
             return profile == null ? NotFound("User profile doesn't exist!") : Ok(profile);
         }
@@ -160,6 +166,7 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> List(int id)
         {
+            if(id < 0) return BadRequest();
             List<UserDTO> users = await _userManager.GetUsers(id);
             return Ok(users);
         }
@@ -176,16 +183,19 @@ namespace KitchenDelights.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UserDTO userDTO)
         {
+            if (!StringHelper.IsEmail(userDTO.Email)) return BadRequest("Please input a valid email address!");
             bool isUpdated = await _userManager.UpdateProfile(userDTO);
-            return isUpdated ? Ok() : StatusCode(StatusCodes.Status500InternalServerError, "Update profile failed!");
+            return isUpdated ? Ok() : StatusCode(500, "Update profile failed!");
         }
 
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDTO userDTO)
         {
-            if(userDTO.Password.Length < 6) return StatusCode(StatusCodes.Status406NotAcceptable, "Password should not be shorter than 6 characters!");
-
+            if (!StringHelper.IsEmail(userDTO.Email)) return BadRequest("Please input a valid email address!");
+            if(userDTO.Password.IsNullOrEmpty() || userDTO.Password.Length < 6) return StatusCode(406, "Password should not be shorter than 6 characters!");
+            if(userDTO.RoleId < 1 || userDTO.RoleId > 5) return BadRequest("Invalid Role!");
+            if(userDTO.StatusId != 1 && userDTO.RoleId != 2) return BadRequest("Invalid Status");
             userDTO.Password = PasswordHelper.Hash(userDTO.Password);
 
             bool isCreated = await _userManager.CreateUser(userDTO);
@@ -196,6 +206,8 @@ namespace KitchenDelights.Controllers
         [HttpPatch]
         public async Task<IActionResult> Role(ChangeRoleDTO changeRole)
         {
+            if(changeRole.UserId < 0) return BadRequest("Invalid UserId!");
+            if(changeRole.RoleId < 1 || changeRole.RoleId > 5) return BadRequest("Invalid User Role!");
             bool isUpdated = await _userManager.UpdateRole(changeRole.UserId, changeRole.RoleId);
             return isUpdated ? Ok() : BadRequest();
         }
