@@ -51,6 +51,22 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void GetVoucher_GetVoucherList_ExistInRepo()
+        {
+            var advertisements = AdvertisementsSample();
+            List<AdvertisementDTO> advertisementDTOs = [];
+            advertisementDTOs.AddRange(advertisements.Select(_mapper.Map<Advertisement, AdvertisementDTO>));
+            _advertisementRepositoryMock.Setup(x => x.GetAdvertisements()).ReturnsAsync(advertisements.ToList());
+
+            IAdvertisementManager _advertisementManager = new AdvertisementManager(_advertisementRepositoryMock.Object, _mapper);
+            var result = await _advertisementManager.GetAdvertisements();
+
+            result.Should().BeOfType<List<AdvertisementDTO>>()
+            .And.NotBeNullOrEmpty();
+            result.Count.Should().Be(3);
+        }
+
+        [Fact]
         //Naming convention is MethodName_expectedBehavior_StateUnderTest
         public async void GetAdvertisement_GetAdvertisementById_AdvertisementNotExistInRepo()
         {

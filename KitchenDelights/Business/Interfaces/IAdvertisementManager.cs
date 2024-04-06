@@ -14,6 +14,8 @@ namespace Business.Interfaces
 
         Task<bool> UpdateAdvertisement(AdvertisementDTO advertisement);
 
+        Task<bool> UpdateAdvertisementStatus(int id, int status);
+
         Task<bool> DeleteAdvertisement(int id);
 
         Task<AdvertisementDTO?> GetAdvertisementById(int id);
