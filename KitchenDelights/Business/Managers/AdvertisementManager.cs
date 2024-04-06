@@ -42,8 +42,7 @@ namespace Business.Managers
             Advertisement? advertisement = await _advertisementRepository.GetAdvertisementById(id);
             if (advertisement == null) return false;
 
-            advertisement.AdvertisementStatus = 0;
-            _advertisementRepository.UpdateAdvertisement(advertisement);
+            _advertisementRepository.DeleteAdvertisement(advertisement);
             _advertisementRepository.Save();
             return true;
         }

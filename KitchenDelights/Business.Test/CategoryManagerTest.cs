@@ -37,7 +37,7 @@ namespace Business.Test
             _categoryRepositoryMock.Setup(x => x.GetAllCategories()).ReturnsAsync(categories.ToList());
 
             ICategoryManager _categoryManager = new CategoryManager(_categoryRepositoryMock.Object, _mapper);
-            var result = await _categoryManager.GetAllCategories(true);
+            var result = await _categoryManager.GetAllCategories(1);
 
             result.Should().BeOfType<List<CategoryDTO>>()
             .And.NotBeNullOrEmpty();
