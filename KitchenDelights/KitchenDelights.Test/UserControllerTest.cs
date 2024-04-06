@@ -448,5 +448,537 @@ namespace KitchenDelights.Test
             result.Should().BeObjectResult();
             (result as ObjectResult)!.StatusCode.Should().Be(406);
         }
+
+        [Fact]
+        public async void ChangePassword_ReturnStatus200_AllValid() {
+            ChangePasswordDTO change = new() {
+                UserId = 1,
+                OldPassword = "123456",
+                Password = "1234567"
+            };
+            _mockUserManager.Setup(x => x.GetUser(change.UserId)).ReturnsAsync(new UserDTO() {
+                UserId = 1,
+                PasswordHash = PasswordHelper.Hash(change.OldPassword)
+            });
+            _mockUserManager.Setup(x => x.ChangePassword(It.IsAny<ChangePasswordDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ChangePassword(change);
+
+            result.Should().BeOkResult();
+        }
+
+        [Fact]
+        public async void ChangePassword_ReturnStatus404_UserNotExist() {
+            ChangePasswordDTO change = new() {
+                UserId = -1,
+                OldPassword = "123456",
+                Password = "1234567"
+            };
+            _mockUserManager.Setup(x => x.GetUser(change.UserId));
+            _mockUserManager.Setup(x => x.ChangePassword(It.IsAny<ChangePasswordDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ChangePassword(change);
+
+            result.Should().BeNotFoundObjectResult();
+        }
+
+        [Fact]
+        public async void ChangePassword_ReturnStatus400_InvalidOldPassword() {
+            ChangePasswordDTO change = new() {
+                UserId = 1,
+                OldPassword = string.Empty,
+                Password = "1234567"
+            };
+            _mockUserManager.Setup(x => x.GetUser(change.UserId)).ReturnsAsync(new UserDTO() {
+                UserId = 1,
+                PasswordHash = PasswordHelper.Hash(change.OldPassword)
+            });
+            _mockUserManager.Setup(x => x.ChangePassword(It.IsAny<ChangePasswordDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ChangePassword(change);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void ChangePassword_ReturnStatus400_InvalidPassword() {
+            ChangePasswordDTO change = new() {
+                UserId = 1,
+                OldPassword = "123456",
+                Password = string.Empty
+            };
+            _mockUserManager.Setup(x => x.GetUser(change.UserId)).ReturnsAsync(new UserDTO() {
+                UserId = 1,
+                PasswordHash = PasswordHelper.Hash(change.OldPassword)
+            });
+            _mockUserManager.Setup(x => x.ChangePassword(It.IsAny<ChangePasswordDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ChangePassword(change);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void ChangePassword_ReturnStatus406_WrongPassword() {
+            ChangePasswordDTO change = new() {
+                UserId = 1,
+                OldPassword = "wrongpassword",
+                Password = "1234567"
+            };
+            _mockUserManager.Setup(x => x.GetUser(change.UserId)).ReturnsAsync(new UserDTO() {
+                UserId = 1,
+                PasswordHash = PasswordHelper.Hash("123456")
+            });
+            _mockUserManager.Setup(x => x.ChangePassword(It.IsAny<ChangePasswordDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.ChangePassword(change);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(406);
+        }
+
+        [Fact]
+        public async void Profile_ReturnStatus200_ValidUserId() {
+            var users = GetUserDTOs();
+            _mockUserManager.Setup(x => x.GetUser(1)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 1));
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Profile(1);
+
+            result.Should().BeOkObjectResult();
+        }
+
+        [Fact]
+        public async void Profile_ReturnStatus404_BoundaryUserId() {
+            var users = GetUserDTOs();
+            _mockUserManager.Setup(x => x.GetUser(0)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == 0));
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Profile(0);
+
+            result.Should().BeNotFoundObjectResult();
+        }
+
+        [Fact]
+        public async void Profile_ReturnStatus400_InvalidUserId() {
+            var users = GetUserDTOs();
+            _mockUserManager.Setup(x => x.GetUser(-1)).ReturnsAsync(users.FirstOrDefault(x => x.UserId == -1));
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Profile(-1);
+
+            result.Should().BeBadRequestResult();
+        }
+
+        [Fact]
+        public async void List_ReturnStatus200_ValidUserId() {
+            var users = GetUserDTOs();
+            _mockUserManager.Setup(x => x.GetUsers(1)).ReturnsAsync(users.Where(x => x.UserId != 1).ToList());
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.List(1);
+
+            result.Should().BeOkObjectResult();
+        }
+
+        [Fact]
+        public async void List_ReturnStatus200_BoundaryUserId() {
+            var users = GetUserDTOs();
+            _mockUserManager.Setup(x => x.GetUsers(0)).ReturnsAsync(users.Where(x => x.UserId != 0).ToList());
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.List(0);
+
+            result.Should().BeOkObjectResult();
+        }
+
+        [Fact]
+        public async void List_ReturnStatus400_InvalidUserId() {
+            var users = GetUserDTOs();
+            _mockUserManager.Setup(x => x.GetUsers(-1)).ReturnsAsync(users.Where(x => x.UserId != -1).ToList());
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.List(-1);
+
+            result.Should().BeBadRequestResult();
+        }
+
+        [Fact]
+        public async void UpdateProfile_ReturnStatus200_UserExist() {
+            UserDTO toUpdate = new() {
+                UserId = 1,
+                FirstName = "firstname",
+                MiddleName = "middlename",
+                LastName = "lastname",
+                Email = "valid@mail.com",
+                Phone = "0904285035",
+                Avatar = "avatar"
+            };
+            _mockUserManager.Setup(x => x.UpdateProfile(It.IsAny<UserDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.UpdateProfile(toUpdate);
+
+            result.Should().BeOkResult();
+        }
+
+        [Fact]
+        public async void UpdateProfile_ReturnStatus500_UserNotExist() {
+            UserDTO toUpdate = new() {
+                UserId = -1,
+                FirstName = "firstname",
+                MiddleName = "middlename",
+                LastName = "lastname",
+                Email = "valid@mail.com",
+                Phone = "0904285035",
+                Avatar = "avatar"
+            };
+            _mockUserManager.Setup(x => x.UpdateProfile(It.IsAny<UserDTO>())).ReturnsAsync(false);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.UpdateProfile(toUpdate);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(500);
+        }
+
+        [Fact]
+        public async void UpdateProfile_ReturnStatus400_InvalidEmail() {
+            UserDTO toUpdate = new() {
+                UserId = 1,
+                FirstName = "firstname",
+                MiddleName = "middlename",
+                LastName = "lastname",
+                Email = string.Empty,
+                Phone = "0904285035",
+                Avatar = "avatar"
+            };
+            _mockUserManager.Setup(x => x.UpdateProfile(It.IsAny<UserDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.UpdateProfile(toUpdate);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Create_ReturnStatus200_AllValid() {
+            CreateUserDTO toAdd = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                RoleId = 5,
+                StatusId = 1
+            };
+            _mockUserManager.Setup(x => x.CreateUser(It.IsAny<CreateUserDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Create(toAdd);
+
+            result.Should().BeOkResult();
+        }
+
+        [Fact]
+        public async void Create_ReturnStatus400_InvalidEmail() {
+            CreateUserDTO toAdd = new() {
+                Email = "justastring",
+                Password = "123456",
+                RoleId = 5,
+                StatusId = 1
+            };
+            _mockUserManager.Setup(x => x.CreateUser(It.IsAny<CreateUserDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Create(toAdd);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Create_ReturnStatus406_InvalidPassword() {
+            CreateUserDTO toAdd = new() {
+                Email = "valid@mail.com",
+                Password = string.Empty,
+                RoleId = 5,
+                StatusId = 1
+            };
+            _mockUserManager.Setup(x => x.CreateUser(It.IsAny<CreateUserDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Create(toAdd);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(406);
+        }
+
+        [Fact]
+        public async void Create_ReturnStatus400_InvalidRoleId() {
+            CreateUserDTO toAdd = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                RoleId = 0,
+                StatusId = 1
+            };
+            _mockUserManager.Setup(x => x.CreateUser(It.IsAny<CreateUserDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Create(toAdd);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Create_ReturnStatus400_InvalidStatusId() {
+            CreateUserDTO toAdd = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                RoleId = 5,
+                StatusId = -1
+            };
+            _mockUserManager.Setup(x => x.CreateUser(It.IsAny<CreateUserDTO>())).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Create(toAdd);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Create_ReturnStatus500_DuplicateUser() {
+            CreateUserDTO toAdd = new() {
+                Email = "valid@mail.com",
+                Password = "123456",
+                RoleId = 5,
+                StatusId = 1
+            };
+            _mockUserManager.Setup(x => x.CreateUser(It.IsAny<CreateUserDTO>())).ReturnsAsync(false);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Create(toAdd);
+
+            result.Should().BeObjectResult();
+            (result as ObjectResult)!.StatusCode.Should().Be(500);
+        }
+
+        [Fact]
+        public async void Role_ReturnStatus200_AllValid() {
+            ChangeRoleDTO change = new() {
+                UserId = 1,
+                RoleId = 2
+            };
+            _mockUserManager.Setup(x => x.UpdateRole(change.UserId, change.RoleId)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Role(change);
+
+            result.Should().BeOkResult();
+        }
+
+        [Fact]
+        public async void Role_ReturnStatus400_InvalidUserId() {
+            ChangeRoleDTO change = new() {
+                UserId = -1,
+                RoleId = 2
+            };
+            _mockUserManager.Setup(x => x.UpdateRole(change.UserId, change.RoleId)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Role(change);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Role_ReturnStatus400_InvalidRoleId() {
+            ChangeRoleDTO change = new() {
+                UserId = 1,
+                RoleId = 6
+            };
+            _mockUserManager.Setup(x => x.UpdateRole(change.UserId, change.RoleId)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Role(change);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Role_ReturnStatus400_AllInvalid() {
+            ChangeRoleDTO change = new() {
+                UserId = -1,
+                RoleId = 6
+            };
+            _mockUserManager.Setup(x => x.UpdateRole(change.UserId, change.RoleId)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Role(change);
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Role_ReturnStatus400_UserNotExist() {
+            ChangeRoleDTO change = new() {
+                UserId = 0,
+                RoleId = 2
+            };
+            _mockUserManager.Setup(x => x.UpdateRole(change.UserId, change.RoleId)).ReturnsAsync(false);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Role(change);
+
+            result.Should().BeBadRequestResult();
+        }
+
+        [Fact]
+        public async void Delete_ReturnStatus200_UserExist() {
+            _mockUserManager.Setup(x => x.UpdateStatus(1, 3)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Delete(1);
+
+            result.Should().BeOkResult();
+        }
+
+        [Fact]
+        public async void Delete_ReturnStatus400_UserNotExist() {
+            _mockUserManager.Setup(x => x.UpdateStatus(0, 3)).ReturnsAsync(false);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Delete(0);
+
+            result.Should().BeBadRequestResult();
+        }
+
+        [Fact]
+        public async void Delete_ReturnStatus400_InvalidUserId() {
+            _mockUserManager.Setup(x => x.UpdateStatus(-1, 3)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Delete(-1);
+
+            result.Should().BeBadRequestResult();
+        }
+
+        [Fact]
+        public async void Ban_ReturnStatus200_UserExist() {
+            _mockUserManager.Setup(x => x.GetUser(1)).ReturnsAsync(new UserDTO(){
+                UserId = 1,
+                Status = new StatusDTO {
+                    StatusId = 1,
+                    StatusName = "Active"
+                }
+            });
+            _mockUserManager.Setup(x => x.UpdateStatus(1, 2)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Ban(1);
+
+            result.Should().BeOkResult();
+        }
+
+        [Fact]
+        public async void Ban_ReturnStatus404_UserNotExist() {
+            _mockUserManager.Setup(x => x.GetUser(0));
+            _mockUserManager.Setup(x => x.UpdateStatus(0, 2)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Ban(0);
+
+            result.Should().BeNotFoundResult();
+        }
+
+        [Fact]
+        public async void Ban_ReturnStatus400_UserDeleted() {
+            _mockUserManager.Setup(x => x.GetUser(1)).ReturnsAsync(new UserDTO(){
+                UserId = 1,
+                Status = new StatusDTO {
+                    StatusId = 3,
+                    StatusName = "Deleted"
+                }
+            });
+            _mockUserManager.Setup(x => x.UpdateStatus(1, 2)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Ban(1);
+
+            result.Should().BeBadRequestResult();
+        }
+
+        [Fact]
+        public async void Ban_ReturnStatus400_InvalidUserId() {
+            _mockUserManager.Setup(x => x.GetUser(-1));
+            _mockUserManager.Setup(x => x.UpdateStatus(-1, 2)).ReturnsAsync(true);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Ban(-1);
+
+            result.Should().BeBadRequestResult();
+        }
+
+        [Fact]
+        public async void Interact_ReturnStatus200_AllValid() {
+            _mockUserManager.Setup(x => x.Interact(1, "recipe")).ReturnsAsync(2);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Interact(1, "recipe");
+
+            result.Should().BeOkObjectResult();
+        }
+
+        [Fact]
+        public async void Interact_ReturnStatus404_UserNotExist() {
+            _mockUserManager.Setup(x => x.Interact(0, "recipe")).ReturnsAsync(0);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Interact(0, "recipe");
+
+            result.Should().BeNotFoundObjectResult();
+        }
+        
+        [Fact]
+        public async void Interact_ReturnStatus400_WrongInteractionType() {
+            _mockUserManager.Setup(x => x.Interact(1, "wrongtype")).ReturnsAsync(1);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Interact(1, "wrongtype");
+
+            result.Should().BeBadRequestObjectResult();
+        }
+
+        [Fact]
+        public async void Interact_ReturnStatus400_InvalidUserId() {
+            _mockUserManager.Setup(x => x.Interact(-1, "recipe")).ReturnsAsync(0);
+
+            UserController _controller = new(_configuration, _mockUserManager.Object);
+            var result = await _controller.Interact(-1, "recipe");
+
+            result.Should().BeBadRequestResult();
+        }
+
+        private List<UserDTO> GetUserDTOs() {
+            List<UserDTO> output = [
+                new UserDTO() {
+                    UserId = 1
+                },
+                new UserDTO() {
+                    UserId = 2
+                },
+                new UserDTO() {
+                    UserId = 3
+                },
+                new UserDTO() {
+                    UserId = 4
+                },
+                new UserDTO() {
+                    UserId = 5
+                },
+            ];
+            return output;
+        }
     }
 }
