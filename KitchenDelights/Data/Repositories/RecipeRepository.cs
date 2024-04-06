@@ -90,6 +90,18 @@ namespace Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Recipe>> GetRecipeByUserId(int userId)
+        {
+            return await _context.Recipes.AsNoTracking()
+                .Include(x => x.CartItems).Include(x => x.PaymentHistories)
+                .Include(x => x.RecipeIngredients).ThenInclude(x => x.Ingredient)
+                .Include(x => x.RecipeRatings).ThenInclude(x => x.User)
+                .Include(x => x.Categories).Include(x => x.Countries)
+                .Include(x => x.Menus).Include(x => x.Users).Include(x => x.User)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+        }
+
         public async Task<List<Recipe>> GetRecipeFree()
         {
             return await _context.Recipes.AsNoTracking()

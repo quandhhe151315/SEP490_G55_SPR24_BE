@@ -24,7 +24,7 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategoy(bool categoryType)
+        public async Task<IActionResult> GetAllCategoy(int? categoryType)
         {
             List<CategoryDTO> categories = [];
             try
