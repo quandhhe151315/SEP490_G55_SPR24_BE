@@ -229,6 +229,146 @@ namespace Business.Test
             actual.Count.Should().Be(1);
         }
 
+        [Fact]
+        public async void AddRecipeToMenu_AddRecipeToMenu_MenuRecipeExistInRepo()
+        {
+            var menus = MenusSample();
+            var recipes = RecipesSample();
+            int menuId = 1;
+            int recipeId = 1;
+
+            _menuRepositoryMock.Setup(x => x.GetMenuById(menuId)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == menuId));
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(recipeId)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == recipeId));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[0] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.AddRecipeToMenu(menuId, recipeId);
+            var updatedMenu = menus.FirstOrDefault(x => x.MenuId == menuId);
+            var countResult = updatedMenu.Recipes.Count();
+
+            boolResult.Should().BeTrue();
+            updatedMenu.Should().NotBeNull();
+            countResult.Should().Be(3);
+        }
+
+        [Fact]
+        public async void AddRecipeToBookmark_AddRecipeToBookmark_MenuNotExistInRepo()
+        {
+            var menus = MenusSample();
+            var recipes = RecipesSample();
+            int menuId = -1;
+            int recipeId = 1;
+
+            _menuRepositoryMock.Setup(x => x.GetMenuById(menuId)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == menuId));
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(recipeId)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == recipeId));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[0] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.AddRecipeToMenu(menuId, recipeId);
+            var updatedMenu = menus.FirstOrDefault(x => x.MenuId == menuId);
+
+            var countResult = 0;
+            if (updatedMenu != null)
+                countResult = updatedMenu.Recipes.Count();
+
+            boolResult.Should().BeFalse();
+            updatedMenu.Should().BeNull();
+            countResult.Should().Be(0);
+        }
+
+        [Fact]
+        public async void AddRecipeToBookmark_AddRecipeToBookmark_RecipeNotExistInRepo()
+        {
+            var menus = MenusSample();
+            var recipes = RecipesSample();
+            int menuId = 1;
+            int recipeId = -1;
+
+            _menuRepositoryMock.Setup(x => x.GetMenuById(menuId)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == menuId));
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(recipeId)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == recipeId));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[0] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.AddRecipeToMenu(menuId, recipeId);
+            var updatedMenu = menus.FirstOrDefault(x => x.MenuId == menuId);
+
+            var countResult = updatedMenu.Recipes.Count();
+
+            boolResult.Should().BeFalse();
+            updatedMenu.Should().NotBeNull();
+            countResult.Should().Be(2);
+        }
+
+        [Fact]
+        public async void RemoveRecipeFromBookmark_RemoveRecipeFromBookmark_UserRecipeExistInRepo()
+        {
+            var menus = MenusSample();
+            var recipes = RecipesSample();
+            int menuId = 1;
+            int recipeId = 2;
+
+            _menuRepositoryMock.Setup(x => x.GetMenuById(menuId)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == menuId));
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(recipeId)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == recipeId));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[0] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.RemoveRecipeFromMenu(menuId, recipeId);
+            var updatedMenu = menus.FirstOrDefault(x => x.MenuId == menuId);
+            var countResult = updatedMenu.Recipes.Count() - 1;
+
+            boolResult.Should().BeTrue();
+            updatedMenu.Should().NotBeNull();
+            countResult.Should().Be(1);
+        }
+
+        [Fact]
+        public async void RemoveRecipeFromBookmark_RemoveRecipeFromBookmark_UserNotExistInRepo()
+        {
+            var menus = MenusSample();
+            var recipes = RecipesSample();
+            int menuId = -1;
+            int recipeId = 1;
+
+            _menuRepositoryMock.Setup(x => x.GetMenuById(menuId)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == menuId));
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(recipeId)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == recipeId));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[0] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.RemoveRecipeFromMenu(menuId, recipeId);
+            var updatedMenu = menus.FirstOrDefault(x => x.MenuId == menuId);
+
+            var countResult = 0;
+            if (updatedMenu != null)
+                countResult = updatedMenu.Recipes.Count();
+
+            boolResult.Should().BeFalse();
+            updatedMenu.Should().BeNull();
+            countResult.Should().Be(0);
+        }
+
+        [Fact]
+        public async void RemoveRecipeFromBookmark_RemoveRecipeFromBookmark_RecipeNotExistInRepo()
+        {
+            var menus = MenusSample();
+            var recipes = RecipesSample();
+            int menuId = 1;
+            int recipeId = -1;
+
+            _menuRepositoryMock.Setup(x => x.GetMenuById(menuId)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == menuId));
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(recipeId)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == recipeId));
+            _menuRepositoryMock.Setup(x => x.UpdateMenu(It.IsAny<Menu>())).Callback<Menu>((menu) => menus[0] = menu);
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.RemoveRecipeFromMenu(menuId, recipeId);
+            var updatedUser = menus.FirstOrDefault(x => x.MenuId == menuId);
+
+            var countResult = updatedUser.Recipes.Count();
+
+            boolResult.Should().BeFalse();
+            updatedUser.Should().NotBeNull();
+            countResult.Should().Be(2);
+        }
+
         private static List<Menu> MenusSample()
         {
             List<Menu> output = [
