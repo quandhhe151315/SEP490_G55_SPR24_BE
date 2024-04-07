@@ -82,6 +82,16 @@ public class NewsControllerTest
     }
 
     [Fact]
+    public async void UserGet_ReturnStatus200() {
+        _mockNewsManager.Setup(x => x.GetNews()).ReturnsAsync([]);
+
+        NewsController _controller = new(_configuration, _mockNewsManager.Object);
+        var result = await _controller.UserGet();
+
+        result.Should().BeOkObjectResult();
+    }
+
+    [Fact]
     public async void Search_ReturnStatus200_ValidSearchString() {
         _mockNewsManager.Setup(x => x.SearchNews("search string")).ReturnsAsync(new List<NewsDTO>(){
             new NewsDTO() {
