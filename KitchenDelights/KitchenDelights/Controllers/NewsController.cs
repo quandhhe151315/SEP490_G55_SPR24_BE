@@ -36,6 +36,15 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> UserGet()
+        {
+            List<NewsDTO> newsDTO = await _newsManager.GetNews();
+            newsDTO = newsDTO.Where(x => x.NewsStatus == 1)
+                             .ToList();
+            return Ok(newsDTO);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Search(string? search)
         {
             List<NewsDTO> newsDTOs;
