@@ -25,6 +25,7 @@ namespace KitchenDelights.Controllers
         {
             if (id == null)
             {
+                if(category != null && category < 0) return BadRequest("Invalid Category Id");
                 List<BlogDTO> blogs = await _blogManager.GetBlogs(search.IsNullOrEmpty() ? search : StringHelper.Process(search), category, sort);
                 if (!User.IsInRole("Administrator") || !User.IsInRole("Moderator")) blogs = blogs.Where(x => x.BlogStatus == 1).ToList();
                 if (blogs.Count == 0) return NotFound("There's no blog here!");
@@ -37,22 +38,10 @@ namespace KitchenDelights.Controllers
             return Ok(blog);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Search(string? search)
-        //{
-        //    List<BlogDTO> blogs;
-        //    if(search.IsNullOrEmpty()) {
-        //        blogs = await _blogManager.GetBlogs(null, null);
-        //    } else
-        //    {
-        //        blogs = await _blogManager.SearchBlogs(StringHelper.Process(search));
-        //    }
-        //    return Ok(blogs);
-        //}
-
         [HttpGet]
         public async Task<IActionResult> Lastest(int count)
         {
+            if(count < 0) return BadRequest();
             return Ok(await _blogManager.GetBlogsLastest(count));
         }
 
@@ -60,6 +49,8 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BlogDTO blog)
         {
+            if(StringHelper.Process(blog.BlogTitle).IsNullOrEmpty()) return StatusCode(406, "Blog Title should not be empty!");
+            if(StringHelper.Process(blog.BlogImage).IsNullOrEmpty()) return StatusCode(406, "Blog Image should not be empty!");
             blog.CreateDate = DateTime.Now;
             blog.BlogStatus = 1;           
             try
@@ -76,6 +67,9 @@ namespace KitchenDelights.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(BlogDTO blog)
         {
+            if(blog.BlogId < 0) return BadRequest("Invalid Blog Id!");
+            if(StringHelper.Process(blog.BlogTitle).IsNullOrEmpty()) return StatusCode(406, "Blog Title should not be empty!");
+            if(StringHelper.Process(blog.BlogImage).IsNullOrEmpty()) return StatusCode(406, "Blog Image should not be empty!");
             bool isUpdated = await _blogManager.UpdateBlog(blog);
             return isUpdated ? Ok() : StatusCode(500, "Update blog failed!");
         }
@@ -83,6 +77,8 @@ namespace KitchenDelights.Controllers
         [Authorize(Roles = "Administrator,Moderator")]
         [HttpPatch]
         public async Task<IActionResult> Status(int id, int status) {
+            if(id < 0) return BadRequest("Invalid Blog Id");
+            if(status != 1 && status != 2) return BadRequest("Invalid Status");
             bool isUpdated = await _blogManager.BlogStatus(id, status);
             return isUpdated ? Ok() : StatusCode(500, "Update blog status failed!");
         }
