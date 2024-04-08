@@ -33,6 +33,14 @@ namespace KitchenDelights.Controllers
             return advertisement == null ? NotFound("Advertisement doesn't exist!") : Ok(advertisement);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAdvertismentActive()
+        {
+            List<AdvertisementDTO> advertisementDTOs = await _advertisementManager.GetAdvertisements();
+            advertisementDTOs = advertisementDTOs.Where(x => x.AdvertisementStatus == 1).ToList();
+            return advertisementDTOs == null ? NotFound("Advertisement doesn't exist!") : Ok(advertisementDTOs);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(AdvertisementDTO advertisementDTO)

@@ -182,12 +182,6 @@ namespace Business.Test
         public async void DeleteVoucher_DeleteExistingVoucher_VoucherExistInRepo()
         {
             var vouchers = VouchersSample();
-            VoucherDTO voucherDTO = new()
-            {
-                VoucherCode = "GIAM15",
-                UserId = 1,
-                DiscountPercentage = 5
-            };
             _voucherRepositoryMock.Setup(x => x.GetVoucher("GIAM15")).ReturnsAsync(vouchers.FirstOrDefault(x => x.VoucherCode == "GIAM15"));
             _voucherRepositoryMock.Setup(x => x.RemoveVoucher(It.IsAny<Voucher>())).Callback<Voucher>(item => vouchers.Remove(item));
 
@@ -213,7 +207,7 @@ namespace Business.Test
             _voucherRepositoryMock.Setup(x => x.RemoveVoucher(It.IsAny<Voucher>())).Callback<Voucher>(item => vouchers.Remove(item));
 
             IVoucherManager _voucherManager = new VoucherManager(_voucherRepositoryMock.Object, _mapper);
-            var boolResult = await _voucherManager.RemoveVoucher("GIAM15");
+            var boolResult = await _voucherManager.RemoveVoucher("GIAM99");
             var actual = vouchers.ToList();
 
             boolResult.Should().BeFalse();

@@ -345,6 +345,26 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void GetRecipe_FilterRecipeIngredient_ExistInRepo()
+        {
+            var recipes = RecipesSample();
+            var countries = CountriesSample();
+            var ingredients = IngredientsSample();
+            List<RecipeDTO> recipeDTOs = [];
+            recipeDTOs.AddRange(recipes.Select(_mapper.Map<Recipe, RecipeDTO>));
+            _recipeRepositoryMock.Setup(x => x.GetRecipes()).ReturnsAsync(recipes.ToList());
+
+            IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
+                                                            _countryRepositoryMock.Object, _userRepositoryMock.Object,
+                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+            var result = await _recipeManager.FilterRecipe(null, null, null, 1, 1, null, null);
+
+            result.Should().BeOfType<List<RecipeDTO>>()
+            .And.NotBeNullOrEmpty();
+            result.Count.Should().Be(1);
+        }
+
+        [Fact]
         public async void GetRecipe_FilterRecipeFree_ExistInRepo()
         {
             var recipes = RecipesSample();
@@ -358,6 +378,26 @@ namespace Business.Test
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
                                                             _recipeIngredientRepositoryMock.Object, _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, 1, null, null);
+
+            result.Should().BeOfType<List<RecipeDTO>>()
+            .And.NotBeNullOrEmpty();
+            result.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public async void GetRecipe_FilterRecipePaid_ExistInRepo()
+        {
+            var recipes = RecipesSample();
+            var countries = CountriesSample();
+            var ingredients = IngredientsSample();
+            List<RecipeDTO> recipeDTOs = [];
+            recipeDTOs.AddRange(recipes.Select(_mapper.Map<Recipe, RecipeDTO>));
+            _recipeRepositoryMock.Setup(x => x.GetRecipes()).ReturnsAsync(recipes.ToList());
+
+            IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
+                                                            _countryRepositoryMock.Object, _userRepositoryMock.Object,
+                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+            var result = await _recipeManager.FilterRecipe(null, null, null, null, 2, null, null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
             .And.NotBeNullOrEmpty();
@@ -481,6 +521,67 @@ namespace Business.Test
             result.Should().BeOfType<List<RecipeDTO>>()
             .And.NotBeNullOrEmpty();
             result.Count.Should().Be(2);
+        }
+
+        [Fact]
+        public async void CreateAdvertisement_CreateWithAdvertisementDTO_AdvertisementNotExistInRepo()
+        {
+            var recipes = RecipesSample();
+            var ingredients = IngredientsSample();
+            var countries = CountriesSample();
+            RecipeRequestDTO recipeRequestDTO = new()
+            {
+                RecipeId = 3,
+                UserId = 1,
+                FeaturedImage = "mock-image-link-update",
+                RecipeDescription = "mock-description-update",
+                VideoLink = "mock-video-link-update",
+                RecipeTitle = "mock-title-update",
+                PreparationTime = 10,
+                CookTime = 10,
+                RecipeServe = 4,
+                RecipeContent = "mock-content-update",
+                RecipeStatus = 1,
+                IsFree = true,
+                RecipePrice = 0,
+                CreateDate = DateTime.Now,
+                CountryId = 1,
+                RecipeIngredients = [
+                    new RecipeIngredientRequestDTO()
+                    {
+                        IngredientId = 1,
+                        UnitValue = 10
+                    },
+                    new RecipeIngredientRequestDTO()
+                    {
+                        IngredientId = 2,
+                        UnitValue = 15
+                    },
+                ]
+            };
+            _recipeRepositoryMock.Setup(x => x.GetRecipe(recipeRequestDTO.RecipeId.Value)).ReturnsAsync(recipes.FirstOrDefault(x => x.RecipeId == recipeRequestDTO.RecipeId.Value));
+            _recipeRepositoryMock.Setup(x => x.CreateRecipe(It.IsAny<Recipe>())).Callback<Recipe>(recipes.Add);
+            _countryRepositoryMock.Setup(x => x.GetCountry(1)).ReturnsAsync(countries.FirstOrDefault(x => x.CountryId == 1));
+            _ingredientRepositoryMock.Setup(x => x.GetIngredientById(1)).ReturnsAsync(ingredients.FirstOrDefault(x => x.IngredientId == 1));
+            _ingredientRepositoryMock.Setup(x => x.GetIngredientById(2)).ReturnsAsync(ingredients.FirstOrDefault(x => x.IngredientId == 2));
+
+            IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
+                                                            _countryRepositoryMock.Object, _userRepositoryMock.Object,
+                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+            bool boolResult = false;
+            try
+            {
+                await _recipeManager.CreateRecipe(recipeRequestDTO);
+                boolResult = true;
+            }
+            catch (Exception ex)
+            {
+                boolResult = false;
+            }
+            var countResult = recipes.Count;
+
+            boolResult.Should().BeTrue();
+            countResult.Should().Be(3);
         }
 
         [Fact]
