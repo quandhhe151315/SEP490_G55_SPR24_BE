@@ -39,8 +39,10 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BlogCommentDTO comment)
         {
+            if(comment.BlogId < 0) return BadRequest("Invalid blog Id");
+            if(comment.UserId < 0) return BadRequest("Invalid user Id");
+            if(comment.ParentId != null && comment.ParentId.Value < 0) return BadRequest("Invalid parent comment Id");
             comment.CreateDate = DateTime.Now;
-
             try
             {
                 _commentManager.CreateComment(comment);
@@ -55,6 +57,7 @@ namespace KitchenDelights.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(BlogCommentDTO comment)
         {
+            if(comment.CommentId < 0) return BadRequest("Invalid blog Id");
             bool isUpdated = await _commentManager.UpdateComment(comment);
             if (!isUpdated) return StatusCode(500, "Update comment failed!");
             return Ok();
