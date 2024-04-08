@@ -36,6 +36,15 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> UserGet()
+        {
+            List<NewsDTO> newsDTO = await _newsManager.GetNews();
+            newsDTO = newsDTO.Where(x => x.NewsStatus == 1)
+                             .ToList();
+            return Ok(newsDTO);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Search(string? search)
         {
             List<NewsDTO> newsDTOs;
@@ -52,6 +61,7 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> Lastest(int count)
         {
+            if(count < 0) return BadRequest("Invalid count value!");
             return Ok(await _newsManager.GetNewsLastest(count));
         }
 
@@ -59,6 +69,8 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(NewsDTO news)
         {
+            if(news.NewsTitle.IsNullOrEmpty()) return BadRequest("News title should not be empty!");
+            if(news.FeaturedImage.IsNullOrEmpty()) return BadRequest("News image should not be empty!");
             news.CreateDate = DateTime.Now;
             news.NewsStatus = 2;
             try
@@ -75,11 +87,13 @@ namespace KitchenDelights.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(NewsDTO news)
         {
+            if(news.NewsId != null && news.NewsId.Value < 0) return BadRequest("Invalid news Id");
             NewsDTO? newsDTO = await _newsManager.GetNews(news.NewsId.Value);
             if (newsDTO == null) return NotFound("News doesn't exist!");
-
+            if(news.NewsTitle.IsNullOrEmpty()) return BadRequest("News title should not be empty!");
+            if(news.FeaturedImage.IsNullOrEmpty()) return BadRequest("News image should not be empty!");
             bool isUpdated = await _newsManager.UpdateNews(news);
-            return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Update failed!") : Ok();
+            return !isUpdated ? StatusCode(500, "Update failed!") : Ok();
         }
 
         [Authorize(Roles = "Administrator,Moderator,Writer")]
