@@ -58,6 +58,8 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CartItemDTO item)
         {
+            if(item.RecipeId < 0) return BadRequest("Invalid recipe Id");
+            if(item.UserId < 0) return BadRequest("Invalid user Id");
             bool isAdded = await _cartManager.CreateCartItem(item);
             return isAdded ? Ok() : BadRequest("Add to cart failed!");
         }
@@ -74,6 +76,8 @@ namespace KitchenDelights.Controllers
         [HttpDelete]
         public async Task<IActionResult> Remove(CartItemDTO item)
         {
+            if(item.RecipeId < 0) return BadRequest("Invalid recipe Id");
+            if(item.UserId < 0) return BadRequest("Invalid user Id");
             bool isRemoved = await _cartManager.DeleteCartItem(item);
             return isRemoved ? Ok() : BadRequest("Remove from cart failed!");
         }
