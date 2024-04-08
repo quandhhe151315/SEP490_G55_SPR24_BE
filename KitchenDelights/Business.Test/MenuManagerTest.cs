@@ -230,6 +230,21 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void DeleteAdvertisement_DeleteAdvertisement_AdvertisementNotExistInRepo()
+        {
+            var menus = MenusSample();
+            _menuRepositoryMock.Setup(x => x.GetMenuById(-1)).ReturnsAsync(menus.FirstOrDefault(x => x.MenuId == -1));
+            _menuRepositoryMock.Setup(x => x.DeleteMenu(It.IsAny<Menu>())).Callback<Menu>(item => menus.Remove(item));
+
+            IMenuManager _menuManager = new MenuManager(_menuRepositoryMock.Object, _recipeRepositoryMock.Object, _mapper);
+            var boolResult = await _menuManager.DeleteMenu(-1);
+            var actual = menus.ToList();
+
+            boolResult.Should().BeFalse();
+            actual.Count.Should().Be(2);
+        }
+
+        [Fact]
         public async void AddRecipeToMenu_AddRecipeToMenu_MenuRecipeExistInRepo()
         {
             var menus = MenusSample();
