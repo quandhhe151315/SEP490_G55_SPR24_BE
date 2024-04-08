@@ -62,6 +62,15 @@ namespace Business.Managers
             return blog is null ? null : _mapper.Map<Blog, BlogDTO>(blog);
         }
 
+        public async Task<List<BlogDTO>> GetBlogs(int id) {
+            List<Blog> blogs = [];
+            blogs = await _blogRepository.GetBlogs();
+            blogs = blogs.Where(x => x.UserId == id && x.BlogStatus == 1).ToList();
+            List<BlogDTO> blogDTOs = [];
+            blogDTOs.AddRange(blogs.Select(blog => _mapper.Map<Blog, BlogDTO>(blog)));
+            return blogDTOs;
+        }
+
         public async Task<List<BlogDTO>> GetBlogs(string? search, int? category, string? sort)
         {
             List<BlogDTO> blogDTOs = [];
