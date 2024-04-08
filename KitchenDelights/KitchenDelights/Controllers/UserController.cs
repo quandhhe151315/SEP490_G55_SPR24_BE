@@ -179,6 +179,14 @@ namespace KitchenDelights.Controllers
             return Ok(count);
         }
 
+        [Authorize(Roles = "Administrator,Moderator")]
+        [HttpGet]
+        public async Task<IActionResult> GetNumberOfUserEachRole()
+        {
+            List<NumUserEachRole> numUserEachRoles = await _userManager.GetNumberOfUserEachRole();
+            return Ok(numUserEachRoles);
+        }
+
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UserDTO userDTO)
