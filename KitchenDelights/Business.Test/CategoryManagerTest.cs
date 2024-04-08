@@ -62,6 +62,23 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void GetCategory_GetCategoryByParentId_EnterNullIdInRepo()
+        {
+            //Arrange
+            var categories = CategoriesSample();
+            List<CategoryDTO> categoryDTOs = [];
+            categoryDTOs.AddRange(categories.Select(_mapper.Map<Category, CategoryDTO>));
+            _categoryRepositoryMock.Setup(x => x.GetCategoryByParentId(null)).ReturnsAsync(categories.Where(x => x.ParentId == null && x.CategoryType == true).ToList()); //Mock Advertisement repository GetAdvertisementById(int id) method
+
+            ICategoryManager _categoryManager = new CategoryManager(_categoryRepositoryMock.Object, _mapper);
+            var result = await _categoryManager.GetCategoryByParentId(null, true);
+
+            result.Should().BeOfType<List<CategoryDTO>>()
+            .And.NotBeNullOrEmpty();
+            result.Count.Should().Be(2);
+        }
+
+        [Fact]
         public async void GetCategory_GetCategoryByCategoryId_ExistInRepo()
         {
             //Arrange

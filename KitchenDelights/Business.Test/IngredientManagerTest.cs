@@ -81,6 +81,44 @@ namespace Business.Test
         }
 
         [Fact]
+        //Naming convention is MethodName_expectedBehavior_StateUnderTest
+        public async void GetIngredient_GetIngredientByName_IngredientExistInRepo()
+        {
+            //Arrange
+            var ingredients = IngredientsSample();
+            List<IngredientDTO> ingredientDTOs = [];
+            ingredientDTOs.AddRange(ingredients.Select(_mapper.Map<Ingredient, IngredientDTO>));
+            _ingredientRepositoryMock.Setup(x => x.GetIngredientByName("Thịt bò")).ReturnsAsync(ingredients.Where(x => x.IngredientName!.Equals("Thịt bò")).ToList()); //Mock Advertisement repository GetAdvertisementById(int id) method
+
+            //Act
+            IIngredientManager _ingredientManager = new IngredientManager(_ingredientRepositoryMock.Object, _mapper);
+            var result = await _ingredientManager.GetIngredientsByName("Thịt bò");
+            var actual = ingredientDTOs.Where(x => x.IngredientName!.Equals("Thịt bò")).ToList();
+
+            //Assert (using FluentAssertions)
+            result.Should().NotBeNull().And.BeOfType<List<IngredientDTO>>().And.BeEquivalentTo(actual!);
+        }
+
+        [Fact]
+        //Naming convention is MethodName_expectedBehavior_StateUnderTest
+        public async void GetIngredient_GetIngredientByName_IngredientNotExistInRepo()
+        {
+            //Arrange
+            var ingredients = IngredientsSample();
+            List<IngredientDTO> ingredientDTOs = [];
+            ingredientDTOs.AddRange(ingredients.Select(_mapper.Map<Ingredient, IngredientDTO>));
+            _ingredientRepositoryMock.Setup(x => x.GetIngredientByName("ABCDE")).ReturnsAsync(ingredients.Where(x => x.IngredientName!.Equals("ABCDE")).ToList()); //Mock Advertisement repository GetAdvertisementById(int id) method
+
+            //Act
+            IIngredientManager _ingredientManager = new IngredientManager(_ingredientRepositoryMock.Object, _mapper);
+            var result = await _ingredientManager.GetIngredientsByName("ABCDE");
+            var actual = ingredientDTOs.Where(x => x.IngredientName!.Equals("ABCDE")).ToList();
+
+            result.Should().BeNullOrEmpty();
+            actual.Should().BeNullOrEmpty();
+        }
+
+        [Fact]
         public async void CreateIngredient_CreateWithIngredientRequestDTO_IngredientNotExistInRepo()
         {
             var ingredients = IngredientsSample();
