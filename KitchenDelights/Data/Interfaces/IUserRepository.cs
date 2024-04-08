@@ -21,6 +21,8 @@ namespace Data.Interfaces
 
         Task<List<User>> GetUsers(int id);
 
+        Task<List<User>> GetAllUser();
+
         void Save();
     }
 }

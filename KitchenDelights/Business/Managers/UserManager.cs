@@ -6,6 +6,7 @@ using Data.Interfaces;
 using Data.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -203,8 +204,28 @@ namespace Business.Managers
         {
             List<User> users = await _userRepository.GetUsers(id);
             DateTime now = DateTime.Now;
-            users = users.Where(x => x.CreateDate.Month == now.Month).ToList();
+            users = users.Where(x => x.CreateDate.Month == now.Month && x.CreateDate.Year == now.Year).ToList();
             return users.Count();
+        }
+
+        public async Task<List<NumUserEachRole>> GetNumberOfUserEachRole()
+        {
+            string[] roles = {"Administrator", "Moderator", "Writer", "Chef", "Users"};
+            List<NumUserEachRole> numUserEachRoles = [];      
+            List<User> users = await _userRepository.GetAllUser();
+
+            List<User> temp = [];
+            int count = 1;
+            foreach (string role in roles)
+            {
+                temp = users.Where(x => x.RoleId == count).ToList();
+                NumUserEachRole numUserEachRole = new NumUserEachRole();
+                numUserEachRole.role = role;
+                numUserEachRole.numberOfUser = temp.Count();
+                numUserEachRoles.Add(numUserEachRole);
+                count++;
+            }
+            return numUserEachRoles;
         }
     }
 }

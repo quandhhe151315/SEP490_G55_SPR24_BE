@@ -50,6 +50,14 @@ namespace KitchenDelights.Controllers
             return Ok(revenues);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Administrator,Moderator")]
+        public async Task<IActionResult> GetNumberOfRecipesAreBoughtInThisMonth()
+        {
+            int num = await _historyManager.GetNumberOfRecipesAreBoughtInThisMonth();
+            return Ok(num);
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Checkout(List<CartItemDTO> cart)

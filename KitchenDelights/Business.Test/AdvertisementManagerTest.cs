@@ -150,6 +150,47 @@ namespace Business.Test
         }
 
         [Fact]
+        public async void UpdateAdvertisementStatus_UpdateAdvertisementStatus_AdvertisementExistInRepo()
+        {
+            var advertisements = AdvertisementsSample();
+            AdvertisementDTO advertisementDTO = new()
+            {
+                AdvertisementId = 2,
+                AdvertisementStatus = 2
+            };
+            _advertisementRepositoryMock.Setup(x => x.GetAdvertisementById(2)).ReturnsAsync(advertisements.FirstOrDefault(advertisement => advertisement.AdvertisementId == 2));
+            _advertisementRepositoryMock.Setup(x => x.UpdateAdvertisement(It.IsAny<Advertisement>())).Callback<Advertisement>((advertisement) => advertisements[0] = advertisement);
+
+            IAdvertisementManager _advertisementManager = new AdvertisementManager(_advertisementRepositoryMock.Object, _mapper);
+            var boolResult = await _advertisementManager.UpdateAdvertisementStatus(advertisementDTO.AdvertisementId.Value , advertisementDTO.AdvertisementStatus);
+            var updatedAdvertisement = advertisements.FirstOrDefault(x => x.AdvertisementId == 2);
+
+            boolResult.Should().BeTrue();
+            updatedAdvertisement.Should().NotBeNull();
+            updatedAdvertisement!.AdvertisementStatus.Should().Be(advertisementDTO.AdvertisementStatus);
+        }
+
+        [Fact]
+        public async void UpdateAdvertisementStatus_UpdateAdvertisementStatus_AdvertisementNotExistInRepo()
+        {
+            var advertisements = AdvertisementsSample();
+            AdvertisementDTO advertisementDTO = new()
+            {
+                AdvertisementId = 4,
+                AdvertisementStatus = 2
+            };
+            _advertisementRepositoryMock.Setup(x => x.GetAdvertisementById(4)).ReturnsAsync(advertisements.FirstOrDefault(advertisement => advertisement.AdvertisementId == 4));
+            _advertisementRepositoryMock.Setup(x => x.UpdateAdvertisement(It.IsAny<Advertisement>())).Callback<Advertisement>((advertisement) => advertisements[0] = advertisement);
+
+            IAdvertisementManager _advertisementManager = new AdvertisementManager(_advertisementRepositoryMock.Object, _mapper);
+            var boolResult = await _advertisementManager.UpdateAdvertisementStatus(advertisementDTO.AdvertisementId.Value, advertisementDTO.AdvertisementStatus);
+            var updatedAdvertisement = advertisements.FirstOrDefault(x => x.AdvertisementId == 4);
+
+            boolResult.Should().BeFalse();
+            updatedAdvertisement.Should().BeNull();
+        }
+
+        [Fact]
         public async void DeleteAdvertisement_DeleteAdvertisement_AdvertisementExistInRepo()
         {
             var advertisements = AdvertisementsSample();
@@ -159,15 +200,14 @@ namespace Business.Test
                 AdvertisementStatus = 0
             };
             _advertisementRepositoryMock.Setup(x => x.GetAdvertisementById(2)).ReturnsAsync(advertisements.FirstOrDefault(advertisement => advertisement.AdvertisementId == 2));
-            _advertisementRepositoryMock.Setup(x => x.UpdateAdvertisement(It.IsAny<Advertisement>())).Callback<Advertisement>((advertisement) => advertisements[0] = advertisement);
+            _advertisementRepositoryMock.Setup(x => x.DeleteAdvertisement(It.IsAny<Advertisement>())).Callback<Advertisement>(item => advertisements.Remove(item));
 
             IAdvertisementManager _advertisementManager = new AdvertisementManager(_advertisementRepositoryMock.Object, _mapper);
             var boolResult = await _advertisementManager.DeleteAdvertisement(advertisementDTO.AdvertisementId.Value);
-            var updatedAdvertisement = advertisements.FirstOrDefault(x => x.AdvertisementId == 2);
+            var actual = advertisements.ToList();
 
             boolResult.Should().BeTrue();
-            updatedAdvertisement.Should().NotBeNull();
-            updatedAdvertisement!.AdvertisementStatus.ToString().Should().BeSameAs(advertisementDTO.AdvertisementStatus.ToString());
+            actual.Count().Should().Be(2);
         }
 
         [Fact]

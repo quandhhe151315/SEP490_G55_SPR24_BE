@@ -101,7 +101,7 @@ namespace Business.Managers
             }
 
             List<PaymentHistory> paymentHistoriesLast = await _historyRepository.GetPaymentHistory();
-            paymentHistoriesLast = paymentHistoriesLast.Where(x => x.PurchaseDate.Month == now.AddMonths(-1).Month).ToList();
+            paymentHistoriesLast = paymentHistoriesLast.Where(x => x.PurchaseDate.Month == now.AddMonths(-1).Month && x.PurchaseDate.Year == now.Year).ToList();
 
             decimal revenueLast = 0;
             foreach (PaymentHistory paymentHistory in paymentHistoriesLast)
@@ -143,7 +143,7 @@ namespace Business.Managers
                 {
                     decimal revenue = 0;
                     RevenueInNumberMonth revenueInNumberMonth = new RevenueInNumberMonth();
-                    List<PaymentHistory> paymentHistories = Histories.Where(x => x.PurchaseDate.Month == now.AddMonths(0-i).Month).ToList();
+                    List<PaymentHistory> paymentHistories = Histories.Where(x => x.PurchaseDate.Month == now.AddMonths(0-i).Month && x.PurchaseDate.Year == now.Year).ToList();
                     foreach (PaymentHistory paymentHistory in paymentHistories)
                     {
                         revenue = revenue + paymentHistory.ActualPrice;
@@ -192,6 +192,14 @@ namespace Business.Managers
                 }
             }
             return revenueInNumberMonths;
+        }
+
+        public async Task<int> GetNumberOfRecipesAreBoughtInThisMonth()
+        {
+            List<PaymentHistory> histories = await _historyRepository.GetPaymentHistory();
+            DateTime now = DateTime.Now;
+            histories = histories.Where(x => x.PurchaseDate.Month == now.Month && x.PurchaseDate.Year == now.Year).ToList();
+            return histories.Count();
         }
     }
 }
