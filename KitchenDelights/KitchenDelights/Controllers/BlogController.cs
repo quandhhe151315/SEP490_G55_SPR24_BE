@@ -21,14 +21,17 @@ namespace KitchenDelights.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int? id, int? category, string? sort, string? search)
+        public async Task<IActionResult> Get(int? id, int? category, string? sort, string? search, int? userId)
         {
-            if (id == null)
+            if (id == null && userId == null)
             {
                 if(category != null && category < 0) return BadRequest("Invalid Category Id");
                 List<BlogDTO> blogs = await _blogManager.GetBlogs(search.IsNullOrEmpty() ? search : StringHelper.Process(search), category, sort);
                 if (!User.IsInRole("Administrator") || !User.IsInRole("Moderator")) blogs = blogs.Where(x => x.BlogStatus == 1).ToList();
                 if (blogs.Count == 0) return NotFound("There's no blog here!");
+                return Ok(blogs);
+            } else if (id == null && userId != null) {
+                List<BlogDTO> blogs = await _blogManager.GetBlogs(userId.Value);
                 return Ok(blogs);
             }
 

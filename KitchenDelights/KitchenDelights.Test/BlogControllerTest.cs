@@ -37,7 +37,7 @@ public class BlogControllerTest
         });
 
         BlogController _controller = new BlogController(_configuration, _mockBlogManager.Object);
-        var result = await _controller.Get(1, null, null, null);
+        var result = await _controller.Get(1, null, null, null, null);
 
         result.Should().BeOkObjectResult();
     }
@@ -47,7 +47,7 @@ public class BlogControllerTest
         _mockBlogManager.Setup(x => x.GetBlog(0));
 
         BlogController _controller = new BlogController(_configuration, _mockBlogManager.Object);
-        var result = await _controller.Get(0, null, null, null);
+        var result = await _controller.Get(0, null, null, null, null);
 
         result.Should().BeNotFoundObjectResult();
     }
@@ -61,7 +61,7 @@ public class BlogControllerTest
         });
 
         BlogController _controller = new(_configuration, _mockBlogManager.Object);
-        var result = await _controller.Get(-1, null, null, null);
+        var result = await _controller.Get(-1, null, null, null, null);
 
         result.Should().BeBadRequestObjectResult();
     }
@@ -94,7 +94,7 @@ public class BlogControllerTest
                 HttpContext = new DefaultHttpContext() { User = user }
             }
         };
-        var result = await _controller.Get(null, 1, "desc", "search");
+        var result = await _controller.Get(null, 1, "desc", "search", null);
 
         result.Should().BeOkObjectResult();
     }
@@ -127,7 +127,7 @@ public class BlogControllerTest
                 HttpContext = new DefaultHttpContext() { User = user }
             }
         };
-        var result = await _controller.Get(null, -1, "desc", "search");
+        var result = await _controller.Get(null, -1, "desc", "search", null);
 
         result.Should().BeBadRequestObjectResult();
     }
@@ -147,7 +147,7 @@ public class BlogControllerTest
                 HttpContext = new DefaultHttpContext() { User = user }
             }
         };
-        var result = await _controller.Get(null, 1, "desc", "search");
+        var result = await _controller.Get(null, 1, "desc", "search", null);
 
         result.Should().BeNotFoundObjectResult();
     }
