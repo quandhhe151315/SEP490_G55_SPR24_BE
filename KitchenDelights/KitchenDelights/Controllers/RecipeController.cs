@@ -49,10 +49,6 @@ namespace KitchenDelights.Controllers
             try
             {
                 recipes = await _recipeManager.FilterRecipe(searchName, category, country, ingredient, isfree, orderby, sort);
-                if (recipes.Count <= 0)
-                {
-                    return NotFound("There are not exist any recipe in database");
-                }
             }
             catch (Exception ex)
             {
