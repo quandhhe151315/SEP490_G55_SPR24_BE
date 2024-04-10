@@ -32,6 +32,9 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(RecipeRatingDTO rating)
         {
+            if(rating.RecipeId < 0) return BadRequest("Invalid Recipe Id");
+            if(rating.UserId < 0) return BadRequest("Invalid User Id");
+            if(rating.RatingValue < 0 || rating.RatingValue > 5) return BadRequest("Invalid rating value");
             bool isCreated = await _ratingManager.CreateRating(rating);
             return isCreated ? Ok() : StatusCode(500, "Create Review Failed!");
         }
@@ -40,6 +43,8 @@ namespace KitchenDelights.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(RecipeRatingDTO rating)
         {
+            if(rating.RatingId < 0) return BadRequest("Invalid rating Id");
+            if(rating.RatingValue < 0 || rating.RatingValue > 5) return BadRequest("Invalid rating value");
             bool isUpdated = await _ratingManager.UpdateRating(rating);
             return isUpdated ? Ok() : StatusCode(500, "Update Review Failed!");
         }
