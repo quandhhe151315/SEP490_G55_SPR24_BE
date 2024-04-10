@@ -33,6 +33,7 @@ namespace KitchenDelights.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(VerificationDTO verification)
         {
+            if(verification.UserId < 0) return BadRequest("Invalid User Id");
             verification.VerificationStatus = 0; //Default to not yet verified
             verification.VerificationDate = DateTime.Now;
 
@@ -44,6 +45,7 @@ namespace KitchenDelights.Controllers
         [HttpPatch]
         public async Task<IActionResult> Update(VerificationDTO verification)
         {
+            if (verification.VerificationId < 0) return BadRequest("Invalid Verification Id");
             verification.VerificationDate = DateTime.Now;
             if (verification.VerificationStatus is not 1 and not 2) return BadRequest("Wrong Verification status!");
 
