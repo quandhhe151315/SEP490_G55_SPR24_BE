@@ -57,7 +57,11 @@ namespace Business.Managers
             //Then add to temp list of payment history
             foreach (CartItemDTO cartItem in cart)
             {
-                _cartRepository.DeleteCartItem(_mapper.Map<CartItemDTO, CartItem>(cartItem));
+                CartItem? item = await _cartRepository.GetCartItem(cartItem.UserId, cartItem.RecipeId);
+                if(item != null) {
+                    _cartRepository.DeleteCartItem(item);
+                }
+                //_cartRepository.DeleteCartItem(_mapper.Map<CartItemDTO, CartItem>(cartItem));
                 historyDTO.Add(_mapper.Map<CartItemDTO, PaymentHistoryDTO>(cartItem));
             }
 
@@ -74,7 +78,7 @@ namespace Business.Managers
                 }
 
                 //Remove used voucher
-                _voucherRepository.RemoveVoucher(used);
+                //_voucherRepository.RemoveVoucher(used);
             }
 
             List<PaymentHistory> history = [];
