@@ -44,18 +44,18 @@ namespace Data.Repositories
 
         public async Task<List<Ingredient>> GetAllIngredients()
         {
-            return await _context.Ingredients.Include(x => x.IngredientMarketplaces).ToListAsync();
+            return await _context.Ingredients.Include(x => x.IngredientMarketplaces).ThenInclude(x => x.Marketplace).ToListAsync();
         }
 
         public async Task<Ingredient?> GetIngredientById(int ingredientId)
         {
-            return await _context.Ingredients.Include(x => x.IngredientMarketplaces)
+            return await _context.Ingredients.Include(x => x.IngredientMarketplaces).ThenInclude(x => x.Marketplace)
                 .FirstOrDefaultAsync(ingredient => ingredient.IngredientId == ingredientId);
         }
 
         public async Task<List<Ingredient>> GetIngredientByName(string name)
         {
-            return await _context.Ingredients.Include(x => x.IngredientMarketplaces).Where(x => x.IngredientName.Contains(name)).ToListAsync();
+            return await _context.Ingredients.Include(x => x.IngredientMarketplaces).ThenInclude(x => x.Marketplace).Where(x => x.IngredientName.Contains(name)).ToListAsync();
         }
 
         public void Save()

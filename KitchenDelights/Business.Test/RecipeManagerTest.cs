@@ -24,6 +24,7 @@ namespace Business.Test
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IRecipeIngredientRepository> _recipeIngredientRepositoryMock;
         private readonly Mock<IIngredientRepository> _ingredientRepositoryMock;
+        private readonly Mock<IHistoryRepository> _historyRepositoryMock;
 
         private readonly IMapper _mapper;
 
@@ -36,6 +37,7 @@ namespace Business.Test
             _userRepositoryMock = new Mock<IUserRepository>();
             _recipeIngredientRepositoryMock = new Mock<IRecipeIngredientRepository>();
             _ingredientRepositoryMock = new Mock<IIngredientRepository>();
+            _historyRepositoryMock = new Mock<IHistoryRepository>();
 
             _mapper = new Mapper(new MapperConfiguration(options =>
             {
@@ -58,7 +60,9 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper
+                                                            );
             var result = await _recipeManager.GetRecipes();
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -79,7 +83,8 @@ namespace Business.Test
             //Act
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipe(1);
             var actual = recipeDTOs.Find(x => x.RecipeId == 1);
 
@@ -96,7 +101,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipe(-1);
             var actual = recipes.FirstOrDefault(x => x.RecipeId == -1);
 
@@ -117,7 +123,8 @@ namespace Business.Test
             //Act
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByUserId(1);
             var actual = recipeDTOs.Where(x => x.UserId == 1).ToList();
 
@@ -135,7 +142,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByUserId(-1);
             var actual = recipes.Where(x => x.UserId == -1).ToList();
 
@@ -157,7 +165,8 @@ namespace Business.Test
             //Act
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByCategory(1);
             var actual = recipeDTOs.Where(x => x.Categories.Any(x => x.CategoryId == 1)).ToList();
 
@@ -175,7 +184,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByCategory(-1);
             var actual = recipes.Where(x => x.Categories.Any(x => x.CategoryId == -1)).ToList();
 
@@ -197,7 +207,8 @@ namespace Business.Test
             //Act
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByCountry(1);
             var actual = recipeDTOs.Where(x => x.Countries.Any(x => x.CountryId == 1)).ToList();
 
@@ -215,7 +226,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByCountry(-1);
             var actual = recipes.Where(x => x.Countries.Any(x => x.CountryId == -1)).ToList();
 
@@ -237,7 +249,8 @@ namespace Business.Test
             //Act
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByTitle("title");
             var actual = recipeDTOs.Where(x => x.RecipeTitle!.Contains("title")).ToList();
 
@@ -255,7 +268,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.GetRecipeByTitle("abcde");
             var actual = recipes.Where(x => x.RecipeTitle!.Contains("abcde")).ToList();
 
@@ -276,7 +290,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null,null,null,null,null,null,null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -296,7 +311,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe("title", null, null, null, null, null, null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -316,7 +332,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe("title", 1, null, null, null, null, null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -336,7 +353,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, 1, 1, null, null, null, null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -356,7 +374,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, 1, 1, null, null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -376,7 +395,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, 1, null, null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -396,7 +416,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, 2, null, null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -416,7 +437,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, null, "CreateDate", null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -435,7 +457,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, null, "Title", null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -455,7 +478,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, null, "Price", null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -475,7 +499,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, null, "Rating", null);
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -495,7 +520,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, null, null, "DESC");
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -515,7 +541,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var result = await _recipeManager.FilterRecipe(null, null, null, null, null, null, "ASC");
 
             result.Should().BeOfType<List<RecipeDTO>>()
@@ -567,7 +594,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             bool boolResult = false;
             try
             {
@@ -628,7 +656,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var boolResult = await _recipeManager.UpdateRecipe(recipeRequestDTO);
             var updatedRecipe = recipes.FirstOrDefault(x => x.RecipeId == 1);
 
@@ -693,7 +722,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var boolResult = await _recipeManager.UpdateRecipe(recipeRequestDTO);
             var updatedRecipe = recipes.FirstOrDefault(x => x.RecipeId == 4);
 
@@ -711,7 +741,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var boolResult = await _recipeManager.DeleteRecipe(1);
             var updatedRecipe = recipes.FirstOrDefault(x => x.RecipeId == 1);
 
@@ -730,7 +761,8 @@ namespace Business.Test
 
             IRecipeManager _recipeManager = new RecipeManager(_recipeRepositoryMock.Object, _categoryRepositoryMock.Object,
                                                             _countryRepositoryMock.Object, _userRepositoryMock.Object,
-                                                            _recipeIngredientRepositoryMock.Object, _mapper);
+                                                            _recipeIngredientRepositoryMock.Object, _historyRepositoryMock.Object,
+                                                            _mapper);
             var boolResult = await _recipeManager.DeleteRecipe(1);
             var updatedRecipe = recipes.FirstOrDefault(x => x.RecipeId == -1);
 
