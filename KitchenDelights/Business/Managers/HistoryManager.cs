@@ -78,7 +78,7 @@ namespace Business.Managers
                 }
 
                 //Remove used voucher
-                _voucherRepository.RemoveVoucher(used);
+                //_voucherRepository.RemoveVoucher(used);
             }
 
             List<PaymentHistory> history = [];
