@@ -61,7 +61,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> returnURLPayment(decimal amount)
         {
             //Get Config Info
-            string vnp_Returnurl = "http://localhost:5000/ticket"; //URL nhan ket qua tra ve 
+            string vnp_Returnurl = "http://localhost:3000/ticket"; //URL nhan ket qua tra ve 
             string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
             string vnp_TmnCode = "3RXZE2T2"; //Ma website
             string vnp_HashSecret = "YIOYZTPHYQIRSGKVGXXWDTPJXHFXKLJC"; //Chuoi bi mat
