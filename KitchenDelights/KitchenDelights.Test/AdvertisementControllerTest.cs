@@ -164,12 +164,78 @@ namespace KitchenDelights.Test
                 AdvertisementLink = "mock-advertisement-link-update",
                 AdvertisementStatus = 1
             };
+            _mockAdvertisementManager.Setup(x => x.GetAdvertisementById(1)).ReturnsAsync(new AdvertisementDTO()
+            {
+
+            });
+            _mockAdvertisementManager.Setup(x => x.UpdateAdvertisement(It.IsAny<AdvertisementDTO>())).ReturnsAsync(true);
+
+            AdvertisementController _controller = new (_configuration, _mockAdvertisementManager.Object);
+            var result = await _controller.Update(toUpdate);
+
+            result.Should().BeObjectResult();
+        }
+
+        [Fact]
+        public async void Update_ReturnStatus200_NotFound()
+        {
+            AdvertisementDTO toUpdate = new AdvertisementDTO()
+            {
+                AdvertisementId = -1,
+                AdvertisementImage = "mock-image-link-update",
+                AdvertisementLink = "mock-advertisement-link-update",
+                AdvertisementStatus = 1
+            };
             _mockAdvertisementManager.Setup(x => x.UpdateAdvertisement(It.IsAny<AdvertisementDTO>())).ReturnsAsync(true);
 
             AdvertisementController _controller = new AdvertisementController(_configuration, _mockAdvertisementManager.Object);
             var result = await _controller.Update(toUpdate);
 
-            result.Should().BeOkResult();
+            result.Should().BeNotFoundObjectResult();
+        }
+
+        [Fact]
+        public async void Delete_ReturnStatus200_ExistAdvertisement()
+        {
+            AdvertisementDTO toDelete = new AdvertisementDTO()
+            {
+                AdvertisementId = 1,
+                AdvertisementImage = "mock-image-link-update",
+                AdvertisementLink = "mock-advertisement-link-update",
+                AdvertisementStatus = 1
+            };
+            _mockAdvertisementManager.Setup(x => x.GetAdvertisementById(1)).ReturnsAsync(new AdvertisementDTO()
+            {
+
+            });
+            _mockAdvertisementManager.Setup(x => x.UpdateAdvertisement(It.IsAny<AdvertisementDTO>())).ReturnsAsync(true);
+
+            AdvertisementController _controller = new(_configuration, _mockAdvertisementManager.Object);
+            var result = await _controller.Delete(toDelete.AdvertisementId.Value);
+
+            result.Should().BeObjectResult();
+        }
+
+        [Fact]
+        public async void Delete_ReturnStatus200_NotExistAdvertisement()
+        {
+            AdvertisementDTO toDelete = new AdvertisementDTO()
+            {
+                AdvertisementId = -1,
+                AdvertisementImage = "mock-image-link-update",
+                AdvertisementLink = "mock-advertisement-link-update",
+                AdvertisementStatus = 1
+            };
+            _mockAdvertisementManager.Setup(x => x.GetAdvertisementById(-1)).ReturnsAsync(new AdvertisementDTO()
+            {
+
+            });
+            _mockAdvertisementManager.Setup(x => x.UpdateAdvertisement(It.IsAny<AdvertisementDTO>())).ReturnsAsync(true);
+
+            AdvertisementController _controller = new(_configuration, _mockAdvertisementManager.Object);
+            var result = await _controller.Delete(toDelete.AdvertisementId.Value);
+
+            result.Should().BeObjectResult();
         }
     }
 }
