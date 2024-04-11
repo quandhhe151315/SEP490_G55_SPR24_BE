@@ -39,6 +39,8 @@ namespace Business.Interfaces
         Task<List<RecipeDTO>> GetRecipesASC();
 
         Task<List<RecipeDTO>> GetRecipeHighRating(int count);
+        Task<List<RecipeDTO>> CheckUserOwnRecipePaid(int userId);
+        Task<List<RecipeDTO>> GetRecipeUserBought(int userId);
 
         Task<int> GetNumberRecipeCreatedInThisMonth();
 
