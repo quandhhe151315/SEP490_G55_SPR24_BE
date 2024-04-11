@@ -4,6 +4,7 @@ using Business.Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KitchenDelights.Controllers
 {
@@ -36,9 +37,11 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAdvertismentActive()
         {
-            List<AdvertisementDTO> advertisementDTOs = await _advertisementManager.GetAdvertisements();
+            List<AdvertisementDTO> advertisementDTOs = [];
+            advertisementDTOs = await _advertisementManager.GetAdvertisements();
+            if(!advertisementDTOs.IsNullOrEmpty())
             advertisementDTOs = advertisementDTOs.Where(x => x.AdvertisementStatus == 1).ToList();
-            return advertisementDTOs == null ? NotFound("Advertisement doesn't exist!") : Ok(advertisementDTOs);
+            return Ok(advertisementDTOs);
         }
 
         [HttpPost]

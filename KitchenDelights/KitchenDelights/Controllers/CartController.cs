@@ -61,10 +61,10 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> returnURLPayment(decimal amount)
         {
             //Get Config Info
-            string vnp_Returnurl = _configuration.GetValue<string>("VNPay:vnp_Returnurl")!; //URL nhan ket qua tra ve 
-            string vnp_Url = _configuration.GetValue<string>("VNPay:vnp_Url")!; //URL thanh toan cua VNPAY 
-            string vnp_TmnCode = _configuration.GetValue<string>("VNPay:vnp_TmnCode")!; //Ma website
-            string vnp_HashSecret = _configuration.GetValue<string>("VNPay:vnp_HashSecret")!; //Chuoi bi mat
+            string vnp_Returnurl = "http://localhost:5000/ticket"; //URL nhan ket qua tra ve 
+            string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
+            string vnp_TmnCode = "3RXZE2T2"; //Ma website
+            string vnp_HashSecret = "YIOYZTPHYQIRSGKVGXXWDTPJXHFXKLJC"; //Chuoi bi mat
             if (string.IsNullOrEmpty(vnp_TmnCode) || string.IsNullOrEmpty(vnp_HashSecret))
             {
                 StatusCode(500, "Vui lòng cấu hình các tham số: vnp_TmnCode,vnp_HashSecret trong file web.config");

@@ -57,6 +57,36 @@ namespace KitchenDelights.Controllers
             return Ok(recipes);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CheckUserOwnRecipePaid(int userId)
+        {
+            List<RecipeDTO> recipes = [];
+            try
+            {
+                recipes = await _recipeManager.CheckUserOwnRecipePaid(userId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(recipes);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRecipeUserBought(int userId)
+        {
+            List<RecipeDTO> recipes = [];
+            try
+            {
+                recipes = await _recipeManager.GetRecipeUserBought(userId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(recipes);
+        }
+
         //[HttpGet]
         //public async Task<IActionResult> GetAllRecipeDESCbyRating()
         //{

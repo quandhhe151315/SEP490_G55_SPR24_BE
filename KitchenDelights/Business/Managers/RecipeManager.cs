@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@ namespace Business.Managers
         private readonly ICountryRepository _countryRepository;
         private readonly IUserRepository _userRepository;
         private readonly IRecipeIngredientRepository _recipeIngredientRepository;
+        private readonly IHistoryRepository _historyRepository;
         private readonly IMapper _mapper;
 
         public RecipeManager(IRecipeRepository recipeRepository, 
@@ -27,6 +29,7 @@ namespace Business.Managers
                             ICountryRepository countryRepository,
                             IUserRepository userRepository,
                             IRecipeIngredientRepository recipeIngredientRepository,
+                            IHistoryRepository historyRepository,
                             IMapper mapper)
         {
             _recipeRepository = recipeRepository;
@@ -34,6 +37,7 @@ namespace Business.Managers
             _countryRepository = countryRepository;
             _userRepository = userRepository;
             _recipeIngredientRepository = recipeIngredientRepository;
+            _historyRepository = historyRepository;
             _mapper = mapper;
         }
 
@@ -195,6 +199,34 @@ namespace Business.Managers
 
             return recipeDTOs;
         }
+
+        public async Task<List<RecipeDTO>> CheckUserOwnRecipePaid(int userId)
+        {
+            List<PaymentHistory> paymentHistories = await _historyRepository.GetPaymentHistory(userId);
+            List<Recipe> recipes = await _recipeRepository.GetRecipePaid();
+            List<RecipeDTO> recipeDTOs = [];
+            List<Recipe> recipeTemp = [];
+            foreach (var recipe in recipes)
+            {
+                recipeTemp.Add(recipe);
+                foreach (var paymentHistory in paymentHistories)
+                {
+                    if (recipe.RecipeId == paymentHistory.RecipeId)
+                    {
+                        recipeTemp.Remove(recipe);
+                        break;
+                    }
+                }
+            }
+
+            foreach(var recipe in recipeTemp)
+            {
+                recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
+            }
+            return recipeDTOs;
+        }
+
+
 
         public async Task<bool> UpdateCategoryRecipe(int recipeId, int categoryId, int type)
         {
@@ -406,6 +438,17 @@ namespace Business.Managers
                 recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
             }
             return recipeDTOs;
+        }
+
+        public async Task<List<RecipeDTO>> GetRecipeUserBought(int userId)
+        {
+            List<RecipeDTO> recipes = [];
+            List<PaymentHistory> paymentHistories = await _historyRepository.GetPaymentHistory(userId);
+            foreach(var history in paymentHistories)
+            {
+                recipes.Add(_mapper.Map<Recipe, RecipeDTO>(history.Recipe));
+            }
+            return recipes;
         }
     }
 }
