@@ -49,7 +49,7 @@ namespace KitchenDelights.Controllers
             try
             {
                 menus = await _menuManager.GetMenuByUserId(userId);
-                if (menus.Count <= 0)
+                if (menus == null || menus.Count <= 0)
                 {
                     return NotFound("There are not exist any menu in database");
                 }
@@ -69,7 +69,7 @@ namespace KitchenDelights.Controllers
             try
             {
                 menus = await _menuManager.GetMenuByUserIdAndCheckExistRecipe(userId, recipeId);
-                if (menus.Count <= 0)
+                if (menus == null || menus.Count <= 0)
                 {
                     return NotFound("There are not exist any menu in database");
                 }
@@ -132,7 +132,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> AddRecipeToMenu(int menuId, int recipeId)
         {
             MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
-            if (menuDTO == null) return NotFound("Menu not exist");
+            if (menuDTO == null || menuDTO.MenuId == 0) return NotFound("Menu not exist");
 
             bool isUpdated = await _menuManager.AddRecipeToMenu(menuId, recipeId);
             return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Add recipe failed!") : Ok("Add recipe sucessful");
@@ -143,7 +143,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> RemoveRecipeFromMenu(int menuId, int recipeId)
         {
             MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
-            if (menuDTO == null) return NotFound("Menu not exist");
+            if (menuDTO == null || menuDTO.MenuId == 0) return NotFound("Menu not exist");
 
             bool isUpdated = await _menuManager.RemoveRecipeFromMenu(menuId, recipeId);
             return !isUpdated ? StatusCode(StatusCodes.Status500InternalServerError, "Remove recipe failed!") : Ok("Remove recipe sucessful");
@@ -154,7 +154,7 @@ namespace KitchenDelights.Controllers
         public async Task<IActionResult> DeleteMenu(int menuId)
         {
             MenuDTO? menuDTO = await _menuManager.GetMenuById(menuId);
-            if (menuDTO == null) return NotFound("Menu not exist");
+            if (menuDTO == null || menuDTO.MenuId == 0) return NotFound("Menu not exist");
 
             bool isDeleted = await _menuManager.DeleteMenu(menuId);
             return !isDeleted ? StatusCode(StatusCodes.Status500InternalServerError, "Delete failed!") : Ok("Delete sucessful");

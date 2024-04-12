@@ -63,7 +63,7 @@ namespace KitchenDelights.Test
         }
 
         [Fact]
-        public async void Get_ReturnStatus404_GetCategoryById()
+        public async void Get_ReturnStatus404_GetCountryById()
         {
             _mockCountryManager.Setup(x => x.GetCountry(-1));
 
