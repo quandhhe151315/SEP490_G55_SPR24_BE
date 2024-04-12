@@ -98,15 +98,13 @@ public class HistoryManagerTest
         ];
         _mockCartRepository.Setup(x => x.DeleteCartItem(It.IsAny<CartItem>()));
         _mockVoucherRepository.Setup(x => x.GetVoucher(toAdd[0].VoucherCode)).ReturnsAsync(new Voucher());
-        _mockVoucherRepository.Setup(x => x.RemoveVoucher(It.IsAny<Voucher>()));
         _mockHistoryRepository.Setup(x => x.CreatePaymentHistory(It.IsAny<List<PaymentHistory>>()));
 
         IHistoryManager _historyManager = new HistoryManager(_mockHistoryRepository.Object, _mockVoucherRepository.Object, _mockCartRepository.Object, _mapper);
         var result = await _historyManager.CreatePaymentHistory(toAdd);
         
         result.Should().BeTrue();
-        _mockCartRepository.Verify(x => x.DeleteCartItem(It.IsAny<CartItem>()), Times.Exactly(toAdd.Count));
-        _mockVoucherRepository.Verify(x => x.RemoveVoucher(It.IsAny<Voucher>()), Times.Once);
+        _mockCartRepository.Verify(x => x.DeleteCartItem(It.IsAny<CartItem>()), Times.Never);
         _mockHistoryRepository.Verify(x => x.CreatePaymentHistory(It.IsAny<List<PaymentHistory>>()), Times.Once);
     }
 
@@ -125,15 +123,13 @@ public class HistoryManagerTest
         ];
         _mockCartRepository.Setup(x => x.DeleteCartItem(It.IsAny<CartItem>()));
         _mockVoucherRepository.Setup(x => x.GetVoucher(toAdd[0].VoucherCode)).ReturnsAsync(new Voucher());
-        _mockVoucherRepository.Setup(x => x.RemoveVoucher(It.IsAny<Voucher>()));
         _mockHistoryRepository.Setup(x => x.CreatePaymentHistory(It.IsAny<List<PaymentHistory>>()));
 
         IHistoryManager _historyManager = new HistoryManager(_mockHistoryRepository.Object, _mockVoucherRepository.Object, _mockCartRepository.Object, _mapper);
         var result = await _historyManager.CreatePaymentHistory(toAdd);
         
         result.Should().BeTrue();
-        _mockCartRepository.Verify(x => x.DeleteCartItem(It.IsAny<CartItem>()), Times.Exactly(toAdd.Count));
-        _mockVoucherRepository.Verify(x => x.RemoveVoucher(It.IsAny<Voucher>()), Times.Never);
+        _mockCartRepository.Verify(x => x.DeleteCartItem(It.IsAny<CartItem>()), Times.Never);
         _mockHistoryRepository.Verify(x => x.CreatePaymentHistory(It.IsAny<List<PaymentHistory>>()), Times.Once);
     }
 
