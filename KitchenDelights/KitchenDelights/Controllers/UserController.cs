@@ -166,8 +166,11 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> List(int id)
         {
-            if(id < 0) return BadRequest();
+            if(id <= 0) return BadRequest();
             List<UserDTO> users = await _userManager.GetUsers(id);
+            if (User.IsInRole("Moderator")) {
+                users = users.Where(user => user.Role.RoleId != 1).ToList();
+            }    
             return Ok(users);
         }
 
