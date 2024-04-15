@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Business.DTO;
 using Business.Interfaces;
 using FluentAssertions;
@@ -579,8 +580,17 @@ namespace KitchenDelights.Test
         public async void List_ReturnStatus200_ValidUserId() {
             var users = GetUserDTOs();
             _mockUserManager.Setup(x => x.GetUsers(1)).ReturnsAsync(users.Where(x => x.UserId != 1).ToList());
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new(ClaimTypes.Role, "Administrator"),
+            }, "mock"));
 
-            UserController _controller = new(_configuration, _mockUserManager.Object);
+            UserController _controller = new(_configuration, _mockUserManager.Object){
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            }
+        };
             var result = await _controller.List(1);
 
             result.Should().BeOkObjectResult();
@@ -590,11 +600,20 @@ namespace KitchenDelights.Test
         public async void List_ReturnStatus200_BoundaryUserId() {
             var users = GetUserDTOs();
             _mockUserManager.Setup(x => x.GetUsers(0)).ReturnsAsync(users.Where(x => x.UserId != 0).ToList());
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new(ClaimTypes.Role, "Administrator"),
+            }, "mock"));
 
-            UserController _controller = new(_configuration, _mockUserManager.Object);
+            UserController _controller = new(_configuration, _mockUserManager.Object){
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            }
+        };
             var result = await _controller.List(0);
 
-            result.Should().BeOkObjectResult();
+            result.Should().BeBadRequestResult();
         }
 
         [Fact]
