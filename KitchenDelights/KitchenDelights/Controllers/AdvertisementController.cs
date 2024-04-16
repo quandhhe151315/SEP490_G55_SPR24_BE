@@ -26,12 +26,10 @@ namespace KitchenDelights.Controllers
         {
             if (id == null)
             {
-                List<AdvertisementDTO> advertisementDTOs = await _advertisementManager.GetAdvertisements();
-                if (advertisementDTOs.Count == 0) return NotFound("There are not have any advertisement in database");
-                return Ok(advertisementDTOs);
+                return Ok();
             }
             AdvertisementDTO? advertisement = await _advertisementManager.GetAdvertisementById(id.Value);
-            return advertisement == null ? NotFound("Advertisement doesn't exist!") : Ok(advertisement);
+            return advertisement == null ? Ok() : Ok(advertisement);
         }
 
         [HttpGet]
