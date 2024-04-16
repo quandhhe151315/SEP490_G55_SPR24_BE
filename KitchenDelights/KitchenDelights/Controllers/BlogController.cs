@@ -27,7 +27,7 @@ namespace KitchenDelights.Controllers
             {
                 if(category != null && category < 0) return BadRequest("Invalid Category Id");
                 List<BlogDTO> blogs = await _blogManager.GetBlogs(search.IsNullOrEmpty() ? search : StringHelper.Process(search), category, sort);
-                if (!User.IsInRole("Administrator") || !User.IsInRole("Moderator")) blogs = blogs.Where(x => x.BlogStatus == 1).ToList();
+                if (!User.IsInRole("Administrator") && !User.IsInRole("Moderator") || User == null) blogs = blogs.Where(x => x.BlogStatus == 1).ToList();
                 if (blogs.Count == 0) return NotFound("There's no blog here!");
                 return Ok(blogs);
             } else if (id == null && userId != null) {
