@@ -24,12 +24,13 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAdvertismentById(int? id)
         {
-            if (id == null)
+            if (id == null || id == 0)
             {
-                return Ok();
+                List<AdvertisementDTO> advertisementDTOs = await _advertisementManager.GetAdvertisements();
+                return Ok(advertisementDTOs);
             }
             AdvertisementDTO? advertisement = await _advertisementManager.GetAdvertisementById(id.Value);
-            return advertisement == null ? Ok() : Ok(advertisement);
+            return advertisement == null ? Ok(new List<AdvertisementDTO>()) : Ok(advertisement);
         }
 
         [HttpGet]
