@@ -72,7 +72,7 @@ namespace KitchenDelights.Controllers
             if (!StringHelper.IsEmail(loginRequest.Email)) return BadRequest("Please input a valid email address!");
             if(loginRequest.Password.IsNullOrEmpty()) return StatusCode(406, "Password should not be empty!");
             UserDTO? account = await _userManager.GetUser(loginRequest.Email);
-            if(account == null || account.Status.StatusId == 0) return NotFound("Account does not exist!");
+            if(account == null || account.Status.StatusId == 3) return NotFound("Account does not exist!");
             bool isCorrectPassword = PasswordHelper.Verify(loginRequest.Password, account.PasswordHash);
             if(isCorrectPassword)
             {
@@ -166,8 +166,11 @@ namespace KitchenDelights.Controllers
         [HttpGet]
         public async Task<IActionResult> List(int id)
         {
-            if(id < 0) return BadRequest();
+            if(id <= 0) return BadRequest();
             List<UserDTO> users = await _userManager.GetUsers(id);
+            if (User.IsInRole("Moderator")) {
+                users = users.Where(user => user.Role.RoleId != 1).ToList();
+            }    
             return Ok(users);
         }
 
