@@ -79,5 +79,37 @@ namespace Business.Managers
 
             return true;
         }
+
+        public async Task<bool> DeleteRating(int recipeId, int ratingId) {
+            decimal totalRating = 0m;
+            Recipe? recipe = await _recipeRepository.GetRecipe(recipeId);
+            if (recipe == null) return false;
+
+            List<RecipeRating> ratings = await _ratingRepository.GetRatings(recipeId);
+            int count = ratings.Count;
+
+            //Get actual total rating value
+            foreach (RecipeRating tempRating in ratings) {
+                totalRating += tempRating.RatingValue;
+            }
+            
+            //Get Rating object to delete
+            RecipeRating? rating = await _ratingRepository.GetRating(ratingId);
+            if(rating == null) return false;
+            
+            //Update average rating
+            if(count - 1 == 0) {
+                recipe.RecipeRating = 0;
+            } else {
+                recipe.RecipeRating = (totalRating - rating.RatingValue) / (count - 1);
+            }
+            _recipeRepository.UpdateRecipe(recipe);
+
+            //Soft delete rating
+            rating.RatingStatus = 0;
+            _ratingRepository.UpdateRating(rating);
+            _ratingRepository.Save();
+            return true;
+        }
     }
 }

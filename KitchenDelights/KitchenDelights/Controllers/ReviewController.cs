@@ -48,5 +48,13 @@ namespace KitchenDelights.Controllers
             bool isUpdated = await _ratingManager.UpdateRating(rating);
             return isUpdated ? Ok() : StatusCode(500, "Update Review Failed!");
         }
+
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int recipeId, int ratingId) {
+            if(recipeId <= 0 || ratingId <= 0) return BadRequest();
+            bool isDelete = await _ratingManager.DeleteRating(recipeId, ratingId);
+            return isDelete ? Ok() : StatusCode(500, "Delete Review Failed!");
+        }
     }
 }

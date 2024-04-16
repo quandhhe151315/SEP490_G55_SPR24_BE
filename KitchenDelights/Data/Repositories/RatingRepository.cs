@@ -39,12 +39,21 @@ namespace Data.Repositories
             }
         }
 
-
         public void UpdateRating(RecipeRating rating)
         {
             try
             {
                 _context.RecipeRatings.Update(rating);
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+        
+        public void DeleteRating(RecipeRating rating) {
+            try 
+            {
+                _context.RecipeRatings.Remove(rating);
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
