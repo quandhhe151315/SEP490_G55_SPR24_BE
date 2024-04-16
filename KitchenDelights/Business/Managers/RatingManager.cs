@@ -42,6 +42,10 @@ namespace Business.Managers
             //Get Recipe total rating
             Recipe? recipe = await _recipeRepository.GetRecipe(ratingDTO.RecipeId);
             List<RecipeRating> ratings = await _ratingRepository.GetRatings(ratingDTO.RecipeId);
+            //Check if user already have active review
+            foreach(RecipeRating rate in ratings) {
+                if (rate.UserId == ratingDTO.UserId) return false;
+            }
             if (recipe == null) return false;
             decimal totalRating = recipe.RecipeRating * ratings.Count;
 
