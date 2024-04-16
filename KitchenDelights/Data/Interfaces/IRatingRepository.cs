@@ -13,6 +13,7 @@ namespace Data.Interfaces
         Task<List<RecipeRating>> GetRatings(int id);
         void CreateRating(RecipeRating rating);
         void UpdateRating(RecipeRating rating);
+        void DeleteRating(RecipeRating rating);
         void Save();
     }
 }

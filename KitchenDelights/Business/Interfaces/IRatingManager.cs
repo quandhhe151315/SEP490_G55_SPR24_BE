@@ -12,5 +12,6 @@ namespace Business.Interfaces
         Task<List<RecipeRatingDTO>> GetRecipeRatings(int id);
         Task<bool> CreateRating(RecipeRatingDTO ratingDTO);
         Task<bool> UpdateRating(RecipeRatingDTO ratingDTO);
+        Task<bool> DeleteRating(int recipeId, int ratingId);
     }
 }
