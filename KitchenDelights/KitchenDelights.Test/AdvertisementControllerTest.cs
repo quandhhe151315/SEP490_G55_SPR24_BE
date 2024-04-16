@@ -51,7 +51,7 @@ namespace KitchenDelights.Test
             AdvertisementController _controller = new AdvertisementController(_configuration, _mockAdvertisementManager.Object);
             var result = await _controller.GetAdvertismentById(0);
 
-            result.Should().BeNotFoundObjectResult();
+            result.Should().BeOkResult();
         }
 
         [Fact]
