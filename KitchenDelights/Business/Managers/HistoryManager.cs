@@ -96,7 +96,7 @@ namespace Business.Managers
         {
             List<PaymentHistory> paymentHistoriesNow = await _historyRepository.GetPaymentHistory();
             DateTime now = DateTime.Now;
-            paymentHistoriesNow = paymentHistoriesNow.Where(x => x.PurchaseDate.Month == now.Month).ToList();
+            paymentHistoriesNow = paymentHistoriesNow.Where(x => x.PurchaseDate.Month == now.Month && x.PurchaseDate.Year == now.Year).ToList();
 
             decimal revenueNow = 0;
             foreach (PaymentHistory paymentHistory in paymentHistoriesNow)
@@ -141,6 +141,7 @@ namespace Business.Managers
             List<RevenueInNumberMonth> revenueInNumberMonths = [];
             List<PaymentHistory> Histories = await _historyRepository.GetPaymentHistory();
             DateTime now = DateTime.Now;
+            int countMonth = DateTime.Now.Month;
             if (Histories.Count() > 0)
             {
                 for (int i = 0; i < numMonth; i++)
@@ -148,6 +149,10 @@ namespace Business.Managers
                     decimal revenue = 0;
                     RevenueInNumberMonth revenueInNumberMonth = new RevenueInNumberMonth();
                     List<PaymentHistory> paymentHistories = Histories.Where(x => x.PurchaseDate.Month == now.AddMonths(0-i).Month && x.PurchaseDate.Year == now.Year).ToList();
+                    if(countMonth <= 0)
+                    {
+                        paymentHistories = Histories.Where(x => x.PurchaseDate.Month == now.AddMonths(0 - i).Month && x.PurchaseDate.Year == now.AddYears(-1).Year).ToList();
+                    }
                     foreach (PaymentHistory paymentHistory in paymentHistories)
                     {
                         revenue = revenue + paymentHistory.ActualPrice;
@@ -193,6 +198,7 @@ namespace Business.Managers
                     }
                     revenueInNumberMonth.revenue = revenue.ToString("0.0");
                     revenueInNumberMonths.Add(revenueInNumberMonth);
+                    countMonth = countMonth - 1;
                 }
             }
             return revenueInNumberMonths;
