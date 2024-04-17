@@ -38,12 +38,12 @@ namespace Data.Repositories
 
         public async Task<User?> GetUser(string email)
         {
-            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).FirstOrDefaultAsync(x => x.Email == email && x.StatusId != 3);
         }
 
         public async Task<User?> GetUser(int id)
         {
-            return await _context.Users.Include(x => x.Role).Include(x => x.Status).Include(x => x.Addresses).Include(x => x.Recipes).FirstOrDefaultAsync(x => x.UserId == id);
+            return await _context.Users.Include(x => x.Role).Include(x => x.Status).Include(x => x.Addresses).Include(x => x.Recipes).FirstOrDefaultAsync(x => x.UserId == id && x.StatusId != 3);
         }
 
         public async Task<User?> GetBookmarkOfUser(int id)
@@ -53,17 +53,17 @@ namespace Data.Repositories
                                                     .Include(x => x.Recipes).ThenInclude(x => x.Categories)
                                                     .Include(x => x.Recipes).ThenInclude(x => x.Countries)
                                                     .Include(x => x.Recipes).ThenInclude(x => x.User)
-                                                    .FirstOrDefaultAsync(x => x.UserId == id);
+                                                    .FirstOrDefaultAsync(x => x.UserId == id && x.StatusId != 3);
         }
 
         public async Task<List<User>> GetUsers(int id)
         {
-            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).Where(x => x.UserId != id).ToListAsync();
+            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).Where(x => x.UserId != id && x.StatusId !=3).ToListAsync();
         }
 
         public async Task<List<User>> GetAllUser()
         {
-            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).ToListAsync();
+            return await _context.Users.AsNoTracking().Include(x => x.Role).Include(x => x.Status).Where(x => x.StatusId != 3).ToListAsync();
         }
 
         public void Save()
