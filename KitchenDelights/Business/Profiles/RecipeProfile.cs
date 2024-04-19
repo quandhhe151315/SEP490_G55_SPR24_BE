@@ -15,7 +15,8 @@ namespace Business.Profiles
         {
             CreateMap<RecipeIngredient, RecipeIngredientDTO>()
                 .ForMember(dest => dest.IngredientName, opt => opt.MapFrom(src => src.Ingredient.IngredientName))
-                .ForMember(dest => dest.IngredientUnit, opt => opt.MapFrom(src => src.Ingredient.IngredientUnit));
+                .ForMember(dest => dest.IngredientUnit, opt => opt.MapFrom(src => src.Ingredient.IngredientUnit))
+                .ForMember(dest => dest.IngredientMarketplaces, opt => opt.MapFrom(src => src.Ingredient.IngredientMarketplaces));
             CreateMap<RecipeIngredientDTO, RecipeIngredient>();
 
             CreateMap<RecipeRating, RecipeRatingDTO>()
