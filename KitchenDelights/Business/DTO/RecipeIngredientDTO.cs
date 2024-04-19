@@ -17,5 +17,7 @@ namespace Business.DTO
 
         public string? IngredientUnit { get; set; }
 
+        public List<IngredientMarketplaceDTO> IngredientMarketplaces { get; set; } = [];
+
     }
 }
