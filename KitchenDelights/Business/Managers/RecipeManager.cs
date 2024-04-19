@@ -24,8 +24,8 @@ namespace Business.Managers
         private readonly IHistoryRepository _historyRepository;
         private readonly IMapper _mapper;
 
-        public RecipeManager(IRecipeRepository recipeRepository, 
-                            ICategoryRepository categoryRepository, 
+        public RecipeManager(IRecipeRepository recipeRepository,
+                            ICategoryRepository categoryRepository,
                             ICountryRepository countryRepository,
                             IUserRepository userRepository,
                             IRecipeIngredientRepository recipeIngredientRepository,
@@ -66,7 +66,12 @@ namespace Business.Managers
         public async Task<RecipeDTO?> GetRecipe(int id)
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(id);
-            return recipe is null ? null : _mapper.Map<Recipe, RecipeDTO>(recipe);
+            RecipeDTO recipeDTO = _mapper.Map<Recipe, RecipeDTO>(recipe);
+            foreach (RecipeIngredientDTO recipeIngredientDTO in recipeDTO.RecipeIngredients)
+            {
+                recipeIngredientDTO.UnitPersonValue = recipeIngredientDTO.UnitValue / recipeDTO.RecipeServe;
+            }
+            return recipe is null ? null : recipeDTO;
         }
 
         public async Task<List<RecipeDTO>> GetRecipeByCategory(int category)
@@ -160,7 +165,7 @@ namespace Business.Managers
         public async Task<List<RecipeDTO>> GetRecipeHighRating(int count)
         {
             List<RecipeDTO> recipeDTOs = [];
-            List <Recipe> recipes = await _recipeRepository.GetRecipes();
+            List<Recipe> recipes = await _recipeRepository.GetRecipes();
             recipes = recipes.OrderByDescending(x => x.RecipeRating)
                              .Where(x => x.RecipeRatings.Count >= 10)
                              .Take(count)
@@ -219,7 +224,7 @@ namespace Business.Managers
                 }
             }
 
-            foreach(var recipe in recipeTemp)
+            foreach (var recipe in recipeTemp)
             {
                 recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
             }
@@ -280,7 +285,7 @@ namespace Business.Managers
                 List<RecipeIngredient> recipeIngredients = await _recipeIngredientRepository.GetRecipeIngredient(recipeDTO.RecipeId.Value);
                 _recipeIngredientRepository.RemoveRecipeIngredient(recipeIngredients);
 
-                foreach(RecipeIngredientRequestDTO recipeIngredient in recipeDTO.RecipeIngredients)
+                foreach (RecipeIngredientRequestDTO recipeIngredient in recipeDTO.RecipeIngredients)
                 {
                     recipe.RecipeIngredients.Add(_mapper.Map<RecipeIngredientRequestDTO, RecipeIngredient>(recipeIngredient));
                 }
@@ -346,7 +351,7 @@ namespace Business.Managers
                 recipes = await _recipeRepository.GetRecipes();
             }
 
-            if(category != null)
+            if (category != null)
             {
                 recipes = recipes.Where(x => x.Categories.Any(x => x.CategoryId == category)).ToList();
             }
@@ -366,7 +371,7 @@ namespace Business.Managers
                         recipes = recipes.Where(x => x.IsFree == true).ToList();
                         break;
                     case 2:
-                        recipes = recipes.Where(x => x.IsFree == false).ToList(); 
+                        recipes = recipes.Where(x => x.IsFree == false).ToList();
                         break;
                 }
             }
@@ -414,7 +419,7 @@ namespace Business.Managers
                 if (sort == "ASC") recipes = recipes.OrderBy(x => x.CreateDate).ToList();
                 else recipes = recipes.OrderByDescending(x => x.CreateDate).ToList();
             }
-            foreach(var recipe in recipes)
+            foreach (var recipe in recipes)
             {
                 recipeDTOs.Add(_mapper.Map<Recipe, RecipeDTO>(recipe));
             }
@@ -425,7 +430,7 @@ namespace Business.Managers
         {
             List<Recipe> recipes = await _recipeRepository.GetRecipes();
             DateTime now = DateTime.Now;
-            recipes = recipes.Where(x => x.CreateDate.Month == now.Month && x.CreateDate.Year == now.Year && x.RecipeStatus == 1).ToList();  
+            recipes = recipes.Where(x => x.CreateDate.Month == now.Month && x.CreateDate.Year == now.Year && x.RecipeStatus == 1).ToList();
             return recipes.Count();
         }
 
@@ -444,7 +449,7 @@ namespace Business.Managers
         {
             List<RecipeDTO> recipes = [];
             List<PaymentHistory> paymentHistories = await _historyRepository.GetPaymentHistory(userId);
-            foreach(var history in paymentHistories)
+            foreach (var history in paymentHistories)
             {
                 recipes.Add(_mapper.Map<Recipe, RecipeDTO>(history.Recipe));
             }
