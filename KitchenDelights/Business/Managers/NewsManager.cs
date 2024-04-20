@@ -88,7 +88,9 @@ namespace Business.Managers
             List<News> news = await _newsRepository.GetNews();
             newsDTO.AddRange(news.Where(newsEntity => newsEntity.NewsTitle!.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
            || newsEntity.NewsContent!.Contains(searchString,
-                                               StringComparison.InvariantCultureIgnoreCase)).Select(newsEntity => _mapper.Map<News, NewsDTO>(newsEntity)));
+                                               StringComparison.InvariantCultureIgnoreCase))
+                                               .Select(newsEntity => _mapper.Map<News, NewsDTO>(newsEntity))
+                                               .Where(news=> news.NewsStatus == 1));
             return newsDTO;
         }
 
@@ -97,7 +99,7 @@ namespace Business.Managers
             List<NewsDTO> newsDTO = [];
             List<News> news = await _newsRepository.GetNews();
             news = news.OrderByDescending(x => x.CreateDate).Take(count).ToList();
-            newsDTO.AddRange(news.Select(_mapper.Map<News, NewsDTO>));
+            newsDTO.AddRange(news.Select(_mapper.Map<News, NewsDTO>).Where(x => x.NewsStatus == 1));
             return newsDTO;
         }
     }
