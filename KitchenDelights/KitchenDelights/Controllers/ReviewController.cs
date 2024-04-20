@@ -24,7 +24,6 @@ namespace KitchenDelights.Controllers
         {
             if(id < 0) return BadRequest("Invalid Id");
             List<RecipeRatingDTO> ratings = await _ratingManager.GetRecipeRatings(id);
-            if (ratings.Count == 0) return NotFound("There's no rating here!");
             return Ok(ratings);
         }
 
