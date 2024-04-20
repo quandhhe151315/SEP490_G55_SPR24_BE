@@ -67,9 +67,12 @@ namespace Business.Managers
         {
             Recipe? recipe = await _recipeRepository.GetRecipe(id);
             RecipeDTO recipeDTO = _mapper.Map<Recipe, RecipeDTO>(recipe);
-            foreach (RecipeIngredientDTO recipeIngredientDTO in recipeDTO.RecipeIngredients)
+            if(recipe != null)
             {
-                recipeIngredientDTO.UnitPersonValue = recipeIngredientDTO.UnitValue / recipeDTO.RecipeServe;
+                foreach (RecipeIngredientDTO recipeIngredientDTO in recipeDTO.RecipeIngredients)
+                {
+                    recipeIngredientDTO.UnitPersonValue = recipeIngredientDTO.UnitValue / recipeDTO.RecipeServe;
+                }
             }
             return recipe is null ? null : recipeDTO;
         }

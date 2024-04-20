@@ -57,6 +57,7 @@ namespace Business.Managers
             {
                 ingredientDTOs.Add(_mapper.Map<Ingredient, IngredientDTO>(ingredient));
             }
+            ingredientDTOs = ingredientDTOs.GroupBy(x => x.IngredientName).Select(x => x.First()).ToList();
             return ingredientDTOs;
         }
 
@@ -74,6 +75,7 @@ namespace Business.Managers
             {
                 ingredientDTOs.Add(_mapper.Map<Ingredient, IngredientDTO>(ingredient));
             }
+            ingredientDTOs = ingredientDTOs.GroupBy(x => x.IngredientName).Select(x => x.First()).ToList();
             return ingredientDTOs;
         }
 

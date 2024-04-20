@@ -17,7 +17,7 @@ namespace Business.DTO
 
         public string? IngredientUnit { get; set; }
 
-        public decimal? UnitPersonValue { get; set; }
+        public decimal? UnitPersonValue { get; set; } = 0;
 
         public List<IngredientMarketplaceDTO> IngredientMarketplaces { get; set; } = [];
 
