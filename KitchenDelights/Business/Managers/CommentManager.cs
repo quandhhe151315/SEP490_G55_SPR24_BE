@@ -44,10 +44,12 @@ namespace Business.Managers
             return commentDTOs;
         }
 
-        public void CreateComment(BlogCommentDTO commentDTO)
+        public async Task<int> CreateComment(BlogCommentDTO commentDTO)
         {
             _commentRepository.CreateComment(_mapper.Map<BlogCommentDTO, BlogComment>(commentDTO));
             _commentRepository.Save();
+            var comments = await _commentRepository.GetComments(commentDTO.BlogId);
+            return comments[^1].CommentId;
         }
 
         public async Task<bool> UpdateComment(BlogCommentDTO commentDTO)
