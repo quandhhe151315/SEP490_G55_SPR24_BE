@@ -45,8 +45,8 @@ namespace KitchenDelights.Controllers
             comment.CreateDate = DateTime.Now;
             try
             {
-                _commentManager.CreateComment(comment);
-                return Ok();
+                int commentId =  await _commentManager.CreateComment(comment);
+                return Ok(commentId);
             } catch (Exception ex)
             {
                 return StatusCode(500, $"Create commend failed!\n{ex.StackTrace}");
