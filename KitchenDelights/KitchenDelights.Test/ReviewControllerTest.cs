@@ -55,13 +55,13 @@ public class ReviewControllerTest
     }
 
     [Fact]
-    public async void Get_ReturnStatus404_RecipeNotHaveRating() {
+    public async void Get_ReturnStatus200_RecipeNotHaveRating() {
         _mockManager.Setup(x => x.GetRecipeRatings(3)).ReturnsAsync([]);
 
         ReviewController _controller = new ReviewController(_configuration, _mockManager.Object);
         var result = await _controller.Get(3);
 
-        result.Should().BeNotFoundObjectResult();
+        result.Should().BeOkObjectResult();
     }
 
     [Fact]

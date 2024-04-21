@@ -35,6 +35,7 @@ namespace Business.Managers
             if (blog == null) return false;
 
             //Update partially
+            blog.Category = null;
             blog.CategoryId = blogDTO.CategoryId;
             blog.BlogTitle = blogDTO.BlogTitle;
             blog.BlogContent = blogDTO.BlogContent;

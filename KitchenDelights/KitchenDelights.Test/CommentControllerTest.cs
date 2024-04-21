@@ -61,12 +61,12 @@ public class CommentControllerTest
             UserId = 1,
             CommentContent = "comment content"
         };
-        _mockCommentManager.Setup(x => x.CreateComment(It.IsAny<BlogCommentDTO>()));
+        _mockCommentManager.Setup(x => x.CreateComment(It.IsAny<BlogCommentDTO>())).ReturnsAsync(1);
 
         CommentController _controller = new(_configuration, _mockCommentManager.Object);
         var result = await _controller.Create(toAdd);
 
-        result.Should().BeOkResult();
+        result.Should().BeOkObjectResult();
     }
 
     [Fact]

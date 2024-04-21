@@ -96,11 +96,13 @@ public class CommentManagerTest
             CreateDate = DateTime.Now.AddHours(5)
         };
         _mockCommentRepository.Setup(x => x.CreateComment(It.IsAny<BlogComment>())).Callback(comments.Add);
+        _mockCommentRepository.Setup(x => x.GetComments()).ReturnsAsync(comments);
 
         ICommentManager _commentManager = new CommentManager(_mockCommentRepository.Object, _mapper);
-        _commentManager.CreateComment(toAdd);
+        int id = await _commentManager.CreateComment(toAdd);
 
         comments.Count.Should().Be(6);
+        id.Should().Be(0);
         _mockCommentRepository.Verify(x => x.CreateComment(It.IsAny<BlogComment>()), Times.Once);
     }
 
