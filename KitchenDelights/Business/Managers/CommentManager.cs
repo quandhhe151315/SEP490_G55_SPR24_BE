@@ -48,7 +48,7 @@ namespace Business.Managers
         {
             _commentRepository.CreateComment(_mapper.Map<BlogCommentDTO, BlogComment>(commentDTO));
             _commentRepository.Save();
-            var comments = await _commentRepository.GetComments(commentDTO.BlogId);
+            var comments = await _commentRepository.GetComments();
             return comments[^1].CommentId;
         }
 
