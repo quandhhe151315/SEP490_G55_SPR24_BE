@@ -170,7 +170,6 @@ namespace Business.Managers
             List<RecipeDTO> recipeDTOs = [];
             List<Recipe> recipes = await _recipeRepository.GetRecipes();
             recipes = recipes.OrderByDescending(x => x.RecipeRating)
-                             .Where(x => x.RecipeRatings.Count >= 10)
                              .Take(count)
                              .ToList();
             recipeDTOs.AddRange(recipes.Select(_mapper.Map<Recipe, RecipeDTO>));
